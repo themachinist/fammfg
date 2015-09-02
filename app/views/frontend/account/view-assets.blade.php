@@ -129,8 +129,8 @@ View Assets for  {{{ $user->fullName() }}} ::
                                         @elseif ((isset($log->assetlog->name)) && ($log->assetlog->deleted_at!=''))
                                             <del>{{{ $log->assetlog->name }}}</del> (deleted)
                                             
-                                        @elseif ((isset($log->accessorylog->name)) && ($log->accessorylog->deleted_at==''))
-                                            {{{ $log->accessorylog->name }}}
+                                        @elseif ((isset($log->toollog->name)) && ($log->toollog->deleted_at==''))
+                                            {{{ $log->toollog->name }}}
                                         @endif
                                         </td>
                                         <td>{{{ $log->adminlog->fullName() }}}</td>

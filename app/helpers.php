@@ -77,7 +77,7 @@ function depreciationList() {
 }
 
 function categoryTypeList() {
-     $category_types= array('' => '','accessory' => 'Accessory', 'asset' => 'Asset', 'consumable' => 'Consumable');
+     $category_types= array('' => '','tool' => 'Tool', 'asset' => 'Asset', 'consumable' => 'Consumable');
      return $category_types;
 }
 

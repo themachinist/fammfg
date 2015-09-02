@@ -36,10 +36,10 @@
                         ->withTrashed();
         }
 
-        public function accessorylog()
+        public function toollog()
         {
 
-            return $this->belongsTo( 'Accessory', 'accessory_id' )
+            return $this->belongsTo( 'Tool', 'tool_id' )
                         ->withTrashed();
         }
 

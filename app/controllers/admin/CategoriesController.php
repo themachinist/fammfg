@@ -102,7 +102,7 @@ class CategoriesController extends AdminController
         //$category_options = array('' => 'Top Level') + Category::lists('name', 'id');
 
         $category_options = array('' => 'Top Level') + DB::table('categories')->where('id', '!=', $categoryId)->lists('name', 'id');
-        $category_types= array('' => '', 'asset' => 'Asset', 'accessory' => 'Accessory', 'consumable' => 'Consumable');
+        $category_types= array('' => '', 'asset' => 'Asset', 'tool' => 'Tool', 'consumable' => 'Consumable');
 
         return View::make('backend/categories/edit', compact('category'))
         ->with('category_options',$category_options)
@@ -230,7 +230,7 @@ class CategoriesController extends AdminController
             return ucwords($categories->category_type);
         })
         ->addColumn('count', function($categories) {
-            return ($categories->category_type=='asset') ? link_to('/admin/settings/categories/'.$categories->id.'/view', $categories->assetscount()) : $categories->accessoriescount();
+            return ($categories->category_type=='asset') ? link_to('/admin/settings/categories/'.$categories->id.'/view', $categories->assetscount()) : $categories->toolscount();
         })
         ->addColumn('acceptance', function($categories) {
             return ($categories->require_acceptance=='1') ? '<i class="fa fa-check" style="margin-right:50%;margin-left:50%;"></i>' : '';

@@ -10,7 +10,7 @@ use View;
 use Asset;
 use Actionlog;
 use Lang;
-use Accessory;
+use Tool;
 use DB;
 use Slack;
 use Setting;
@@ -123,9 +123,9 @@ class ViewAssetsController extends AuthorizedController
         // software
         } elseif (($findlog->asset_id!='') && ($findlog->asset_type=='software')) {
 	        $item = License::find($findlog->asset_id);
-	    // accessories
-	    } elseif ($findlog->accessory_id!='') {
-		   $item = Accessory::find($findlog->accessory_id);
+	    // tools
+	    } elseif ($findlog->tool_id!='') {
+		   $item = Tool::find($findlog->tool_id);
         }
 
 	    // Check if the asset exists
@@ -177,7 +177,7 @@ class ViewAssetsController extends AuthorizedController
 		// Asset
         if (($findlog->asset_id!='') && ($findlog->asset_type=='hardware')) {
         	$logaction->asset_id = $findlog->asset_id;
-        	$logaction->accessory_id = NULL;
+        	$logaction->tool_id = NULL;
         	$logaction->asset_type = 'hardware';
 
             if (Input::get('asset_acceptance')!='accepted') {
@@ -190,14 +190,14 @@ class ViewAssetsController extends AuthorizedController
         // software
         } elseif (($findlog->asset_id!='') && ($findlog->asset_type=='software')) {
 	        $logaction->asset_id = $findlog->asset_id;
-        	$logaction->accessory_id = NULL;
+        	$logaction->tool_id = NULL;
         	$logaction->asset_type = 'software';
 
-		// accessories
-	    } elseif ($findlog->accessory_id!='') {
+		// tools
+	    } elseif ($findlog->tool_id!='') {
 		    $logaction->asset_id = NULL;
-        	$logaction->accessory_id = $findlog->accessory_id;
-        	$logaction->asset_type = 'accessory';
+        	$logaction->tool_id = $findlog->tool_id;
+        	$logaction->asset_type = 'tool';
         }
 
 		$logaction->checkedout_to = $findlog->checkedout_to;

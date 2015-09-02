@@ -59,8 +59,8 @@
 			            	<a href="{{ route('view/license', $activity->asset_id) }}">{{{ $activity->licenselog->name }}}</a>
                         @elseif (($activity->consumablelog) && ($activity->asset_type=="consumable"))
     			            <a href="{{ route('view/consumable', $activity->consumable_id) }}">{{{ $activity->consumablelog->name }}}</a>
-			            @elseif (($activity->accessorylog) && ($activity->asset_type=="accessory"))
-			            	<a href="{{ route('view/accessory', $activity->accessory_id) }}">{{{ $activity->accessorylog->name }}}</a>
+			            @elseif (($activity->toollog) && ($activity->asset_type=="tool"))
+			            	<a href="{{ route('view/tool', $activity->tool_id) }}">{{{ $activity->toollog->name }}}</a>
                         @else
                             @lang('general.bad_data')
 			            @endif

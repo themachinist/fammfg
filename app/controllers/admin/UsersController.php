@@ -28,7 +28,7 @@ use View;
 use Datatable;
 use League\Csv\Reader;
 use Mail;
-use Accessory;
+use Tool;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
@@ -511,7 +511,7 @@ class UsersController extends AdminController {
             if (!Config::get('app.lock_passwords')) {
 
                 $assets = Asset::whereIn('assigned_to', $user_raw_array)->get();
-                $accessories = DB::table('accessories_users')->whereIn('assigned_to', $user_raw_array)->get();
+                $tools = DB::table('tools_users')->whereIn('assigned_to', $user_raw_array)->get();
                 $users = User::whereIn('id', $user_raw_array)->delete();
 
                 foreach ($assets as $asset) {
@@ -534,18 +534,18 @@ class UsersController extends AdminController {
                     ));
                 }
 
-                foreach ($accessories as $accessory) {
-                    $accessory_array[] = $accessory->id;
+                foreach ($tools as $tool) {
+                    $tool_array[] = $tool->id;
                     // Update the asset log
                     $logaction = new Actionlog();
-                    $logaction->accessory_id = $accessory->id;
-                    $logaction->checkedout_to = $accessory->assigned_to;
-                    $logaction->asset_type = 'accessory';
+                    $logaction->tool_id = $tool->id;
+                    $logaction->checkedout_to = $tool->assigned_to;
+                    $logaction->asset_type = 'tool';
                     $logaction->user_id = Sentry::getUser()->id;
                     $logaction->note = 'Bulk checkin';
                     $log = $logaction->logaction('checkin from');
 
-                    $update_assets = DB::table('accessories_users')->whereIn('id', $accessory_array)->update(
+                    $update_assets = DB::table('tools_users')->whereIn('id', $tool_array)->update(
                             array(
                                 'assigned_to' => '',
                     ));
@@ -597,9 +597,9 @@ class UsersController extends AdminController {
      */
     public function getView($userId = null) {
 
-        $user = User::with('assets', 'assets.model', 'consumables', 'accessories', 'licenses', 'userloc')->withTrashed()->find($userId);
+        $user = User::with('assets', 'assets.model', 'consumables', 'tools', 'licenses', 'userloc')->withTrashed()->find($userId);
 
-        $userlog = $user->userlog->load('assetlog', 'consumablelog', 'assetlog.model', 'licenselog', 'accessorylog', 'userlog', 'adminlog');
+        $userlog = $user->userlog->load('assetlog', 'consumablelog', 'assetlog.model', 'licenselog', 'toollog', 'userlog', 'adminlog');
 
         if (isset($user->id)) {
             return View::make('backend/users/view', compact('user', 'userlog'));
@@ -826,7 +826,7 @@ class UsersController extends AdminController {
 
     public function getDatatable($status = null) {
 
-        $users = User::with('assets', 'accessories', 'consumables', 'licenses', 'manager', 'sentryThrottle', 'groups', 'userloc');
+        $users = User::with('assets', 'tools', 'consumables', 'licenses', 'manager', 'sentryThrottle', 'groups', 'userloc');
 
         switch ($status) {
             case 'deleted':
@@ -892,8 +892,8 @@ class UsersController extends AdminController {
                         ->addColumn('licenses', function($users) {
                             return $users->licenses->count();
                         })
-                        ->addColumn('accessories', function($users) {
-                            return $users->accessories->count();
+                        ->addColumn('tools', function($users) {
+                            return $users->tools->count();
                         })
                         ->addColumn('consumables', function($users) {
                             return $users->consumables->count();
@@ -907,7 +907,7 @@ class UsersController extends AdminController {
                         })
                         ->addColumn($actions)
                         ->searchColumns('name', 'email', 'manager', 'activated', 'groups', 'location')
-                        ->orderColumns('name', 'email', 'manager', 'activated', 'licenses', 'assets', 'accessories', 'consumables', 'groups', 'location')
+                        ->orderColumns('name', 'email', 'manager', 'activated', 'licenses', 'assets', 'tools', 'consumables', 'groups', 'location')
                         ->make();
     }
 

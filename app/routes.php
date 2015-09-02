@@ -29,19 +29,19 @@
             } );
         } );
 
-        /*---Accessories API---*/
-        Route::group( [ 'prefix' => 'accessories' ], function () {
+        /*---Tools API---*/
+        Route::group( [ 'prefix' => 'tools' ], function () {
 
-            Route::get( 'list', [ 'as' => 'api.accessories.list', 'uses' => 'AccessoriesController@getDatatable' ] );
-            Route::get( '{accessoryID}/view',
-                [ 'as' => 'api.accessories.view', 'uses' => 'AccessoriesController@getDataView' ] );
+            Route::get( 'list', [ 'as' => 'api.tools.list', 'uses' => 'ToolsController@getDatatable' ] );
+            Route::get( '{toolID}/view',
+                [ 'as' => 'api.tools.view', 'uses' => 'ToolsController@getDataView' ] );
         } );
 
         /*---Consumables API---*/
         Route::group( [ 'prefix' => 'consumables' ], function () {
 
             Route::get( 'list', [ 'as' => 'api.consumables.list', 'uses' => 'ConsumablesController@getDatatable' ] );
-            Route::get( '{accessoryID}/view',
+            Route::get( '{toolID}/view',
                 [ 'as' => 'api.consumables.view', 'uses' => 'ConsumablesController@getDataView' ] );
         } );
 
@@ -245,25 +245,25 @@
                 [ 'as' => 'view/asset_maintenance', 'uses' => 'AssetMaintenancesController@getView' ] );
         } );
 
-        # Accessories
-        Route::group( [ 'prefix' => 'accessories' ], function () {
+        # Tools
+        Route::group( [ 'prefix' => 'tools' ], function () {
 
-            Route::get( 'create', [ 'as' => 'create/accessory', 'uses' => 'AccessoriesController@getCreate' ] );
-            Route::post( 'create', 'AccessoriesController@postCreate' );
-            Route::get( '{accessoryID}/edit',
-                [ 'as' => 'update/accessory', 'uses' => 'AccessoriesController@getEdit' ] );
-            Route::post( '{accessoryID}/edit', 'AccessoriesController@postEdit' );
-            Route::get( '{accessoryID}/delete',
-                [ 'as' => 'delete/accessory', 'uses' => 'AccessoriesController@getDelete' ] );
-            Route::get( '{accessoryID}/view', [ 'as' => 'view/accessory', 'uses' => 'AccessoriesController@getView' ] );
-            Route::get( '{accessoryID}/checkout',
-                [ 'as' => 'checkout/accessory', 'uses' => 'AccessoriesController@getCheckout' ] );
-            Route::post( '{accessoryID}/checkout', 'AccessoriesController@postCheckout' );
-            Route::get( '{accessoryID}/checkin/{backto?}',
-                [ 'as' => 'checkin/accessory', 'uses' => 'AccessoriesController@getCheckin' ] );
-            Route::post( '{accessoryID}/checkin/{backto?}', 'AccessoriesController@postCheckin' );
+            Route::get( 'create', [ 'as' => 'create/tool', 'uses' => 'ToolsController@getCreate' ] );
+            Route::post( 'create', 'ToolsController@postCreate' );
+            Route::get( '{toolID}/edit',
+                [ 'as' => 'update/tool', 'uses' => 'ToolsController@getEdit' ] );
+            Route::post( '{toolID}/edit', 'ToolsController@postEdit' );
+            Route::get( '{toolID}/delete',
+                [ 'as' => 'delete/tool', 'uses' => 'ToolsController@getDelete' ] );
+            Route::get( '{toolID}/view', [ 'as' => 'view/tool', 'uses' => 'ToolsController@getView' ] );
+            Route::get( '{toolID}/checkout',
+                [ 'as' => 'checkout/tool', 'uses' => 'ToolsController@getCheckout' ] );
+            Route::post( '{toolID}/checkout', 'ToolsController@postCheckout' );
+            Route::get( '{toolID}/checkin/{backto?}',
+                [ 'as' => 'checkin/tool', 'uses' => 'ToolsController@getCheckin' ] );
+            Route::post( '{toolID}/checkin/{backto?}', 'ToolsController@postCheckin' );
 
-            Route::get( '/', [ 'as' => 'accessories', 'uses' => 'AccessoriesController@getIndex' ] );
+            Route::get( '/', [ 'as' => 'tools', 'uses' => 'ToolsController@getIndex' ] );
         } );
 
         # Consumables
@@ -281,7 +281,7 @@
             Route::get( '{consumableID}/checkout',
                 [ 'as' => 'checkout/consumable', 'uses' => 'ConsumablesController@getCheckout' ] );
             Route::post( '{consumableID}/checkout', 'ConsumablesController@postCheckout' );
-            Route::get( '/', [ 'as' => 'accessories', 'uses' => 'ConsumablesController@getIndex' ] );
+            Route::get( '/', [ 'as' => 'tools', 'uses' => 'ConsumablesController@getIndex' ] );
         } );
 
         # Admin Settings Routes (for categories, maufactureres, etc)
@@ -556,9 +556,9 @@
         Route::get( 'reports/assets', [ 'as' => 'reports/assets', 'uses' => 'ReportsController@getAssetsReport' ] );
         Route::get( 'reports/export/assets',
             [ 'as' => 'reports/export/assets', 'uses' => 'ReportsController@exportAssetReport' ] );
-        Route::get( 'reports/accessories', [ 'as' => 'reports/accessories', 'uses' => 'ReportsController@getAccessoryReport' ] );
-        Route::get( 'reports/export/accessories',
-            [ 'as' => 'reports/export/accessories', 'uses' => 'ReportsController@exportAccessoryReport' ] );
+        Route::get( 'reports/tools', [ 'as' => 'reports/tools', 'uses' => 'ReportsController@getToolReport' ] );
+        Route::get( 'reports/export/tools',
+            [ 'as' => 'reports/export/tools', 'uses' => 'ReportsController@exportToolReport' ] );
         Route::get( 'reports/custom', [ 'as' => 'reports/custom', 'uses' => 'ReportsController@getCustomReport' ] );
         Route::post( 'reports/custom', 'ReportsController@postCustom' );
 

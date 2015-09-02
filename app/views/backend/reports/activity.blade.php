@@ -41,8 +41,8 @@
 	            	Asset
 	            @elseif ($log_action->asset_type=="software")
 	            	License
-	            @elseif ($log_action->asset_type=="accessory")
-	            	Accessory
+	            @elseif ($log_action->asset_type=="tool")
+	            	Tool
                 @elseif ($log_action->asset_type=="consumable")
     	            Consumable
 	            @endif
@@ -55,8 +55,8 @@
                  {{ $log_action->licenselog->name }}
              @elseif (($log_action->consumablelog) && ($log_action->asset_type=="consumable"))
                  {{ $log_action->consumablelog->name }}
-             @elseif (($log_action->accessorylog) && ($log_action->asset_type=="accessory"))
-                 {{ $log_action->accessorylog->name }}
+             @elseif (($log_action->toollog) && ($log_action->asset_type=="tool"))
+                 {{ $log_action->toollog->name }}
              @else
                  @lang('general.bad_data')
              @endif

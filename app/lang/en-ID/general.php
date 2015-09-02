@@ -1,9 +1,9 @@
 <?php
 
     return [
-    'accessories'			=> 'Accessories',
-    'accessory'				=> 'Accessory',
-    'accessory_report'			=> 'Accessory Report',
+    'tools'			=> 'Tools',
+    'tool'				=> 'Tool',
+    'tool_report'			=> 'Tool Report',
     'action'                => 'Action',
     'activity_report'		=> 'Activity Report',
     'address'				=> 'Address',

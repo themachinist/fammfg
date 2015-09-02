@@ -157,10 +157,10 @@
 
 
                             <br>
-                            <h6>@lang('general.accessories')</h6>
+                            <h6>@lang('general.tools')</h6>
                             <br>
                             <!-- checked out licenses table -->
-                            @if (count($user->accessories) > 0)
+                            @if (count($user->tools) > 0)
                             <div class="table-responsive">
 							<table class="display table table-hover">
                                 <thead>
@@ -170,10 +170,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($user->accessories as $accessory)
+                                    @foreach ($user->tools as $tool)
                                     <tr>
-                                        <td><a href="{{ route('view/accessory', $accessory->id) }}">{{{ $accessory->name }}}</a></td>
-                                        <td class="hidden-print"> <a href="{{ route('checkin/accessory', array('accessory_id'=> $accessory->pivot->id, 'backto'=>'user')) }}" class="btn-flat info">Checkin</a>
+                                        <td><a href="{{ route('view/tool', $tool->id) }}">{{{ $tool->name }}}</a></td>
+                                        <td class="hidden-print"> <a href="{{ route('checkin/tool', array('tool_id'=> $tool->pivot->id, 'backto'=>'user')) }}" class="btn-flat info">Checkin</a>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -329,7 +329,7 @@
                                         <td class="text-center">
                                             @if (($log->assetlog) && ($log->asset_type=="hardware"))
                                                 <i class="fa fa-barcode"></i>
-                                            @elseif (($log->accessorylog) && ($log->asset_type=="accessory"))
+                                            @elseif (($log->toollog) && ($log->asset_type=="tool"))
                                                 <i class="fa fa-keyboard-o"></i>
                                             @elseif (($log->consumablelog) && ($log->asset_type=="consumable"))
                                                 <i class="fa fa-tint"></i>
@@ -374,11 +374,11 @@
                                                      <del>{{{ $log->consumablelog->name }}}</del> (deleted)
                                                  @endif
 
-                                            @elseif (($log->accessorylog) && ($log->asset_type=="accessory"))
-                                                @if ($log->accessorylog->deleted_at=='')
-                                                    <a href="{{ route('view/accessory', $log->accessory_id) }}">{{{ $log->accessorylog->name }}}</a>
+                                            @elseif (($log->toollog) && ($log->asset_type=="tool"))
+                                                @if ($log->toollog->deleted_at=='')
+                                                    <a href="{{ route('view/tool', $log->tool_id) }}">{{{ $log->toollog->name }}}</a>
                                                 @else
-                                                    <del>{{{ $log->accessorylog->name }}}</del> (deleted)
+                                                    <del>{{{ $log->toollog->name }}}</del> (deleted)
                                                 @endif
 
                                              @else

@@ -3,7 +3,7 @@
 use AdminController;
 use Input;
 use Lang;
-use Accessory;
+use Tool;
 use Redirect;
 use Setting;
 use DB;
@@ -18,35 +18,35 @@ use Datatable;
 use Slack;
 use Config;
 
-class AccessoriesController extends AdminController
+class ToolsController extends AdminController
 {
     /**
-     * Show a list of all the accessories.
+     * Show a list of all the tools.
      *
      * @return View
      */
 
     public function getIndex()
     {
-        return View::make('backend/accessories/index');
+        return View::make('backend/tools/index');
     }
 
 
     /**
-     * Accessory create.
+     * Tool create.
      *
      * @return View
      */
     public function getCreate()
     {
         // Show the page
-        $category_list = array('' => '') + DB::table('categories')->where('category_type','=','accessory')->whereNull('deleted_at')->orderBy('name','ASC')->lists('name', 'id');
-        return View::make('backend/accessories/edit')->with('accessory',new Accessory)->with('category_list',$category_list);
+        $category_list = array('' => '') + DB::table('categories')->where('category_type','=','tool')->whereNull('deleted_at')->orderBy('name','ASC')->lists('name', 'id');
+        return View::make('backend/tools/edit')->with('tool',new Tool)->with('category_list',$category_list);
     }
 
 
     /**
-     * Accessory create form processing.
+     * Tool create form processing.
      *
      * @return Redirect
      */
@@ -54,9 +54,9 @@ class AccessoriesController extends AdminController
     {
 
         // create a new model instance
-        $accessory = new Accessory();
+        $tool = new Tool();
 
-        $validator = Validator::make(Input::all(), $accessory->rules);
+        $validator = Validator::make(Input::all(), $tool->rules);
 
         if ($validator->fails())
         {
@@ -65,56 +65,56 @@ class AccessoriesController extends AdminController
         }
         else{
 
-            // Update the accessory data
-            $accessory->name            		= e(Input::get('name'));
-            $accessory->category_id            	= e(Input::get('category_id'));
-            $accessory->qty            			= e(Input::get('qty'));
-            $accessory->user_id          		= Sentry::getId();
+            // Update the tool data
+            $tool->name            		= e(Input::get('name'));
+            $tool->category_id            	= e(Input::get('category_id'));
+            $tool->qty            			= e(Input::get('qty'));
+            $tool->user_id          		= Sentry::getId();
 
-            // Was the accessory created?
-            if($accessory->save()) {
-                // Redirect to the new accessory  page
-                return Redirect::to("admin/accessories")->with('success', Lang::get('admin/accessories/message.create.success'));
+            // Was the tool created?
+            if($tool->save()) {
+                // Redirect to the new tool  page
+                return Redirect::to("admin/tools")->with('success', Lang::get('admin/tools/message.create.success'));
             }
         }
 
-        // Redirect to the accessory create page
-        return Redirect::to('admin/accessories/create')->with('error', Lang::get('admin/accessories/message.create.error'));
+        // Redirect to the tool create page
+        return Redirect::to('admin/tools/create')->with('error', Lang::get('admin/tools/message.create.error'));
 
 
     }
 
     /**
-     * Accessory update.
+     * Tool update.
      *
-     * @param  int  $accessoryId
+     * @param  int  $toolId
      * @return View
      */
-    public function getEdit($accessoryId = null)
+    public function getEdit($toolId = null)
     {
-        // Check if the accessory exists
-        if (is_null($accessory = Accessory::find($accessoryId))) {
+        // Check if the tool exists
+        if (is_null($tool = Tool::find($toolId))) {
             // Redirect to the blogs management page
-            return Redirect::to('admin/accessories')->with('error', Lang::get('admin/accessories/message.does_not_exist'));
+            return Redirect::to('admin/tools')->with('error', Lang::get('admin/tools/message.does_not_exist'));
         }
 
-		$category_list = array('' => '') + DB::table('categories')->where('category_type','=','accessory')->whereNull('deleted_at')->orderBy('name','ASC')->lists('name', 'id');
-        return View::make('backend/accessories/edit', compact('accessory'))->with('category_list',$category_list);
+		$category_list = array('' => '') + DB::table('categories')->where('category_type','=','tool')->whereNull('deleted_at')->orderBy('name','ASC')->lists('name', 'id');
+        return View::make('backend/tools/edit', compact('tool'))->with('category_list',$category_list);
     }
 
 
     /**
-     * Accessory update form processing page.
+     * Tool update form processing page.
      *
-     * @param  int  $accessoryId
+     * @param  int  $toolId
      * @return Redirect
      */
-    public function postEdit($accessoryId = null)
+    public function postEdit($toolId = null)
     {
         // Check if the blog post exists
-        if (is_null($accessory = Accessory::find($accessoryId))) {
+        if (is_null($tool = Tool::find($toolId))) {
             // Redirect to the blogs management page
-            return Redirect::to('admin/accessories')->with('error', Lang::get('admin/accessories/message.does_not_exist'));
+            return Redirect::to('admin/tools')->with('error', Lang::get('admin/tools/message.does_not_exist'));
         }
 
 
@@ -122,7 +122,7 @@ class AccessoriesController extends AdminController
         $new = Input::all();
 
         // attempt validation
-        $validator = Validator::make(Input::all(), $accessory->validationRules($accessoryId));
+        $validator = Validator::make(Input::all(), $tool->validationRules($toolId));
 
 
         if ($validator->fails())
@@ -133,45 +133,45 @@ class AccessoriesController extends AdminController
         // attempt validation
         else {
 
-            // Update the accessory data
-            $accessory->name            		= e(Input::get('name'));
-            $accessory->category_id            	= e(Input::get('category_id'));
-            $accessory->qty            			= e(Input::get('qty'));
+            // Update the tool data
+            $tool->name            		= e(Input::get('name'));
+            $tool->category_id            	= e(Input::get('category_id'));
+            $tool->qty            			= e(Input::get('qty'));
 
-            // Was the accessory created?
-            if($accessory->save()) {
-                // Redirect to the new accessory page
-                return Redirect::to("admin/accessories")->with('success', Lang::get('admin/accessories/message.update.success'));
+            // Was the tool created?
+            if($tool->save()) {
+                // Redirect to the new tool page
+                return Redirect::to("admin/tools")->with('success', Lang::get('admin/tools/message.update.success'));
             }
         }
 
-        // Redirect to the accessory management page
-        return Redirect::to("admin/accessories/$accessoryID/edit")->with('error', Lang::get('admin/accessories/message.update.error'));
+        // Redirect to the tool management page
+        return Redirect::to("admin/tools/$toolID/edit")->with('error', Lang::get('admin/tools/message.update.error'));
 
     }
 
     /**
-     * Delete the given accessory.
+     * Delete the given tool.
      *
-     * @param  int  $accessoryId
+     * @param  int  $toolId
      * @return Redirect
      */
-    public function getDelete($accessoryId)
+    public function getDelete($toolId)
     {
         // Check if the blog post exists
-        if (is_null($accessory = Accessory::find($accessoryId))) {
+        if (is_null($tool = Tool::find($toolId))) {
             // Redirect to the blogs management page
-            return Redirect::to('admin/accessories')->with('error', Lang::get('admin/accessories/message.not_found'));
+            return Redirect::to('admin/tools')->with('error', Lang::get('admin/tools/message.not_found'));
         }
 
 
-		if ($accessory->hasUsers() > 0) {
-			 return Redirect::to('admin/accessories')->with('error', Lang::get('admin/accessories/message.assoc_users', array('count'=> $accessory->hasUsers())));
+		if ($tool->hasUsers() > 0) {
+			 return Redirect::to('admin/tools')->with('error', Lang::get('admin/tools/message.assoc_users', array('count'=> $tool->hasUsers())));
 		} else {
-			$accessory->delete();
+			$tool->delete();
 
             // Redirect to the locations management page
-            return Redirect::to('admin/accessories')->with('success', Lang::get('admin/accessories/message.delete.success'));
+            return Redirect::to('admin/tools')->with('success', Lang::get('admin/tools/message.delete.success'));
 
 		}
 
@@ -184,55 +184,55 @@ class AccessoriesController extends AdminController
 
 
     /**
-    *  Get the accessory information to present to the accessory view page
+    *  Get the tool information to present to the tool view page
     *
-    * @param  int  $accessoryId
+    * @param  int  $toolId
     * @return View
     **/
-    public function getView($accessoryID = null)
+    public function getView($toolID = null)
     {
-        $accessory = Accessory::find($accessoryID);
+        $tool = Tool::find($toolID);
 
-        if (isset($accessory->id)) {
-                return View::make('backend/accessories/view', compact('accessory'));
+        if (isset($tool->id)) {
+                return View::make('backend/tools/view', compact('tool'));
         } else {
             // Prepare the error message
-            $error = Lang::get('admin/accessories/message.does_not_exist', compact('id'));
+            $error = Lang::get('admin/tools/message.does_not_exist', compact('id'));
 
             // Redirect to the user management page
-            return Redirect::route('accessories')->with('error', $error);
+            return Redirect::route('tools')->with('error', $error);
         }
 
 
     }
 
     /**
-    * Check out the accessory to a person
+    * Check out the tool to a person
     **/
-    public function getCheckout($accessoryId)
+    public function getCheckout($toolId)
     {
-        // Check if the accessory exists
-        if (is_null($accessory = Accessory::find($accessoryId))) {
-            // Redirect to the accessory management page with error
-            return Redirect::to('accessories')->with('error', Lang::get('admin/accessories/message.not_found'));
+        // Check if the tool exists
+        if (is_null($tool = Tool::find($toolId))) {
+            // Redirect to the tool management page with error
+            return Redirect::to('tools')->with('error', Lang::get('admin/tools/message.not_found'));
         }
 
         // Get the dropdown of users and then pass it to the checkout view
         $users_list = array('' => 'Select a User') + DB::table('users')->select(DB::raw('concat(last_name,", ",first_name," (",username,")") as full_name, id'))->whereNull('deleted_at')->orderBy('last_name', 'asc')->orderBy('first_name', 'asc')->lists('full_name', 'id');
 
-        return View::make('backend/accessories/checkout', compact('accessory'))->with('users_list',$users_list);
+        return View::make('backend/tools/checkout', compact('tool'))->with('users_list',$users_list);
 
     }
 
     /**
-    * Check out the accessory to a person
+    * Check out the tool to a person
     **/
-    public function postCheckout($accessoryId)
+    public function postCheckout($toolId)
     {
-        // Check if the accessory exists
-        if (is_null($accessory = Accessory::find($accessoryId))) {
-            // Redirect to the accessory management page with error
-            return Redirect::to('accessories')->with('error', Lang::get('admin/accessories/message.not_found'));
+        // Check if the tool exists
+        if (is_null($tool = Tool::find($toolId))) {
+            // Redirect to the tool management page with error
+            return Redirect::to('tools')->with('error', Lang::get('admin/tools/message.not_found'));
         }
 
 		$admin_user = Sentry::getUser();
@@ -256,21 +256,21 @@ class AccessoriesController extends AdminController
 
         // Check if the user exists
         if (is_null($user = User::find($assigned_to))) {
-            // Redirect to the accessory management page with error
-            return Redirect::to('admin/accessories')->with('error', Lang::get('admin/accessories/message.user_does_not_exist'));
+            // Redirect to the tool management page with error
+            return Redirect::to('admin/tools')->with('error', Lang::get('admin/tools/message.user_does_not_exist'));
         }
 
-        // Update the accessory data
-        $accessory->assigned_to            		= e(Input::get('assigned_to'));
+        // Update the tool data
+        $tool->assigned_to            		= e(Input::get('assigned_to'));
 
-        $accessory->users()->attach($accessory->id, array(
-        'accessory_id' => $accessory->id,
+        $tool->users()->attach($tool->id, array(
+        'tool_id' => $tool->id,
         'assigned_to' => e(Input::get('assigned_to'))));
 
             $logaction = new Actionlog();
-            $logaction->accessory_id = $accessory->id;
-            $logaction->checkedout_to = $accessory->assigned_to;
-            $logaction->asset_type = 'accessory';
+            $logaction->tool_id = $tool->id;
+            $logaction->checkedout_to = $tool->assigned_to;
+            $logaction->asset_type = 'tool';
             $logaction->location_id = $user->location_id;
             $logaction->user_id = Sentry::getUser()->id;
             $logaction->note = e(Input::get('note'));
@@ -294,7 +294,7 @@ class AccessoriesController extends AdminController
 						    'fields' => [
 						        [
 						            'title' => 'Checked Out:',
-						            'value' => strtoupper($logaction->asset_type).' <'.Config::get('app.url').'/admin/accessories/'.$accessory->id.'/view'.'|'.$accessory->name.'> checked out to <'.Config::get('app.url').'/admin/users/'.$user->id.'/view|'.$user->fullName().'> by <'.Config::get('app.url').'/admin/users/'.$admin_user->id.'/view'.'|'.$admin_user->fullName().'>.'
+						            'value' => strtoupper($logaction->asset_type).' <'.Config::get('app.url').'/admin/tools/'.$tool->id.'/view'.'|'.$tool->name.'> checked out to <'.Config::get('app.url').'/admin/users/'.$user->id.'/view|'.$user->fullName().'> by <'.Config::get('app.url').'/admin/users/'.$admin_user->id.'/view'.'|'.$admin_user->fullName().'>.'
 						        ],
 						        [
 						            'title' => 'Note:',
@@ -304,7 +304,7 @@ class AccessoriesController extends AdminController
 
 
 						    ]
-						])->send('Accessory Checked Out');
+						])->send('Tool Checked Out');
 
 					} catch (Exception $e) {
 
@@ -316,29 +316,29 @@ class AccessoriesController extends AdminController
 
             $log = $logaction->logaction('checkout');
 
-            $accessory_user = DB::table('accessories_users')->where('assigned_to','=',$accessory->assigned_to)->where('accessory_id','=',$accessory->id)->first();
+            $tool_user = DB::table('tools_users')->where('assigned_to','=',$tool->assigned_to)->where('tool_id','=',$tool->id)->first();
 
             $data['log_id'] = $logaction->id;
-            $data['eula'] = $accessory->getEula();
+            $data['eula'] = $tool->getEula();
             $data['first_name'] = $user->first_name;
-            $data['item_name'] = $accessory->name;
+            $data['item_name'] = $tool->name;
             $data['checkout_date'] = $logaction->created_at;
             $data['item_tag'] = '';
             $data['expected_checkin'] = '';
             $data['note'] = $logaction->note;
-            $data['require_acceptance'] = $accessory->requireAcceptance();
+            $data['require_acceptance'] = $tool->requireAcceptance();
 
 
-            if (($accessory->requireAcceptance()=='1')  || ($accessory->getEula())) {
+            if (($tool->requireAcceptance()=='1')  || ($tool->getEula())) {
 
 	            Mail::send('emails.accept-asset', $data, function ($m) use ($user) {
 	                $m->to($user->email, $user->first_name . ' ' . $user->last_name);
-	                $m->subject('Confirm accessory delivery');
+	                $m->subject('Confirm tool delivery');
 	            });
             }
 
-            // Redirect to the new accessory page
-            return Redirect::to("admin/accessories")->with('success', Lang::get('admin/accessories/message.checkout.success'));
+            // Redirect to the new tool page
+            return Redirect::to("admin/tools")->with('success', Lang::get('admin/tools/message.checkout.success'));
 
 
 
@@ -346,52 +346,52 @@ class AccessoriesController extends AdminController
 
 
     /**
-    * Check the accessory back into inventory
+    * Check the tool back into inventory
     *
-    * @param  int  $accessoryId
+    * @param  int  $toolId
     * @return View
     **/
-    public function getCheckin($accessoryUserId = null, $backto = null)
+    public function getCheckin($toolUserId = null, $backto = null)
     {
-        // Check if the accessory exists
-        if (is_null($accessory_user = DB::table('accessories_users')->find($accessoryUserId))) {
-            // Redirect to the accessory management page with error
-            return Redirect::to('admin/accessories')->with('error', Lang::get('admin/accessories/message.not_found'));
+        // Check if the tool exists
+        if (is_null($tool_user = DB::table('tools_users')->find($toolUserId))) {
+            // Redirect to the tool management page with error
+            return Redirect::to('admin/tools')->with('error', Lang::get('admin/tools/message.not_found'));
         }
 
-		$accessory = Accessory::find($accessory_user->accessory_id);
-        return View::make('backend/accessories/checkin', compact('accessory'))->with('backto',$backto);
+		$tool = Tool::find($tool_user->tool_id);
+        return View::make('backend/tools/checkin', compact('tool'))->with('backto',$backto);
     }
 
 
     /**
     * Check in the item so that it can be checked out again to someone else
     *
-    * @param  int  $accessoryId
+    * @param  int  $toolId
     * @return View
     **/
-    public function postCheckin($accessoryUserId = null, $backto = null)
+    public function postCheckin($toolUserId = null, $backto = null)
     {
-        // Check if the accessory exists
-        if (is_null($accessory_user = DB::table('accessories_users')->find($accessoryUserId))) {
-            // Redirect to the accessory management page with error
-            return Redirect::to('admin/accessories')->with('error', Lang::get('admin/accessories/message.not_found'));
+        // Check if the tool exists
+        if (is_null($tool_user = DB::table('tools_users')->find($toolUserId))) {
+            // Redirect to the tool management page with error
+            return Redirect::to('admin/tools')->with('error', Lang::get('admin/tools/message.not_found'));
         }
 
 
-		$accessory = Accessory::find($accessory_user->accessory_id);
+		$tool = Tool::find($tool_user->tool_id);
         $logaction = new Actionlog();
-        $logaction->checkedout_to = $accessory_user->assigned_to;
-        $return_to = $accessory_user->assigned_to;
+        $logaction->checkedout_to = $tool_user->assigned_to;
+        $return_to = $tool_user->assigned_to;
         $admin_user = Sentry::getUser();
 
 
-        // Was the accessory updated?
-        if(DB::table('accessories_users')->where('id', '=', $accessory_user->id)->delete()) {
+        // Was the tool updated?
+        if(DB::table('tools_users')->where('id', '=', $tool_user->id)->delete()) {
 
-            $logaction->accessory_id = $accessory->id;
+            $logaction->tool_id = $tool->id;
             $logaction->location_id = NULL;
-            $logaction->asset_type = 'accessory';
+            $logaction->asset_type = 'tool';
             $logaction->user_id = $admin_user->id;
             $logaction->note = e(Input::get('note'));
 
@@ -414,7 +414,7 @@ class AccessoriesController extends AdminController
 						    'fields' => [
 						        [
 						            'title' => 'Checked In:',
-						            'value' => strtoupper($logaction->asset_type).' <'.Config::get('app.url').'/admin/accessories/'.$accessory->id.'/view'.'|'.$accessory->name.'> checked in by <'.Config::get('app.url').'/admin/users/'.$admin_user->id.'/view'.'|'.$admin_user->fullName().'>.'
+						            'value' => strtoupper($logaction->asset_type).' <'.Config::get('app.url').'/admin/tools/'.$tool->id.'/view'.'|'.$tool->name.'> checked in by <'.Config::get('app.url').'/admin/users/'.$admin_user->id.'/view'.'|'.$admin_user->fullName().'>.'
 						        ],
 						        [
 						            'title' => 'Note:',
@@ -422,7 +422,7 @@ class AccessoriesController extends AdminController
 						        ],
 
 						    ]
-						])->send('Accessory Checked In');
+						])->send('Tool Checked In');
 
 					} catch (Exception $e) {
 
@@ -433,61 +433,61 @@ class AccessoriesController extends AdminController
 
             $log = $logaction->logaction('checkin from');
             
-            if(!is_null($accessory_user->assigned_to)) {
-                $user = User::find($accessory_user->assigned_to);
+            if(!is_null($tool_user->assigned_to)) {
+                $user = User::find($tool_user->assigned_to);
             }
 
             $data['log_id'] = $logaction->id;
             $data['first_name'] = $user->first_name;
-            $data['item_name'] = $accessory->name;
+            $data['item_name'] = $tool->name;
             $data['checkin_date'] = $logaction->created_at;
             $data['item_tag'] = '';
             $data['note'] = $logaction->note;
 
-            if (($accessory->checkin_email()=='1')) {
+            if (($tool->checkin_email()=='1')) {
 
                 Mail::send('emails.checkin-asset', $data, function ($m) use ($user) {
                     $m->to($user->email, $user->first_name . ' ' . $user->last_name);
-                    $m->subject('Confirm Accessory Checkin');
+                    $m->subject('Confirm Tool Checkin');
                 });
             }
 
             if ($backto=='user') {
-				return Redirect::to("admin/users/".$return_to.'/view')->with('success', Lang::get('admin/accessories/message.checkin.success'));
+				return Redirect::to("admin/users/".$return_to.'/view')->with('success', Lang::get('admin/tools/message.checkin.success'));
 			} else {
-				return Redirect::to("admin/accessories/".$accessory->id."/view")->with('success', Lang::get('admin/accessories/message.checkin.success'));
+				return Redirect::to("admin/tools/".$tool->id."/view")->with('success', Lang::get('admin/tools/message.checkin.success'));
 			}
         }
 
-        // Redirect to the accessory management page with error
-        return Redirect::to("admin/accessories")->with('error', Lang::get('admin/accessories/message.checkin.error'));
+        // Redirect to the tool management page with error
+        return Redirect::to("admin/tools")->with('error', Lang::get('admin/tools/message.checkin.error'));
     }
 
     public function getDatatable()
     {
-        $accessories = Accessory::select(array('id','name','qty'))
+        $tools = Tool::select(array('id','name','qty'))
         ->whereNull('deleted_at')
         ->orderBy('created_at', 'DESC');
 
-        $accessories = $accessories->get();
+        $tools = $tools->get();
 
-        $actions = new \Chumper\Datatable\Columns\FunctionColumn('actions',function($accessories)
+        $actions = new \Chumper\Datatable\Columns\FunctionColumn('actions',function($tools)
             {
-                return '<a href="'.route('checkout/accessory', $accessories->id).'" style="margin-right:5px;" class="btn btn-info btn-sm" '.(($accessories->numRemaining() > 0 ) ? '' : ' disabled').'>'.Lang::get('general.checkout').'</a><a href="'.route('update/accessory', $accessories->id).'" class="btn btn-warning btn-sm" style="margin-right:5px;"><i class="fa fa-pencil icon-white"></i></a><a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="'.route('delete/accessory', $accessories->id).'" data-content="'.Lang::get('admin/accessories/message.delete.confirm').'" data-title="'.Lang::get('general.delete').' '.htmlspecialchars($accessories->name).'?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a>';
+                return '<a href="'.route('checkout/tool', $tools->id).'" style="margin-right:5px;" class="btn btn-info btn-sm" '.(($tools->numRemaining() > 0 ) ? '' : ' disabled').'>'.Lang::get('general.checkout').'</a><a href="'.route('update/tool', $tools->id).'" class="btn btn-warning btn-sm" style="margin-right:5px;"><i class="fa fa-pencil icon-white"></i></a><a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="'.route('delete/tool', $tools->id).'" data-content="'.Lang::get('admin/tools/message.delete.confirm').'" data-title="'.Lang::get('general.delete').' '.htmlspecialchars($tools->name).'?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a>';
             });
 
-        return Datatable::collection($accessories)
-        ->addColumn('name',function($accessories)
+        return Datatable::collection($tools)
+        ->addColumn('name',function($tools)
             {
-                return link_to('admin/accessories/'.$accessories->id.'/view', $accessories->name);
+                return link_to('admin/tools/'.$tools->id.'/view', $tools->name);
             })
-        ->addColumn('qty',function($accessories)
+        ->addColumn('qty',function($tools)
             {
-                return $accessories->qty;
+                return $tools->qty;
             })
-        ->addColumn('numRemaining',function($accessories)
+        ->addColumn('numRemaining',function($tools)
             {
-                return $accessories->numRemaining();
+                return $tools->numRemaining();
             })
         ->addColumn($actions)
         ->searchColumns('name','qty','numRemaining','actions')
@@ -495,19 +495,19 @@ class AccessoriesController extends AdminController
         ->make();
     }
 
-	public function getDataView($accessoryID)
+	public function getDataView($toolID)
 	{
-		$accessory = Accessory::find($accessoryID);
-        $accessory_users = $accessory->users;
+		$tool = Tool::find($toolID);
+        $tool_users = $tool->users;
 
-		$actions = new \Chumper\Datatable\Columns\FunctionColumn('actions',function($accessory_users){
-			return '<a href="'.route('checkin/accessory', $accessory_users->pivot->id).'" class="btn-flat info">Checkin</a>';
+		$actions = new \Chumper\Datatable\Columns\FunctionColumn('actions',function($tool_users){
+			return '<a href="'.route('checkin/tool', $tool_users->pivot->id).'" class="btn-flat info">Checkin</a>';
 		});
 
-		return Datatable::collection($accessory_users)
-		->addColumn('name',function($accessory_users)
+		return Datatable::collection($tool_users)
+		->addColumn('name',function($tool_users)
 			{
-				return link_to('/admin/users/'.$accessory_users->id.'/view', $accessory_users->fullName());
+				return link_to('/admin/users/'.$tool_users->id.'/view', $tool_users->fullName());
 			})
 		->addColumn($actions)
 		->make();

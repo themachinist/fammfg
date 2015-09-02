@@ -140,10 +140,10 @@
                                 <i class="fa fa-certificate"></i>
                                 @lang('general.license')</a>
                         </li>
-                        <li {{{ (Request::is('admin/accessories/create') ? 'class="active"' : '') }}}>
-                            <a href="{{ route('create/accessory') }}">
+                        <li {{{ (Request::is('admin/tools/create') ? 'class="active"' : '') }}}>
+                            <a href="{{ route('create/tool') }}">
                                 <i class="fa fa-keyboard-o"></i>
-                                @lang('general.accessory')</a>
+                                @lang('general.tool')</a>
                         </li>
                         <li {{{ (Request::is('admin/consumables/create') ? 'class="active"' : '') }}}>
                             <a href="{{ route('create/consumable') }}">
@@ -266,6 +266,7 @@
 			<li{{ (Request::is('*/') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{Config::get('app.url')}}"><i class="fa fa-dashboard"></i><span>Dashboard</span></a>
             </li>
+<!--
             <li{{ (Request::is('hardware*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{ URL::to('hardware') }}" class="dropdown-toggle">
                     <i class="fa fa-barcode"></i>
@@ -290,10 +291,13 @@
                     <li><a href="{{ URL::to('admin/asset_maintenances') }}"  >@lang('general.asset_maintenances') </a></li>
                 </ul>
             </li>
-            <li{{ (Request::is('admin/accessories*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
-                <a href="{{ URL::to('admin/accessories') }}">
+-->
+			
+
+            <li{{ (Request::is('admin/tools*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
+                <a href="{{ URL::to('admin/tools') }}">
                     <i class="fa fa-keyboard-o"></i>
-                    <span>@lang('general.accessories')</span>
+                    <span>@lang('general.tools')</span>
                 </a>
             </li>
             <li{{ (Request::is('admin/consumables*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
@@ -302,8 +306,9 @@
                     <span>@lang('general.consumables')</span>
                 </a>
             </li>
-
-
+<!--
+	# Change to jigs/fixtures
+	#
             <li{{ (Request::is('admin/licenses*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{ URL::to('admin/licenses') }}"  >
                     <i class="fa fa-certificate"></i>
@@ -312,7 +317,7 @@
                 </a>
 
             </li>
-
+-->
             <li{{ (Request::is('admin/users*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{ URL::to('admin/users') }}">
                     <i class="fa fa-users"></i>
@@ -331,13 +336,14 @@
 
                 <ul class="submenu{{ (Request::is('reports*') ? ' active' : '') }}">
 	                 <li><a href="{{ URL::to('reports/activity') }}" {{ (Request::is('reports/activity') ? ' class="active"' : '') }} >@lang('general.activity_report')</a></li>
-
+<!-- # current unused reports
                     <li><a href="{{ URL::to('reports/depreciation') }}" {{{ (Request::is('reports/depreciation') ? ' class="active"' : '') }}} >@lang('general.depreciation_report')</a></li>
-                    <li><a href="{{ URL::to('reports/licenses') }}" {{{ (Request::is('reports/licenses') ? ' class="active"' : '') }}} >@lang('general.license_report')</a></li>
+					<li><a href="{{ URL::to('reports/licenses') }}" {{{ (Request::is('reports/licenses') ? ' class="active"' : '') }}} >@lang('general.license_report')</a></li>
                     <li><a href="{{ URL::to('reports/asset_maintenances') }}" {{{ (Request::is('reports/asset_maintenances') ? ' class="active"' : '') }}} >@lang('general.asset_maintenance_report')</a></li>
                     <li><a href="{{ URL::to('reports/assets') }}" {{{ (Request::is('reports/assets') ? ' class="active"' : '') }}} >@lang('general.asset_report')</a></li>
                     <li><a href="{{ URL::to('reports/unaccepted_assets') }}" {{{ (Request::is('reports/unaccepted_assets') ? ' class="active"' : '') }}} >@lang('general.unaccepted_asset_report')</a></li>
-                    <li><a href="{{ URL::to('reports/accessories') }}" {{{ (Request::is('reports/accessories') ? ' class="active"' : '') }}} >@lang('general.accessory_report')</a></li>
+-->
+                    <li><a href="{{ URL::to('reports/tools') }}" {{{ (Request::is('reports/tools') ? ' class="active"' : '') }}} >@lang('general.tool_report')</a></li>
                     <li><a href="{{ URL::to('reports/custom') }}" {{{ (Request::is('reports/custom') ? ' class="active"' : '') }}} >@lang('general.custom_report')</a></li>
                 </ul>
             </li>

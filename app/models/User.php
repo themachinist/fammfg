@@ -44,9 +44,9 @@ class User extends SentryUserModel
         return $this->hasMany('Asset', 'assigned_to')->withTrashed();
     }
 
-    public function accessories()
+    public function tools()
     {
-        return $this->belongsToMany('Accessory', 'accessories_users', 'assigned_to','accessory_id')->withPivot('id')->withTrashed();
+        return $this->belongsToMany('Tool', 'tools_users', 'assigned_to','tool_id')->withPivot('id')->withTrashed();
     }
 
     public function consumables()

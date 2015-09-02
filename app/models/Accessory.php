@@ -1,10 +1,10 @@
 <?php
 
-class Accessory extends Elegant
+class Tool extends Elegant
 {
     use SoftDeletingTrait;
     protected $dates = ['deleted_at'];
-    protected $table = 'accessories';
+    protected $table = 'tools';
 
     /**
     * Category validation rules
@@ -21,22 +21,22 @@ class Accessory extends Elegant
     }
 
     /**
-    * Get action logs for this accessory
+    * Get action logs for this tool
     */
      public function assetlog()
     {
-        return $this->hasMany('Actionlog','accessory_id')->where('asset_type','=','accessory')->orderBy('created_at', 'desc')->withTrashed();
+        return $this->hasMany('Actionlog','tool_id')->where('asset_type','=','tool')->orderBy('created_at', 'desc')->withTrashed();
     }
 
 
     public function users()
     {
-        return $this->belongsToMany('User', 'accessories_users', 'accessory_id','assigned_to')->withPivot('id')->withTrashed();
+        return $this->belongsToMany('User', 'tools_users', 'tool_id','assigned_to')->withPivot('id')->withTrashed();
     }
 
     public function hasUsers()
     {
-        return $this->belongsToMany('User', 'accessories_users', 'accessory_id','assigned_to')->count();
+        return $this->belongsToMany('User', 'tools_users', 'tool_id','assigned_to')->count();
     }
 
     public function checkin_email() {

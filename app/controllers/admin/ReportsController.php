@@ -1,6 +1,6 @@
 <?php namespace Controllers\Admin;
 
-use Accessory;
+use Tool;
 use Actionlog;
 use AdminController;
 use Asset;
@@ -24,41 +24,41 @@ class ReportsController extends AdminController
 {
 
     /**
-     * Show Report for Accessories
+     * Show Report for Tools
      *
      * @return View
      */
-    public function getAccessoryReport()
+    public function getToolReport()
     {
-        $accessories = Accessory::orderBy('created_at', 'DESC')->get();
-        return View::make('backend/reports/accessories', compact('accessories'));
+        $tools = Tool::orderBy('created_at', 'DESC')->get();
+        return View::make('backend/reports/tools', compact('tools'));
     }
 
     /**
-     * Export Accessories Report as CSV
+     * Export Tools Report as CSV
      *
      * @return file download
      */
-    public function exportAccessoryReport()
+    public function exportToolReport()
     {
-        $accessories = Accessory::orderBy('created_at', 'DESC')->get();
+        $tools = Tool::orderBy('created_at', 'DESC')->get();
         $rows = array();
         $header = array(
-            Lang::get('admin/accessories/table.title'),
-			Lang::get('admin/accessories/general.accessory_category'),
-            Lang::get('admin/accessories/general.total'),
-            Lang::get('admin/accessories/general.remaining')
+            Lang::get('admin/tools/table.title'),
+			Lang::get('admin/tools/general.tool_category'),
+            Lang::get('admin/tools/general.total'),
+            Lang::get('admin/tools/general.remaining')
         );
         $header = array_map('trim', $header);
         $rows[] = implode($header, ', ');
 
-        // Row per accessory
-        foreach ($accessories as $accessory) {
+        // Row per tool
+        foreach ($tools as $tool) {
             $row = array();
-            $row[] = $accessory->accessory_name;
-			$row[] = $accessory->accessory_category;
-            $row[] = $accessory->total;
-            $row[] = $accessory->remaining;
+            $row[] = $tool->tool_name;
+			$row[] = $tool->tool_category;
+            $row[] = $tool->total;
+            $row[] = $tool->remaining;
 
             $rows[] = implode($row, ',');
         }
@@ -302,7 +302,7 @@ class ReportsController extends AdminController
 
         $log_actions = Actionlog::orderBy( 'created_at', 'DESC' )
                                 ->with( 'adminlog' )
-                                ->with( 'accessorylog' )
+                                ->with( 'toollog' )
                                 ->with( 'assetlog' )
                                 ->with( 'licenselog' )
                                 ->with( 'userlog' )

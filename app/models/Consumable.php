@@ -21,7 +21,7 @@ class Consumable extends Elegant
     }
 
     /**
-    * Get action logs for this accessory
+    * Get action logs for this tool
     */
      public function assetlog()
     {

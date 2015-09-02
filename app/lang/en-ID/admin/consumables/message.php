@@ -15,9 +15,9 @@ return array(
     ),
 
     'delete' => array(
-        'confirm'   => 'Are you sure you wish to delete this accessory?',
+        'confirm'   => 'Are you sure you wish to delete this tool?',
         'error'   => 'There was an issue deleting the consumable. Please try again.',
-        'success' => 'The accessory was deleted successfully.'
+        'success' => 'The tool was deleted successfully.'
     ),
 
      'checkout' => array(

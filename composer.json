@@ -1,12 +1,12 @@
 {
-	"name": "snipe/snipe-it",
-	"description": "A free open source IT asset/license management system built in PHP on Laravel 4.1 and Bootstrap 3.",
-	"keywords": ["framework", "laravel", "assets", "IT", "management"],
-	"homepage": "http://snipeitapp.com/",
+	"name": "themachinist/fam_mfg",
+	"description": "A free open source MFG asset management system built in PHP on Laravel 4.1 and Bootstrap 3.",
+	"keywords": ["framework", "laravel", "assets", "MFG", "management"],
+	"homepage": "http://github.com/themachinist/fam_mfg",
 	"license": "AGPL-3.0",
 	"support": {
-		"issues": "https://github.com/snipe/snipe-it/issues",
-		"source": "https://github.com/snipe/snipe-it"
+		"issues": "http://github.com/themachinist/fam_mfg",
+		"source": "http://github.com/themachinist/fam_mfg"
 	},
 	"replace": {
     	"mtdowling/classpreloader":"1.0.*"
@@ -32,7 +32,6 @@
 		"aws/aws-sdk-php-laravel": "1.0.x-dev",
 		"schickling/backup": "0.6.0",
 		"chumper/zipper": "0.5.x"
-
 	},
 	"require-dev": {
 		"phpunit/phpunit": "*",

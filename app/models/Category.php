@@ -25,12 +25,12 @@ class Category extends Elegant
         return $this->hasManyThrough('Asset', 'Model')->count();
     }
 
-    public function accessoriescount()
+    public function toolscount()
     {
-        return $this->hasMany('Accessory')->count();
+        return $this->hasMany('Tool')->count();
     }
 
-    public function accessories()
+    public function tools()
     {
         return $this->hasMany('Asset');
     }

@@ -13,15 +13,15 @@ class AddAccessoriesUserTable extends Migration {
 	public function up()
 	{
 		//
-		Schema::create('accessories_users', function ($table) {
+		Schema::create('tools_users', function ($table) {
             $table->increments('id');
             $table->integer('user_id')->nullable()->default(NULL); 
-            $table->integer('accessory_id')->nullable()->default(NULL);    
+            $table->integer('tool_id')->nullable()->default(NULL);    
             $table->integer('assigned_to')->nullable()->default(NULL);       
             $table->timestamps();
         });
         
-        Schema::table('accessories', function ($table) {
+        Schema::table('tools', function ($table) {
 			$table->integer('location_id')->nullable()->default(NULL);
 		});
 
@@ -35,9 +35,9 @@ class AddAccessoriesUserTable extends Migration {
 	public function down()
 	{
 		//
-		Schema::drop('accessories_users');
+		Schema::drop('tools_users');
 		
-		Schema::table('accessories', function ($table) {
+		Schema::table('tools', function ($table) {
 			$table->dropColumn('location_id');
 		});
 

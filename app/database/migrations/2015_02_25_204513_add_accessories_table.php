@@ -13,7 +13,7 @@ class AddAccessoriesTable extends Migration {
 	public function up()
 	{
 		//
-		 Schema::create('accessories', function ($table) {
+		 Schema::create('tools', function ($table) {
             $table->increments('id');
             $table->string('name')->nullable()->default(NULL);
             $table->integer('category_id')->nullable()->default(NULL);
@@ -25,7 +25,7 @@ class AddAccessoriesTable extends Migration {
         });
 
         Schema::table('asset_logs', function ($table) {
-			$table->integer('accessory_id')->nullable()->default(NULL);
+			$table->integer('tool_id')->nullable()->default(NULL);
 		});
 
 	}
@@ -38,10 +38,10 @@ class AddAccessoriesTable extends Migration {
 	public function down()
 	{
 		//
-		Schema::drop('accessories');
+		Schema::drop('tools');
 
 		Schema::table('asset_logs', function ($table) {
-			$table->dropColumn('accessory_id');
+			$table->dropColumn('tool_id');
 		});
 	}
 
