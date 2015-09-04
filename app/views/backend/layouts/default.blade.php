@@ -135,19 +135,21 @@
                                    <i class="fa fa-barcode"></i>
                                    @lang('general.asset')</a>
                            </li>
+<!--
                         <li {{{ (Request::is('admin/licenses/create') ? 'class="active"' : '') }}}>
                             <a href="{{ route('create/licenses') }}">
                                 <i class="fa fa-certificate"></i>
                                 @lang('general.license')</a>
                         </li>
+-->
                         <li {{{ (Request::is('admin/tools/create') ? 'class="active"' : '') }}}>
                             <a href="{{ route('create/tool') }}">
-                                <i class="fa fa-keyboard-o"></i>
+                                <i class="fa fa-wrench"></i>
                                 @lang('general.tool')</a>
                         </li>
                         <li {{{ (Request::is('admin/consumables/create') ? 'class="active"' : '') }}}>
                             <a href="{{ route('create/consumable') }}">
-                                <i class="fa fa-tint"></i>
+                                <i class="fa fa-recycle"></i>
                                 @lang('general.consumable')</a>
                         </li>
                         <li {{{ (Request::is('admin/users/create') ? 'class="active"' : '') }}}>
@@ -295,13 +297,13 @@
 
             <li{{ (Request::is('admin/tools*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{ URL::to('admin/tools') }}">
-                    <i class="fa fa-keyboard-o"></i>
+                    <i class="fa fa-wrench"></e>
                     <span>@lang('general.tools')</span>
                 </a>
             </li>
             <li{{ (Request::is('admin/consumables*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{ URL::to('admin/consumables') }}">
-                    <i class="fa fa-tint"></i>
+                    <i class="fa fa-recycle"></i>
                     <span>@lang('general.consumables')</span>
                 </a>
             </li>
@@ -429,13 +431,14 @@
 
         <div id="footer" class="col-md-offset-2 col-md-9 col-sm-12 col-xs-12 text-center">
 		                <div class="muted credit hidden-xs">
-	                  			<a target="_blank" href="http://snipeitapp.com">Snipe IT</a> is a free open source
+	                  			<a target="_blank" href="http://github.com/themachinist/snipe-mfg">Snipe MFG</a> is a free open source
 					  		project by
-					  			<a target="_blank" href="http://twitter.com/snipeyhead">@snipeyhead</a>.
-						  		<a target="_blank" href="https://github.com/snipe/snipe-it">Fork it</a> |
-						  		<a target="_blank" href="http://docs.snipeitapp.com/">Documentation</a> |
-						  		<a target="_blank" href="http://docs.snipeitapp.com/translations.html">Translate It! </a> |
-						  		<a target="_blank" href="https://github.com/snipe/snipe-it/issues?state=open">Report a Bug</a>
+								<a target="_blank" href="http://twitter.com/the_machinist_">@the_machinist_</a>, based on 
+					  			<a target="_blank" href="http://twitter.com/snipeyhead">@snipeyhead</a>'s Snipe IT project.
+						  		<a target="_blank" href="https://github.com/themachinist/snipe-mfg">Fork it</a> |
+<!--						  		<a target="_blank" href="http://docs.snipeitapp.com/">Documentation</a> |
+						  		<a target="_blank" href="http://docs.snipeitapp.com/translations.html">Translate It! </a> | -->
+						  		<a target="_blank" href="https://github.com/themachinist/snipe-mfg/issues?state=open">Report a Bug</a>
 						  		 &nbsp; &nbsp; ({{{  Config::get('version.app_version') }}})
                   		</div>
         </div>

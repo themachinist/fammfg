@@ -59,6 +59,7 @@
 			                </div>
 			            </div>
                         						
+<!--
 						 <!-- EULA text -->
 						<div class="form-group {{ $errors->has('eula_text') ? 'error' : '' }}">
 	                        <div class="col-md-3">
@@ -87,6 +88,7 @@
 								 	
 							</label>
 						</div>
+-->
 						
 						 <!-- Require Acceptance -->
                         <div class="checkbox col-md-offset-3">
