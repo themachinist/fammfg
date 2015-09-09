@@ -1,10 +1,10 @@
 <?php
 
 return array(
-    'about_tools_title' 			=> 'About Tools',
-    'about_tools_text'  			=> 'Tools are anything you issue to users but that do not have a serial number (or you do not care about tracking them uniquely). For example, computer mice or keyboards.',
-    'tool_category' 				=> 'Tool Category',
-    'tool_name'  					=> 'Tool Name',
+    'about_tools_title'					=> 'About Tools',
+    'about_tools_text'					=> 'Tools are non-consumable items you issue to users that do not have a serial number (or you do not care about tracking them uniquely). For example, pin gauges or power drills.',
+    'tool_category'						=> 'Tool Category',
+    'tool_name'							=> 'Tool Name',
     'create'  							=> 'Create Tool',
     'eula_text'							=> 'Category EULA',
     'eula_text_help'					=> 'This field allows you to customize your EULAs for specific types of assets. If you only have one EULA for all of your assets, you can check the box below to use the primary default.',
