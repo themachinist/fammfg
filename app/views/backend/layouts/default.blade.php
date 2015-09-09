@@ -372,7 +372,7 @@
         @if (Request::is('/'))
 
         <!-- upper main stats -->
-        <div id="main-stats">
+<!--        <div id="main-stats">
             <div class="row stats-row">
                 <div class="col-md-3 col-sm-3 stat">
                     <div class="data">
@@ -407,7 +407,7 @@
                         </div>
                     </div>
                 </div>
-
+-->
 
         <!-- end upper main stats -->
         @endif
