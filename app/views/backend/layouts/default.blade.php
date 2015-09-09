@@ -368,6 +368,9 @@
 <!-- main container -->
     <div class="content">
 
+
+<!-- should this be moved to the dashboard template? -->
+<!-- turning this off until i counts are added to tool and consumable models
         @if ((Sentry::check()) && (Sentry::getUser()->hasAccess('admin')))
         @if (Request::is('/'))
 
@@ -407,7 +410,7 @@
                         </div>
                     </div>
                 </div>
-
+-->
 
         <!-- end upper main stats -->
         @endif
