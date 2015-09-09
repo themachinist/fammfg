@@ -1,8 +1,8 @@
 <?php
 
     return [
-    'tools'			=> 'Tools',
-    'tool'				=> 'Tool',
+    'tools'					=> 'Tools',
+    'tool'					=> 'Tool',
     'tool_report'			=> 'Tool Report',
     'action'                => 'Action',
     'activity_report'		=> 'Activity Report',

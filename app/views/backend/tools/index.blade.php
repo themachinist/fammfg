@@ -97,8 +97,8 @@
         <!-- side address column -->
         <div class="col-md-3 col-xs-12 address pull-right">
             <br /><br />
-            <h6>@lang('admin/tools/general.about_accessories_title')</h6>
-            <p>@lang('admin/tools/general.about_accessories_text') </p>
+            <h6>@lang('admin/tools/general.about_tools_title')</h6>
+            <p>@lang('admin/tools/general.about_tools_text') </p>
 
         </div>
     </div>
