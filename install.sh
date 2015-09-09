@@ -21,7 +21,7 @@ hostname="$(hostname)"
 hosts=/etc/hosts
 distro="$(cat /proc/version)"
 file=develop.zip
-dir=/var/www/snipe-it-develop
+dir=/var/www/snipe-mfg-develop
 
 ans=default
 case $distro in
@@ -62,7 +62,7 @@ case $setpw in
         [nN] | [n|N][O|o] )
 		                echo "Q. What do you want your root PW to be?"
                         read mysqlrootpw
-                        echo "Q. What do you want your snipeit user PW to be?"
+                        echo "Q. What do you want your snipe-mfg user PW to be?"
                         read mysqluserpw
 						ans="no"
                 ;;
@@ -74,19 +74,19 @@ done
 #Snipe says we need a new 32bit key, so let's create one randomly and inject it into the file
 random32="$(echo `< /dev/urandom tr -dc _A-Za-z-0-9 | head -c32`)"
 
-#createstuff.sql will be injected to the database during install. mysqlpasswords.txt is a file that will contain the root and snipeit user passwords.
+#createstuff.sql will be injected to the database during install. mysqlpasswords.txt is a file that will contain the root and snipe-mfg user passwords.
 #Again, this file should be removed, which will be a prompt at the end of the script.
 createstufffile=/root/createstuff.sql
 passwordfile=/root/mysqlpasswords.txt
 
-echo >> $createstufffile "CREATE DATABASE snipeit;"
-echo >> $createstufffile "GRANT ALL PRIVILEGES ON snipeit.* TO snipeit@localhost IDENTIFIED BY '$mysqluserpw';"
+echo >> $createstufffile "CREATE DATABASE snipe-mfg;"
+echo >> $createstufffile "GRANT ALL PRIVILEGES ON snipe-mfg.* TO snipemfg@localhost IDENTIFIED BY '$mysqluserpw';"
 echo >> $passwordfile "MySQL Passwords..."
 echo >> $passwordfile "Root: $mysqlrootpw"
-echo >> $passwordfile "User (snipeit): $mysqluserpw"
+echo >> $passwordfile "User (snipemfg): $mysqluserpw"
 echo >> $passwordfile "32 bit random string: $random32"
 echo "MySQL ROOT password: $mysqlrootpw"
-echo "MySQL USER (snipeit) password: $mysqluserpw"
+echo "MySQL USER (snipemfg) password: $mysqluserpw"
 echo "32 bit random string: $random32"
 echo "These passwords have been exported to /root/mysqlpasswords.txt...I recommend You delete this file for security purposes"
 
@@ -99,7 +99,7 @@ if [[ $distro == "u" ]]; then
 	apachefile=/etc/apache2/sites-available/$fqdn.conf
 	sudo apt-get update ; sudo apt-get -y upgrade ;	sudo apt-get install -y git unzip
 
-	wget https://github.com/snipe/snipe-it/archive/$file
+	wget https://github.com/snipe/snipe-mfg/archive/$file
 	sudo unzip $file -d /var/www/
 
 	#We already established MySQL root & user PWs, so we dont need to be prompted. Let's go ahead and install Apache, PHP and MySQL.
@@ -143,8 +143,8 @@ if [[ $distro == "u" ]]; then
 	#Modify the Snipe-It files necessary for a production environment.
 	replace "'www.yourserver.com'" "'$hostname'" -- $dir/bootstrap/start.php
 	cp $dir/app/config/production/database.example.php $dir/app/config/production/database.php
-	replace "'snipeit_laravel'," "'snipeit'," -- $dir/app/config/production/database.php
-	replace "'travis'," "'snipeit'," -- $dir/app/config/production/database.php
+	replace "'snipemfg_laravel'," "'snipemfg'," -- $dir/app/config/production/database.php
+	replace "'travis'," "'snipemfg'," -- $dir/app/config/production/database.php
 	replace "            'password'  => ''," "            'password'  => '$mysqluserpw'," -- $dir/app/config/production/database.php
 	replace "'http://production.yourserver.com'," "'http://$fqdn'," -- $dir/app/config/production/database.php
 	cp $dir/app/config/production/app.example.php $dir/app/config/production/app.php
@@ -174,7 +174,7 @@ else
 	sudo rpm -Uvh http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
 	sudo yum -y install httpd mysql-server wget git unzip
 
-	wget https://github.com/snipe/snipe-it/archive/$file
+	wget https://github.com/themachinist/snipe-mfg/archive/$file
 	sudo unzip $file -d /var/www/
 
 	sudo /sbin/service mysqld start
