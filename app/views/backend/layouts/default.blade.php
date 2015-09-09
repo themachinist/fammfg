@@ -130,17 +130,17 @@
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
+<!--
                        <li {{{ (Request::is('hardware/create') ? 'class="active"' : '') }}}>
                                <a href="{{ route('create/hardware') }}">
                                    <i class="fa fa-barcode"></i>
                                    @lang('general.asset')</a>
-                           </li>
-<!--
-                        <li {{{ (Request::is('admin/licenses/create') ? 'class="active"' : '') }}}>
+                       </li>
+                       <li {{{ (Request::is('admin/licenses/create') ? 'class="active"' : '') }}}>
                             <a href="{{ route('create/licenses') }}">
                                 <i class="fa fa-certificate"></i>
                                 @lang('general.license')</a>
-                        </li>
+                       </li>
 -->
                         <li {{{ (Request::is('admin/tools/create') ? 'class="active"' : '') }}}>
                             <a href="{{ route('create/tool') }}">
@@ -297,7 +297,7 @@
 
             <li{{ (Request::is('admin/tools*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{ URL::to('admin/tools') }}">
-                    <i class="fa fa-wrench"></e>
+                    <i class="fa fa-wrench"></i>
                     <span>@lang('general.tools')</span>
                 </a>
             </li>

@@ -1,12 +1,12 @@
 {
-	"name": "themachinist/fam_mfg",
+	"name": "themachinist/snipe-mfg",
 	"description": "A free open source MFG asset management system built in PHP on Laravel 4.1 and Bootstrap 3.",
 	"keywords": ["framework", "laravel", "assets", "MFG", "management"],
-	"homepage": "http://github.com/themachinist/fam_mfg",
+	"homepage": "http://github.com/themachinist/snipe-mfg",
 	"license": "AGPL-3.0",
 	"support": {
-		"issues": "http://github.com/themachinist/fam_mfg",
-		"source": "http://github.com/themachinist/fam_mfg"
+		"issues": "http://github.com/themachinist/snipe-mfg",
+		"source": "http://github.com/themachinist/snipe-mfg"
 	},
 	"replace": {
     	"mtdowling/classpreloader":"1.0.*"
