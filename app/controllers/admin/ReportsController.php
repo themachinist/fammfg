@@ -770,4 +770,18 @@ class ReportsController extends AdminController
 
         return Asset::unaccepted();
     }
+
+	/**
+	 * getCheckedOutReport
+	 *
+	 * @todo this function uses a static method in Actionlog, i can tell that
+	 * is incorrect somehow but havent decided the "eloquent" way to fix it
+	 */
+    public function getCheckedOutReport()
+    {
+
+		$log_checkedout = Actionlog::getListingOfCheckedOutItems();
+
+		return View::make( 'backend/reports/checkedout', compact( 'log_checkedout' ) );
+    }
 }
