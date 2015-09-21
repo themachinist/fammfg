@@ -342,6 +342,8 @@
                     <li><a href="{{ URL::to('reports/assets') }}" {{{ (Request::is('reports/assets') ? ' class="active"' : '') }}} >@lang('general.asset_report')</a></li>
                     <li><a href="{{ URL::to('reports/unaccepted_assets') }}" {{{ (Request::is('reports/unaccepted_assets') ? ' class="active"' : '') }}} >@lang('general.unaccepted_asset_report')</a></li>
 -->
+
+                    <li><a href="{{ URL::to('reports/checkedout') }}" {{{ (Request::is('reports/checkedout') ? ' class="active"' : '') }}} >@lang('general.checkedout_report')</a></li>
                     <li><a href="{{ URL::to('reports/tools') }}" {{{ (Request::is('reports/tools') ? ' class="active"' : '') }}} >@lang('general.tool_report')</a></li>
                     <li><a href="{{ URL::to('reports/custom') }}" {{{ (Request::is('reports/custom') ? ' class="active"' : '') }}} >@lang('general.custom_report')</a></li>
                 </ul>

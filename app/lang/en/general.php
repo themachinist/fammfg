@@ -1,9 +1,6 @@
 <?php
 
     return [
-    'tools'					=> 'Tools',
-    'tool'					=> 'Tool',
-    'tool_report'			=> 'Tool Report',
     'action'                => 'Action',
     'activity_report'		=> 'Activity Report',
     'address'				=> 'Address',
@@ -29,6 +26,7 @@
     'checkin'  				=> 'Checkin',
     'checkin_from'  		=> 'Checkin from',
     'checkout'  			=> 'Checkout',
+	'checkedout_report'		=> 'Checked Out Report',
     'city'  				=> 'City',
     'consumable'			=> 'Consumable',
     'consumables'			=> 'Consumables',
@@ -101,6 +99,7 @@
     'quanitity'		        => 'Quanitity',
     'ready_to_deploy'		=> 'Ready to Deploy',
     'recent_activity'		=> 'Recent Activity',
+	'recent_checkedout_items' => 'Recent Checkouts',
     'reports'				=> 'Reports',
     'requested'				=> 'Requested',
     'save'  				=> 'Save',
@@ -121,6 +120,9 @@
     'status_labels'			=> 'Status Labels',
     'status'    			=> 'Status',
     'suppliers'  			=> 'Suppliers',
+    'tool'					=> 'Tool',
+    'tool_report'			=> 'Tool Report',
+    'tools'					=> 'Tools',
     'total_assets'			=> 'total assets',
     'total_licenses'		=> 'total licenses',
     'type'  				=> 'Type',

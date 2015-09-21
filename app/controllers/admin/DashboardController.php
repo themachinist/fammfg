@@ -16,8 +16,10 @@ class DashboardController extends AdminController
     {
         // Show the page
 
+		// need to add a limit clause to the query
+		$checkedout_tools = Actionlog::getListingOfCheckedOutItems();
+		
         $recent_activity = Actionlog::orderBy('created_at','DESC')->with('toollog','consumablelog','licenselog','assetlog','adminlog','userlog')->take(7)->get();
-
 
         $asset_stats['total'] = Asset::Hardware()->count();
 
@@ -65,7 +67,7 @@ class DashboardController extends AdminController
         }
 
 
-        return View::make('backend/dashboard')->with('asset_stats',$asset_stats)->with('recent_activity',$recent_activity);
+        return View::make('backend/dashboard')->with('asset_stats',$asset_stats)->with('recent_activity',$recent_activity)->with('checkedout_tools', $checkedout_tools);
     }
 
 }
