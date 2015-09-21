@@ -58,7 +58,7 @@
 					</td>
 					<td>
 						{{ $tool->note }}
-
+					</td>
 			    </tr>
 			   @endforeach
 			@endif
