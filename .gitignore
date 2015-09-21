@@ -32,3 +32,5 @@ app/config/local/ldap.php
 app/storage/dumps/*
 app/config/packages/schickling/backup/config.php
 specification.md
+app/views/backend/reports/.fuse_hidden*
+install
