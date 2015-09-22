@@ -34,9 +34,9 @@
 			<thead>
 			    <tr>
 			        <th class="col-md-1"><span class="line"></span>@lang('general.date')</th>
-			        <th class="col-md-2"><span class="line"></span>@lang('general.item')</th>
-			        <th class="col-md-3"><span class="line"></span>@lang('general.type')</th>
 			        <th class="col-md-2"><span class="line"></span>@lang('general.user')</th>
+			        <th class="col-md-3"><span class="line"></span>@lang('general.item')</th>
+			        <th class="col-md-2"><span class="line"></span>@lang('general.type')</th>
 			        <th class="col-md-3"><span class="line"></span>@lang('general.notes')</th>
 			    </tr>
 			</thead>
@@ -48,13 +48,17 @@
 						{{{ date("M d", strtotime($tool->created_at)) }}}
 					</td>
 					<td>
-						{{ $tool->name }}
+						<a href="{{ route('view/user', $tool->assigned_to) }}">{{ $tool->first_name }} {{ $tool->last_name }}</a>
+					</td>
+					<td>
+						@if		($tool->asset_type == "tool")
+						<a href="{{ route('view/tool', $tool->tool_id) }}">{{ $tool->name }}</a>
+						@elseif ($tool->asset_type == "consumable")
+						<a href="{{ route('view/consumable', $tool->tool_id) }}">{{ $tool->name }}</a>
+						@endif
 					</td>
 					<td>
 						{{ $tool->asset_type }}
-					</td>
-					<td>
-						{{ $tool->first_name }} {{ $tool->last_name }}
 					</td>
 					<td>
 						{{ $tool->note }}
