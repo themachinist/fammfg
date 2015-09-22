@@ -120,12 +120,13 @@
 								'tools.name', 
 								'users.first_name', 
 								'users.last_name',
-								DB::raw('coalesce(max(`asset_logs`.`created_at`)) as `created_at`'),
+								DB::raw('max(`asset_logs`.`created_at`) as `created_at`'),
 								'asset_logs.asset_type',
 								'asset_logs.note')
 					->join( 'tools', 'tools.id', '=', 'tools_users.tool_id' )
 					->leftJoin( 'users', 'users.id', '=', 'tools_users.assigned_to' )
 					->leftJoin( 'asset_logs', 'asset_logs.tool_id', '=', 'tools_users.tool_id' )
+					->groupBy( 'asset_logs.tool_id' )
 					->havingRaw( 'tools_users.assigned_to is not null' );
 			$checkedout_consumables =
 				DB::table( 'consumables_users' )
@@ -135,12 +136,13 @@
 								'consumables.name', 
 								'users.first_name', 
 								'users.last_name',
-								DB::raw('coalesce(max(`asset_logs`.`created_at`)) as `created_at`'),
+								DB::raw('max(`asset_logs`.`created_at`) as `created_at`'),
 								'asset_logs.asset_type',
 								'asset_logs.note')
 					->join(	'consumables', 'consumables.id', '=', 'consumables_users.consumable_id' )
 					->leftJoin( 'users', 'users.id', '=', 'consumables_users.assigned_to' )
 					->leftJoin( 'asset_logs', 'asset_logs.consumable_id', '=', 'consumables_users.consumable_id' )
+					->groupBy( 'asset_logs.consumable_id' )
 					->havingRaw( 'consumables_users.assigned_to is not null' );
 			$checkedout_agg = 
 				$checkedout_tools
