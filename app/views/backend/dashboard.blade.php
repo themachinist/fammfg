@@ -51,7 +51,7 @@
 						{{ $tool->name }}
 					</td>
 					<td>
-						{{ $tool->tool_type }}
+						{{ $tool->asset_type }}
 					</td>
 					<td>
 						{{ $tool->first_name }} {{ $tool->last_name }}
