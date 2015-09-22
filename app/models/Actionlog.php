@@ -125,7 +125,8 @@
 								'asset_logs.note')
 					->join( 'tools', 'tools.id', '=', 'tools_users.tool_id' )
 					->leftJoin( 'users', 'users.id', '=', 'tools_users.assigned_to' )
-					->leftJoin( 'asset_logs', 'asset_logs.tool_id', '=', 'tools_users.tool_id' );
+					->leftJoin( 'asset_logs', 'asset_logs.tool_id', '=', 'tools_users.tool_id' )
+					->havingRaw( 'tools_users.assigned_to is not null' );
 			$checkedout_consumables =
 				DB::table( 'consumables_users' )
 					->select(	'consumables_users.user_id', 
@@ -139,10 +140,11 @@
 								'asset_logs.note')
 					->join(	'consumables', 'consumables.id', '=', 'consumables_users.consumable_id' )
 					->leftJoin( 'users', 'users.id', '=', 'consumables_users.assigned_to' )
-					->leftJoin( 'asset_logs', 'asset_logs.consumable_id', '=', 'consumables_users.consumable_id' );
+					->leftJoin( 'asset_logs', 'asset_logs.consumable_id', '=', 'consumables_users.consumable_id' )
+					->havingRaw( 'consumables_users.assigned_to is not null' );
 			$checkedout_agg = 
 				$checkedout_tools
-//					->union($checkedout_consumables)
+					->union($checkedout_consumables)
 					->get();
 			return $checkedout_agg;
 		}
