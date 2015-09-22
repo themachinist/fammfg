@@ -115,13 +115,13 @@
 			$checkedout_tools = 
 				DB::table( 'tools_users' )
 					->select(	'tools_users.user_id',
-								DB::raw('"Tool" as `tool_type`'), 
 								'tools_users.tool_id',
 								'tools_users.assigned_to', 
 								'tools.name', 
 								'users.first_name', 
 								'users.last_name',
-								DB::raw('max(`asset_logs`.`created_at`) as `created_at`'),
+								DB::raw('coalesce(max(`asset_logs`.`created_at`)) as `created_at`'),
+								'asset_logs.asset_type',
 								'asset_logs.note')
 					->join( 'tools', 'tools.id', '=', 'tools_users.tool_id' )
 					->leftJoin( 'users', 'users.id', '=', 'tools_users.assigned_to' )
@@ -129,20 +129,20 @@
 			$checkedout_consumables =
 				DB::table( 'consumables_users' )
 					->select(	'consumables_users.user_id', 
-								DB::raw('"Consumable" as `tool_type`'), 
 								'consumables_users.consumable_id',
 								'consumables_users.assigned_to',
 								'consumables.name', 
 								'users.first_name', 
 								'users.last_name',
-								DB::raw('max(`asset_logs`.`created_at`) as `created_at`'),
+								DB::raw('coalesce(max(`asset_logs`.`created_at`)) as `created_at`'),
+								'asset_logs.asset_type',
 								'asset_logs.note')
 					->join(	'consumables', 'consumables.id', '=', 'consumables_users.consumable_id' )
 					->leftJoin( 'users', 'users.id', '=', 'consumables_users.assigned_to' )
 					->leftJoin( 'asset_logs', 'asset_logs.consumable_id', '=', 'consumables_users.consumable_id' );
 			$checkedout_agg = 
 				$checkedout_tools
-					->union($checkedout_consumables)
+//					->union($checkedout_consumables)
 					->get();
 			return $checkedout_agg;
 		}
