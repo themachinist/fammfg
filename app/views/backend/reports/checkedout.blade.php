@@ -40,7 +40,7 @@
 				{{ $log_action->name }}
 			</td>
             <td>
-				{{ $log_action->tool_type }}
+				{{ $log_action->asset_type }}
 			</td>
             <td>
 				{{ $log_action->first_name }} {{ $log_action->last_name }}
