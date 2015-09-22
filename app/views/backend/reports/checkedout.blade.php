@@ -37,13 +37,17 @@
 				{{ date("M d G:i", strtotime($log_action->created_at)) }}
 			</td>
 			<td>
-				{{ $log_action->name }}
+				@if		($log_action->asset_type == "tool")
+				<a href="{{ route('view/tool', $log_action->tool_id) }}">{{ $log_action->name }}</a>
+				@elseif ($log_action->asset_type == "consumable")
+				<a href="{{ route('view/consumable', $log_action->tool_id) }}">{{ $log_action->name }}</a>
+				@endif
 			</td>
             <td>
 				{{ $log_action->asset_type }}
 			</td>
             <td>
-				{{ $log_action->first_name }} {{ $log_action->last_name }}
+				<a href="{{ route('view/user', $log_action->assigned_to) }}">{{ $log_action->first_name }} {{ $log_action->last_name }}</a>
 			</td>
             <td>
 				{{ $log_action->note }}
