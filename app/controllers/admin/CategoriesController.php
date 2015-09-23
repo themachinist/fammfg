@@ -225,7 +225,10 @@ class CategoriesController extends AdminController
         });
 
         return Datatable::collection($categories)
-        ->showColumns('name')
+        ->addColumn('name',function($categories)
+            {
+                return link_to('admin/settings/categories/'.$categories->id.'/view', $categories->name);
+			})
         ->addColumn('category_type', function($categories) {
             return ucwords($categories->category_type);
         })
