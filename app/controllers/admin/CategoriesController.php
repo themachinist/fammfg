@@ -65,8 +65,6 @@ class CategoriesController extends AdminController
             // Update the category data
             $category->name            		= e(Input::get('name'));
             $category->category_type        = e(Input::get('category_type'));
-            $category->eula_text            = e(Input::get('eula_text'));
-            $category->use_default_eula     = e(Input::get('use_default_eula', '0'));
             $category->require_acceptance   = e(Input::get('require_acceptance', '0'));
             $category->checkin_email        = e(Input::get('checkin_email', '0'));
             $category->user_id          	= Sentry::getId();
@@ -143,8 +141,6 @@ class CategoriesController extends AdminController
             // Update the category data
             $category->name            = e(Input::get('name'));
             $category->category_type        = e(Input::get('category_type'));
-            $category->eula_text            = e(Input::get('eula_text'));
-            $category->use_default_eula     = e(Input::get('use_default_eula', '0'));
             $category->require_acceptance   = e(Input::get('require_acceptance', '0'));
             $category->checkin_email        = e(Input::get('checkin_email', '0'));
 
@@ -238,12 +234,9 @@ class CategoriesController extends AdminController
         ->addColumn('acceptance', function($categories) {
             return ($categories->require_acceptance=='1') ? '<i class="fa fa-check" style="margin-right:50%;margin-left:50%;"></i>' : '';
         })
-        ->addColumn('eula', function($categories) {
-            return ($categories->getEula()) ? '<i class="fa fa-check" style="margin-right:50%;margin-left:50%;"></i></a>' : '';
-        })
         ->addColumn($actions)
-        ->searchColumns('name','category_type','count','acceptance','eula','actions')
-        ->orderColumns('name','category_type','count','acceptance','eula','actions')
+        ->searchColumns('name','category_type','count','acceptance','actions')
+        ->orderColumns('name','category_type','count','acceptance','actions')
         ->make();
     }
 
