@@ -20,9 +20,19 @@ class Category extends Elegant
         return $this->hasMany('Model', 'category_id')->count();
     }
 
+    public function models()
+    {
+        return $this->hasMany('Model', 'category_id');
+    }
+
     public function assetscount()
     {
         return $this->hasManyThrough('Asset', 'Model')->count();
+    }
+
+    public function assets()
+    {
+        return $this->hasManyThrough('Asset', 'Model');
     }
 
     public function toolscount()
@@ -32,19 +42,18 @@ class Category extends Elegant
 
     public function tools()
     {
-        return $this->hasMany('Asset');
+        return $this->hasMany('Tool');
     }
 
-
-    public function assets()
+    public function consumablescount()
     {
-        return $this->hasManyThrough('Asset', 'Model');
+        return $this->hasMany('Consumable')->count();
     }
 
-    public function models()
-    {
-        return $this->hasMany('Model', 'category_id');
-    }
+	public function consumables()
+	{
+		return $this->hasMany('Consumable');
+	}
 
     public function getEula() {
 
