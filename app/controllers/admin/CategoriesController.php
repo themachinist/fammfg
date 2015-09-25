@@ -268,15 +268,15 @@ class CategoriesController extends AdminController
     public function getDataView($categoryID) {
         $category = Category::find($categoryID);
 
-		switch ($category->category_type){
+		switch ($category->category_type) {
 			case 'asset':
-		        $this->getDataView( $category->assets );
+		        $this->getDataViewAssets( $category->assets );
 			break;
 			case 'tool':
-		        $this->getDataView( $category->tools );
+		        $this->getDataViewTools( $category->tools );
 			break;
 			case 'consumable':
-		        $this->getDataView( $category->consumables );
+		        $this->getDataViewConsumables( $category->consumables );
 			break;
 		}
 
