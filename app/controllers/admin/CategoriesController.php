@@ -12,6 +12,7 @@ use Str;
 use Validator;
 use View;
 use Datatable;
+use Log;
 
 class CategoriesController extends AdminController
 {
@@ -266,7 +267,22 @@ class CategoriesController extends AdminController
 
     public function getDataView($categoryID) {
         $category = Category::find($categoryID);
-        $categoryassets = $category->assets;
+
+		switch ($category->category_type){
+			case 'asset':
+		        $this->getDataView( $category->assets );
+			break;
+			case 'tool':
+		        $this->getDataView( $category->tools );
+			break;
+			case 'consumable':
+		        $this->getDataView( $category->consumables );
+			break;
+		}
+
+    }
+
+	public function getDataViewAssets($categoryassets) {
 
         $actions = new \Chumper\Datatable\Columns\FunctionColumn('actions', function ($categoryassets)
             {
@@ -293,7 +309,64 @@ class CategoriesController extends AdminController
         ->searchColumns('name','asset_tag','assigned_to','actions')
         ->orderColumns('name','asset_tag','assigned_to','actions')
         ->make();
-    }
+	}
 
+	public function getDataViewTools($categoryassets) {	
+
+        $actions = new \Chumper\Datatable\Columns\FunctionColumn('actions', function ($categoryassets)
+            {
+                if (($categoryassets->assigned_to !='') && ($categoryassets->assigned_to > 0)) {
+                    return '<a href="'.route('checkin/hardware', $categoryassets->id).'" class="btn btn-primary btn-sm">'.Lang::get('general.checkin').'</a>';
+                } else {
+                    return '<a href="'.route('checkout/hardware', $categoryassets->id).'" class="btn btn-info btn-sm">'.Lang::get('general.checkout').'</a>';
+                }
+            });
+
+        return Datatable::collection($categoryassets)
+        ->addColumn('name', function ($categoryassets) {
+            return link_to('/hardware/'.$categoryassets->id.'/view', $categoryassets->name);
+        })
+        ->addColumn('asset_tag', function ($categoryassets) {
+            return link_to('/hardware/'.$categoryassets->id.'/view', $categoryassets->asset_tag);
+        })
+        ->addColumn('assigned_to', function ($categoryassets) {
+            if ($categoryassets->assigned_to) {
+                return link_to('/admin/users/'.$categoryassets->assigned_to.'/view', $categoryassets->assigneduser->fullName());
+            }
+        })
+        ->addColumn($actions)
+        ->searchColumns('name','asset_tag','assigned_to','actions')
+        ->orderColumns('name','asset_tag','assigned_to','actions')
+        ->make();
+	}
+
+	public function getDataViewConsumables($categoryassets) {
+		
+        $actions = new \Chumper\Datatable\Columns\FunctionColumn('actions', function ($categoryassets)
+            {
+                if (($categoryassets->assigned_to !='') && ($categoryassets->assigned_to > 0)) {
+                    return '<a href="'.route('checkin/hardware', $categoryassets->id).'" class="btn btn-primary btn-sm">'.Lang::get('general.checkin').'</a>';
+                } else {
+                    return '<a href="'.route('checkout/hardware', $categoryassets->id).'" class="btn btn-info btn-sm">'.Lang::get('general.checkout').'</a>';
+                }
+            });
+
+        return Datatable::collection($categoryassets)
+        ->addColumn('name', function ($categoryassets) {
+            return link_to('/hardware/'.$categoryassets->id.'/view', $categoryassets->name);
+        })
+        ->addColumn('asset_tag', function ($categoryassets) {
+            return link_to('/hardware/'.$categoryassets->id.'/view', $categoryassets->asset_tag);
+        })
+        ->addColumn('assigned_to', function ($categoryassets) {
+            if ($categoryassets->assigned_to) {
+                return link_to('/admin/users/'.$categoryassets->assigned_to.'/view', $categoryassets->assigneduser->fullName());
+            }
+        })
+        ->addColumn($actions)
+        ->searchColumns('name','asset_tag','assigned_to','actions')
+        ->orderColumns('name','asset_tag','assigned_to','actions')
+        ->make();
+	}
 
 }
