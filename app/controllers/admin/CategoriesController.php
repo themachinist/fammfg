@@ -270,13 +270,13 @@ class CategoriesController extends AdminController
 
 		switch ($category->category_type) {
 			case 'asset':
-		        $this->getDataViewAssets( $category->assets );
+		        return $this->getDataViewAssets( $category->assets );
 			break;
 			case 'tool':
-		        $this->getDataViewTools( $category->tools );
+		        return $this->getDataViewTools( $category->tools );
 			break;
 			case 'consumable':
-		        $this->getDataViewConsumables( $category->consumables );
+		        return $this->getDataViewConsumables( $category->consumables );
 			break;
 		}
 
@@ -312,14 +312,11 @@ class CategoriesController extends AdminController
 	}
 
 	public function getDataViewTools($categoryassets) {	
-
+		
         $actions = new \Chumper\Datatable\Columns\FunctionColumn('actions', function ($categoryassets)
             {
-                if (($categoryassets->assigned_to !='') && ($categoryassets->assigned_to > 0)) {
-                    return '<a href="'.route('checkin/hardware', $categoryassets->id).'" class="btn btn-primary btn-sm">'.Lang::get('general.checkin').'</a>';
-                } else {
-                    return '<a href="'.route('checkout/hardware', $categoryassets->id).'" class="btn btn-info btn-sm">'.Lang::get('general.checkout').'</a>';
-                }
+
+                return '<a href="'.route('checkout/tool', $categoryassets->id).'" style="margin-right:5px;" class="btn btn-info btn-sm" '.(($categoryassets->numRemaining() > 0 ) ? '' : ' disabled').'>'.Lang::get('general.checkout').'</a><a href="'.route('update/tool', $categoryassets->id).'" class="btn btn-warning btn-sm" style="margin-right:5px;"><i class="fa fa-pencil icon-white"></i></a><a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="'.route('delete/tool', $categoryassets->id).'" data-content="'.Lang::get('admin/tools/message.delete.confirm').'" data-title="'.Lang::get('general.delete').' '.htmlspecialchars($categoryassets->name).'?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a>';
             });
 
         return Datatable::collection($categoryassets)
