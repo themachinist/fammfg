@@ -24,7 +24,6 @@
                     			Lang::get('general.type'),
                     			Lang::get('general.assets'),
                     			Lang::get('admin/categories/table.require_acceptance'),
-                    			Lang::get('admin/categories/table.eula_text'),
                     			Lang::get('table.actions'))
         			->setOptions(
 	                        	array(
@@ -44,8 +43,8 @@
 					            	),
 	                            		'sAjaxSource'=> route('api.categories.list'),
 	                            		'dom' =>'CT<"clear">lfrtip',
-	                            		'colVis'=> array('showAll'=>'Show All','restore'=>'Restore','exclude'=>array(5),'activate'=>'mouseover'),
-	                            		'columnDefs'=> array(array('bSortable'=>false,'targets'=>array(5))),
+	                            		'colVis'=> array('showAll'=>'Show All','restore'=>'Restore','exclude'=>array(4),'activate'=>'mouseover'),
+	                            		'columnDefs'=> array(array('bSortable'=>false,'targets'=>array(4))),
 	                            		'order'=>array(array(0,'asc')),
                         			)
                     			)
