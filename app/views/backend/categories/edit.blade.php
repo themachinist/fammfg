@@ -59,36 +59,6 @@
 			                </div>
 			            </div>
                         						
-<!--
-						 <!-- EULA text -->
-						<div class="form-group {{ $errors->has('eula_text') ? 'error' : '' }}">
-	                        <div class="col-md-3">
-	                        	{{ Form::label('eula_text', Lang::get('admin/categories/general.eula_text')) }}
-	                        </div>
-	                        <div class="col-md-9">
-								{{ Form::textarea('eula_text', Input::old('eula_text', $category->eula_text), array('class' => 'form-control')) }}
-								<p class="help-block">@lang('admin/categories/general.eula_text_help') </p>
-								<p class="help-block">@lang('admin/settings/general.eula_markdown') </p>
-								
-								{{ $errors->first('eula_text', '<br><span class="alert-msg">:message</span>') }}						
-	                        </div>
-                    	</div>
-                        
-                         <!-- Use default checkbox -->     	
-                    	<div class="checkbox col-md-offset-3">
-							<label>
-							
-								 @if (Setting::getSettings()->default_eula_text!='')
-								 	{{ Form::checkbox('use_default_eula', '1', Input::old('use_default_eula', $category->use_default_eula)) }}
-								 	@lang('admin/categories/general.use_default_eula')
-		                         @else
-		                         	{{ Form::checkbox('use_default_eula', '0', Input::old('use_default_eula'), array('disabled' => 'disabled')) }}
-		                         	@lang('admin/categories/general.use_default_eula_disabled')
-		                         @endif
-								 	
-							</label>
-						</div>
--->
 						
 						 <!-- Require Acceptance -->
                         <div class="checkbox col-md-offset-3">
@@ -129,25 +99,4 @@
                     </div>
 </div>
 </div>
-
-@if (Setting::getSettings()->default_eula_text!='')
-<!-- Modal -->
-<div class="modal fade" id="eulaModal" tabindex="-1" role="dialog" aria-labelledby="eulaModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="eulaModalLabel">@lang('admin/settings/general.default_eula_text')</h4>
-      </div>
-      <div class="modal-body">
-        {{ Setting::getDefaultEula() }}
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">@lang('button.cancel')</button>
-      </div>
-    </div>
-  </div>
-</div>
-@endif
-
 @stop
