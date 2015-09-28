@@ -36,13 +36,48 @@
 <div class="row profile">
 <div class="col-md-12 bio">
 
-
                             <!-- checked out categories table -->
-                            @if (count($category->assets) > 0)
+							@if (count($category->assets) > 0)
                               {{ Datatable::table()
                                 ->addColumn(Lang::get('general.name'),
                                             Lang::get('general.asset_tag'),
                                             Lang::get('general.user'), 
+                                            Lang::get('table.actions'))
+                                ->setOptions(
+                                        array(
+                                            'sAjaxSource'=>route('api.categories.view', $category->id),
+                                            'dom' =>'T<"clear">lfrtip',
+                                            'columnDefs'=> array(
+                                                array('bSortable'=>false,'targets'=>array(3)),
+                                                array('width'=>'auto','targets'=>array(3)),
+                                                ),
+                                            'order'=>array(array(0,'asc')),
+                                        )
+                                    )
+                                ->render() }}
+                            @elseif (count($category->tools) > 0)
+                              {{ Datatable::table()
+                                ->addColumn(Lang::get('general.name'),
+                                            Lang::get('general.total'),
+                                            Lang::get('general.remaining'), 
+                                            Lang::get('table.actions'))
+                                ->setOptions(
+                                        array(
+                                            'sAjaxSource'=>route('api.categories.view', $category->id),
+                                            'dom' =>'T<"clear">lfrtip',
+                                            'columnDefs'=> array(
+                                                array('bSortable'=>false,'targets'=>array(3)),
+                                                array('width'=>'auto','targets'=>array(3)),
+                                                ),
+                                            'order'=>array(array(0,'asc')),
+                                        )
+                                    )
+                                ->render() }}
+							@elseif (count($category->consumables) > 0)
+                              {{ Datatable::table()
+                                ->addColumn(Lang::get('general.name'),
+                                            Lang::get('general.total'),
+                                            Lang::get('general.remaining'), 
                                             Lang::get('table.actions'))
                                 ->setOptions(
                                         array(
