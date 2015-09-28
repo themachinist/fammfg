@@ -267,7 +267,7 @@ class CategoriesController extends AdminController
 
     public function getDataView($categoryID) {
         $category = Category::find($categoryID);
-
+		
 		switch ($category->category_type) {
 			case 'asset':
 		        return $this->getDataViewAssets( $category->assets );
@@ -312,57 +312,56 @@ class CategoriesController extends AdminController
 	}
 
 	public function getDataViewTools($categoryassets) {	
-		
+
         $actions = new \Chumper\Datatable\Columns\FunctionColumn('actions', function ($categoryassets)
             {
-
                 return '<a href="'.route('checkout/tool', $categoryassets->id).'" style="margin-right:5px;" class="btn btn-info btn-sm" '.(($categoryassets->numRemaining() > 0 ) ? '' : ' disabled').'>'.Lang::get('general.checkout').'</a><a href="'.route('update/tool', $categoryassets->id).'" class="btn btn-warning btn-sm" style="margin-right:5px;"><i class="fa fa-pencil icon-white"></i></a><a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="'.route('delete/tool', $categoryassets->id).'" data-content="'.Lang::get('admin/tools/message.delete.confirm').'" data-title="'.Lang::get('general.delete').' '.htmlspecialchars($categoryassets->name).'?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a>';
             });
 
+
         return Datatable::collection($categoryassets)
-        ->addColumn('name', function ($categoryassets) {
-            return link_to('/hardware/'.$categoryassets->id.'/view', $categoryassets->name);
-        })
-        ->addColumn('asset_tag', function ($categoryassets) {
-            return link_to('/hardware/'.$categoryassets->id.'/view', $categoryassets->asset_tag);
-        })
-        ->addColumn('assigned_to', function ($categoryassets) {
-            if ($categoryassets->assigned_to) {
-                return link_to('/admin/users/'.$categoryassets->assigned_to.'/view', $categoryassets->assigneduser->fullName());
-            }
-        })
+        ->addColumn('name',function($categoryassets)
+            {
+                return link_to('admin/tools/'.$categoryassets->id.'/view', $categoryassets->name);
+            })
+        ->addColumn('qty',function($categoryassets)
+            {
+                return $categoryassets->qty;
+            })
+        ->addColumn('numRemaining',function($categoryassets)
+            {
+                return $categoryassets->numRemaining();
+            })
         ->addColumn($actions)
-        ->searchColumns('name','asset_tag','assigned_to','actions')
-        ->orderColumns('name','asset_tag','assigned_to','actions')
+        ->searchColumns('name','qty','numRemaining','actions')
+        ->orderColumns('name','qty','numRemaining','actions')
         ->make();
 	}
 
 	public function getDataViewConsumables($categoryassets) {
-		
+
         $actions = new \Chumper\Datatable\Columns\FunctionColumn('actions', function ($categoryassets)
             {
-                if (($categoryassets->assigned_to !='') && ($categoryassets->assigned_to > 0)) {
-                    return '<a href="'.route('checkin/hardware', $categoryassets->id).'" class="btn btn-primary btn-sm">'.Lang::get('general.checkin').'</a>';
-                } else {
-                    return '<a href="'.route('checkout/hardware', $categoryassets->id).'" class="btn btn-info btn-sm">'.Lang::get('general.checkout').'</a>';
-                }
+                return '<a href="'.route('checkout/consumable', $categoryassets->id).'" style="margin-right:5px;" class="btn btn-info btn-sm" '.(($categoryassets->numRemaining() > 0 ) ? '' : ' disabled').'>'.Lang::get('general.checkout').'</a><a href="'.route('update/consumable', $categoryassets->id).'" class="btn btn-warning btn-sm" style="margin-right:5px;"><i class="fa fa-pencil icon-white"></i></a><a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="'.route('delete/consumable', $categoryassets->id).'" data-content="'.Lang::get('admin/tools/message.delete.confirm').'" data-title="'.Lang::get('general.delete').' '.htmlspecialchars($categoryassets->name).'?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a>';
             });
 
+
         return Datatable::collection($categoryassets)
-        ->addColumn('name', function ($categoryassets) {
-            return link_to('/hardware/'.$categoryassets->id.'/view', $categoryassets->name);
-        })
-        ->addColumn('asset_tag', function ($categoryassets) {
-            return link_to('/hardware/'.$categoryassets->id.'/view', $categoryassets->asset_tag);
-        })
-        ->addColumn('assigned_to', function ($categoryassets) {
-            if ($categoryassets->assigned_to) {
-                return link_to('/admin/users/'.$categoryassets->assigned_to.'/view', $categoryassets->assigneduser->fullName());
-            }
-        })
+        ->addColumn('name',function($categoryassets)
+            {
+                return link_to('admin/consumables/'.$categoryassets->id.'/view', $categoryassets->name);
+            })
+        ->addColumn('qty',function($categoryassets)
+            {
+                return $categoryassets->qty;
+            })
+        ->addColumn('numRemaining',function($categoryassets)
+            {
+                return $categoryassets->numRemaining();
+            })
         ->addColumn($actions)
-        ->searchColumns('name','asset_tag','assigned_to','actions')
-        ->orderColumns('name','asset_tag','assigned_to','actions')
+        ->searchColumns('name','qty','numRemaining','actions')
+        ->orderColumns('name','qty','numRemaining','actions')
         ->make();
 	}
 
