@@ -225,12 +225,32 @@ class CategoriesController extends AdminController
         });
 
         return Datatable::collection($categories)
-        ->showColumns('name')
+        ->addColumn('name',function($categories)
+            {
+                return link_to('admin/settings/categories/'.$categories->id.'/view', $categories->name);
+			})
         ->addColumn('category_type', function($categories) {
             return ucwords($categories->category_type);
         })
         ->addColumn('count', function($categories) {
-            return ($categories->category_type=='asset') ? link_to('/admin/settings/categories/'.$categories->id.'/view', $categories->assetscount()) : $categories->toolscount();
+			// this could be 
+			// $categories->assetscount() + $categories->toolscount() + $categories->consumablescount() + ...
+			$count = 0;
+			switch ($categories->category_type){
+				case 'asset':
+					$count = $categories->assetscount();
+					break;
+				case 'tool':
+					$count = $categories->toolscount();
+					break;
+				case 'consumable':
+					$count = $categories->consumablescount();
+					break;
+				case 'gage':
+					
+					break;
+			}
+            return $count; 
         })
         ->addColumn('acceptance', function($categories) {
             return ($categories->require_acceptance=='1') ? '<i class="fa fa-check" style="margin-right:50%;margin-left:50%;"></i>' : '';
