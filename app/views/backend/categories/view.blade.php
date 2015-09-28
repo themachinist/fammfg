@@ -58,8 +58,8 @@
                             @elseif (count($category->tools) > 0)
                               {{ Datatable::table()
                                 ->addColumn(Lang::get('general.name'),
-                                            Lang::get('general.total'),
-                                            Lang::get('general.remaining'), 
+                                            Lang::get('admin/tools/general.total'),
+                                            Lang::get('admin/tools/general.remaining'), 
                                             Lang::get('table.actions'))
                                 ->setOptions(
                                         array(
@@ -76,8 +76,8 @@
 							@elseif (count($category->consumables) > 0)
                               {{ Datatable::table()
                                 ->addColumn(Lang::get('general.name'),
-                                            Lang::get('general.total'),
-                                            Lang::get('general.remaining'), 
+                                            Lang::get('admin/consumables/general.total'),
+                                            Lang::get('admin/consumables/general.remaining'), 
                                             Lang::get('table.actions'))
                                 ->setOptions(
                                         array(
