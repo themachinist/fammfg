@@ -764,8 +764,6 @@ class UsersController extends AdminController {
 
                 $pass = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
 
-
-
                 try {
                     // Check if this email already exists in the system
                     $user = DB::table('users')->where('username', $row[2])->first();
@@ -781,6 +779,8 @@ class UsersController extends AdminController {
                             'password' => $pass,
                             'activated' => $activated,
                             'location_id' => $row[4],
+							'employee_num' => $row[5], 
+							'manager_id' => $row[6],
                             'permissions' => '{"user":1}',
                             'notes' => 'Imported user'
                         );
