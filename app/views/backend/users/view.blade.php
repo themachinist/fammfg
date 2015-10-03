@@ -117,44 +117,6 @@
                             </div>
                             @endif
 
-							<br>
-                            <h6>@lang('admin/users/general.software_user', array('name' => $user->first_name))</h6>
-                            <br>
-                            <!-- checked out licenses table -->
-                            @if (count($user->licenses) > 0)
-                            <div class="table-responsive">
-							<table class="display table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th class="col-md-5">@lang('general.name')</th>
-                                        <th class="col-md-6">@lang('admin/hardware/form.serial')</th>
-                                        <th class="col-md-1 hidden-print">@lang('general.action')</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($user->licenses as $license)
-                                    <tr>
-                                        <td><a href="{{ route('view/license', $license->id) }}">{{{ $license->name }}}</a></td>
-                                        <td><a href="{{ route('view/license', $license->id) }}">{{{ mb_strimwidth($license->serial, 0, 50, "...") }}}</a></td>
-                                        <td class="hidden-print"> <a href="{{ route('checkin/license', array('licenseseat_id'=> $license->pivot->id, 'backto'=>'user')) }}" class="btn-flat info">Checkin</a>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            </div>
-                            @else
-
-                            <div class="col-md-12">
-                                <div class="alert alert-info alert-block">
-                                    <i class="fa fa-info-circle"></i>
-                                    @lang('general.no_results')
-                                </div>
-                            </div>
-                            @endif
-
-
-
 
                             <br>
                             <h6>@lang('general.tools')</h6>
