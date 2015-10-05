@@ -4,13 +4,13 @@ use Assets;
 use AdminController;
 use Input;
 use Lang;
-use License;
+use Fixture;
 use Asset;
 use User;
 use Actionlog;
 use DB;
 use Redirect;
-use LicenseSeat;
+use FixtureSeat;
 use Depreciation;
 use Setting;
 use Sentry;
@@ -24,10 +24,10 @@ use Slack;
 use Config;
 use Session;
 
-class LicensesController extends AdminController
+class FixturesController extends AdminController
 {
     /**
-     * Show a list of all the licenses.
+     * Show a list of all the fixtures.
      *
      * @return View
      */
@@ -38,34 +38,34 @@ class LicensesController extends AdminController
     public function getIndex()
     {
         // Show the page
-        return View::make('backend/licenses/index');
+        return View::make('backend/fixtures/index');
     }
 
 
     /**
-     * License create.
+     * Fixture create.
      *
      * @return View
      */
     public function getCreate()
     {
         // Show the page
-        $license_options = array('0' => 'Top Level') + License::lists('name', 'id');
+        $fixture_options = array('0' => 'Top Level') + Fixture::lists('name', 'id');
         // Show the page
-        $depreciation_list = array('0' => Lang::get('admin/licenses/form.no_depreciation')) + Depreciation::lists('name', 'id');
+        $depreciation_list = array('0' => Lang::get('admin/fixtures/form.no_depreciation')) + Depreciation::lists('name', 'id');
         $supplier_list = array('' => 'Select Supplier') + Supplier::orderBy('name', 'asc')->lists('name', 'id');
         $maintained_list = array('' => 'Maintained', '1' => 'Yes', '0' => 'No');
-        return View::make('backend/licenses/edit')
-            ->with('license_options',$license_options)
+        return View::make('backend/fixtures/edit')
+            ->with('fixture_options',$fixture_options)
             ->with('depreciation_list',$depreciation_list)
             ->with('supplier_list',$supplier_list)
             ->with('maintained_list',$maintained_list)
-            ->with('license',new License);
+            ->with('fixture',new Fixture);
     }
 
 
     /**
-     * License create form processing.
+     * Fixture create form processing.
      *
      * @return Redirect
      */
@@ -77,126 +77,126 @@ class LicensesController extends AdminController
         $new = Input::all();
 
         // create a new model instance
-        $license = new License();
+        $fixture = new Fixture();
 
         // attempt validation
-        if ($license->validate($new)) {
+        if ($fixture->validate($new)) {
 
             if ( e(Input::get('purchase_cost')) == '') {
-                    $license->purchase_cost =  NULL;
+                    $fixture->purchase_cost =  NULL;
             } else {
-                    $license->purchase_cost = ParseFloat(e(Input::get('purchase_cost')));
-                    //$license->purchase_cost = e(Input::get('purchase_cost'));
+                    $fixture->purchase_cost = ParseFloat(e(Input::get('purchase_cost')));
+                    //$fixture->purchase_cost = e(Input::get('purchase_cost'));
             }
 
             if ( e(Input::get('supplier_id')) == '') {
-                $license->supplier_id = NULL;
+                $fixture->supplier_id = NULL;
             } else {
-                $license->supplier_id = e(Input::get('supplier_id'));
+                $fixture->supplier_id = e(Input::get('supplier_id'));
             }
 
             if ( e(Input::get('maintained')) == '') {
-                $license->maintained = 0;
+                $fixture->maintained = 0;
             } else {
-                $license->maintained = e(Input::get('maintained'));
+                $fixture->maintained = e(Input::get('maintained'));
             }
 
             if ( e(Input::get('reassignable')) == '') {
-                $license->reassignable = 0;
+                $fixture->reassignable = 0;
             } else {
-                $license->reassignable = e(Input::get('reassignable'));
+                $fixture->reassignable = e(Input::get('reassignable'));
             }
 
             if ( e(Input::get('purchase_order')) == '') {
-                $license->purchase_order = '';
+                $fixture->purchase_order = '';
             } else {
-                $license->purchase_order = e(Input::get('purchase_order'));
+                $fixture->purchase_order = e(Input::get('purchase_order'));
             }
 
-            // Save the license data
-            $license->name              = e(Input::get('name'));
-            $license->serial            = e(Input::get('serial'));
-            $license->license_email     = e(Input::get('license_email'));
-            $license->license_name      = e(Input::get('license_name'));
-            $license->notes             = e(Input::get('notes'));
-            $license->order_number      = e(Input::get('order_number'));
-            $license->seats             = e(Input::get('seats'));
-            $license->purchase_date     = e(Input::get('purchase_date'));
-            $license->purchase_order    = e(Input::get('purchase_order'));
-            $license->depreciation_id   = e(Input::get('depreciation_id'));
-            $license->expiration_date   = e(Input::get('expiration_date'));
-            $license->user_id           = Sentry::getId();
+            // Save the fixture data
+            $fixture->name              = e(Input::get('name'));
+            $fixture->serial            = e(Input::get('serial'));
+            $fixture->fixture_email     = e(Input::get('fixture_email'));
+            $fixture->fixture_name      = e(Input::get('fixture_name'));
+            $fixture->notes             = e(Input::get('notes'));
+            $fixture->order_number      = e(Input::get('order_number'));
+            $fixture->seats             = e(Input::get('seats'));
+            $fixture->purchase_date     = e(Input::get('purchase_date'));
+            $fixture->purchase_order    = e(Input::get('purchase_order'));
+            $fixture->depreciation_id   = e(Input::get('depreciation_id'));
+            $fixture->expiration_date   = e(Input::get('expiration_date'));
+            $fixture->user_id           = Sentry::getId();
 
-            if (($license->purchase_date == "") || ($license->purchase_date == "0000-00-00")) {
-                $license->purchase_date = NULL;
+            if (($fixture->purchase_date == "") || ($fixture->purchase_date == "0000-00-00")) {
+                $fixture->purchase_date = NULL;
             }
 
-            if (($license->expiration_date == "") || ($license->expiration_date == "0000-00-00")) {
-                $license->expiration_date = NULL;
+            if (($fixture->expiration_date == "") || ($fixture->expiration_date == "0000-00-00")) {
+                $fixture->expiration_date = NULL;
             }
 
-            if (($license->purchase_cost == "") || ($license->purchase_cost == "0.00")) {
-                $license->purchase_cost = NULL;
+            if (($fixture->purchase_cost == "") || ($fixture->purchase_cost == "0.00")) {
+                $fixture->purchase_cost = NULL;
             }
 
-            // Was the license created?
-            if($license->save()) {
+            // Was the fixture created?
+            if($fixture->save()) {
 
-                $insertedId = $license->id;
-                // Save the license seat data
-                for ($x=0; $x<$license->seats; $x++) {
-                    $license_seat = new LicenseSeat();
-                    $license_seat->license_id       = $insertedId;
-                    $license_seat->user_id          = Sentry::getId();
-                    $license_seat->assigned_to      = NULL;
-                    $license_seat->notes            = NULL;
-                    $license_seat->save();
+                $insertedId = $fixture->id;
+                // Save the fixture seat data
+                for ($x=0; $x<$fixture->seats; $x++) {
+                    $fixture_seat = new FixtureSeat();
+                    $fixture_seat->fixture_id       = $insertedId;
+                    $fixture_seat->user_id          = Sentry::getId();
+                    $fixture_seat->assigned_to      = NULL;
+                    $fixture_seat->notes            = NULL;
+                    $fixture_seat->save();
                 }
 
 
-                // Redirect to the new license page
-                return Redirect::to("admin/licenses")->with('success', Lang::get('admin/licenses/message.create.success'));
+                // Redirect to the new fixture page
+                return Redirect::to("admin/fixtures")->with('success', Lang::get('admin/fixtures/message.create.success'));
             }
         } else {
             // failure
-            $errors = $license->errors();
+            $errors = $fixture->errors();
             return Redirect::back()->withInput()->withErrors($errors);
         }
 
-        // Redirect to the license create page
-        return Redirect::to('admin/licenses/edit')->with('error', Lang::get('admin/licenses/message.create.error'))->with('license',new License);
+        // Redirect to the fixture create page
+        return Redirect::to('admin/fixtures/edit')->with('error', Lang::get('admin/fixtures/message.create.error'))->with('fixture',new Fixture);
 
     }
 
     /**
-     * License update.
+     * Fixture update.
      *
-     * @param  int  $licenseId
+     * @param  int  $fixtureId
      * @return View
      */
-    public function getEdit($licenseId = null)
+    public function getEdit($fixtureId = null)
     {
-        // Check if the license exists
-        if (is_null($license = License::find($licenseId))) {
+        // Check if the fixture exists
+        if (is_null($fixture = Fixture::find($fixtureId))) {
             // Redirect to the blogs management page
-            return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.does_not_exist'));
+            return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.does_not_exist'));
         }
 
-            if ($license->purchase_date == "0000-00-00") {
-                $license->purchase_date = NULL;
+            if ($fixture->purchase_date == "0000-00-00") {
+                $fixture->purchase_date = NULL;
             }
 
-            if ($license->purchase_cost == "0.00") {
-                $license->purchase_cost = NULL;
+            if ($fixture->purchase_cost == "0.00") {
+                $fixture->purchase_cost = NULL;
             }
 
         // Show the page
-        $license_options = array('' => 'Top Level') + DB::table('assets')->where('id', '!=', $licenseId)->lists('name', 'id');
-        $depreciation_list = array('0' => Lang::get('admin/licenses/form.no_depreciation')) + Depreciation::lists('name', 'id');
+        $fixture_options = array('' => 'Top Level') + DB::table('assets')->where('id', '!=', $fixtureId)->lists('name', 'id');
+        $depreciation_list = array('0' => Lang::get('admin/fixtures/form.no_depreciation')) + Depreciation::lists('name', 'id');
         $supplier_list = array('' => 'Select Supplier') + Supplier::orderBy('name', 'asc')->lists('name', 'id');
         $maintained_list = array('' => 'Maintained', '1' => 'Yes', '0' => 'No');
-        return View::make('backend/licenses/edit', compact('license'))
-            ->with('license_options',$license_options)
+        return View::make('backend/fixtures/edit', compact('fixture'))
+            ->with('fixture_options',$fixture_options)
             ->with('depreciation_list',$depreciation_list)
             ->with('supplier_list',$supplier_list)
             ->with('maintained_list',$maintained_list);
@@ -204,17 +204,17 @@ class LicensesController extends AdminController
 
 
     /**
-     * License update form processing page.
+     * Fixture update form processing page.
      *
-     * @param  int  $licenseId
+     * @param  int  $fixtureId
      * @return Redirect
      */
-    public function postEdit($licenseId = null)
+    public function postEdit($fixtureId = null)
     {
-        // Check if the license exists
-        if (is_null($license = License::find($licenseId))) {
+        // Check if the fixture exists
+        if (is_null($fixture = Fixture::find($fixtureId))) {
             // Redirect to the blogs management page
-            return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.does_not_exist'));
+            return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.does_not_exist'));
         }
 
 
@@ -224,80 +224,80 @@ class LicensesController extends AdminController
 
 
         // attempt validation
-        if ($license->validate($new)) {
+        if ($fixture->validate($new)) {
 
-            // Update the license data
-            $license->name              = e(Input::get('name'));
-            $license->serial            = e(Input::get('serial'));
-            $license->license_email     = e(Input::get('license_email'));
-            $license->license_name      = e(Input::get('license_name'));
-            $license->notes             = e(Input::get('notes'));
-            $license->order_number      = e(Input::get('order_number'));
-            $license->depreciation_id   = e(Input::get('depreciation_id'));
-            $license->purchase_order    = e(Input::get('purchase_order'));
-            $license->maintained        = e(Input::get('maintained'));
-            $license->reassignable      = e(Input::get('reassignable'));
+            // Update the fixture data
+            $fixture->name              = e(Input::get('name'));
+            $fixture->serial            = e(Input::get('serial'));
+            $fixture->fixture_email     = e(Input::get('fixture_email'));
+            $fixture->fixture_name      = e(Input::get('fixture_name'));
+            $fixture->notes             = e(Input::get('notes'));
+            $fixture->order_number      = e(Input::get('order_number'));
+            $fixture->depreciation_id   = e(Input::get('depreciation_id'));
+            $fixture->purchase_order    = e(Input::get('purchase_order'));
+            $fixture->maintained        = e(Input::get('maintained'));
+            $fixture->reassignable      = e(Input::get('reassignable'));
 
             if ( e(Input::get('supplier_id')) == '') {
-                $license->supplier_id = NULL;
+                $fixture->supplier_id = NULL;
             } else {
-                $license->supplier_id = e(Input::get('supplier_id'));
+                $fixture->supplier_id = e(Input::get('supplier_id'));
             }
 
             // Update the asset data
             if ( e(Input::get('purchase_date')) == '') {
-                    $license->purchase_date =  NULL;
+                    $fixture->purchase_date =  NULL;
             } else {
-                    $license->purchase_date = e(Input::get('purchase_date'));
+                    $fixture->purchase_date = e(Input::get('purchase_date'));
             }
 
             if ( e(Input::get('expiration_date')) == '') {
-                $license->expiration_date = NULL;
+                $fixture->expiration_date = NULL;
             } else {
-                $license->expiration_date = e(Input::get('expiration_date'));
+                $fixture->expiration_date = e(Input::get('expiration_date'));
             }
 
             // Update the asset data
             if ( e(Input::get('termination_date')) == '') {
-                $license->termination_date =  NULL;
+                $fixture->termination_date =  NULL;
             } else {
-                $license->termination_date = e(Input::get('termination_date'));
+                $fixture->termination_date = e(Input::get('termination_date'));
             }
 
             if ( e(Input::get('purchase_cost')) == '') {
-                    $license->purchase_cost =  NULL;
+                    $fixture->purchase_cost =  NULL;
             } else {
-                    $license->purchase_cost = ParseFloat(e(Input::get('purchase_cost')));
-                    //$license->purchase_cost = e(Input::get('purchase_cost'));
+                    $fixture->purchase_cost = ParseFloat(e(Input::get('purchase_cost')));
+                    //$fixture->purchase_cost = e(Input::get('purchase_cost'));
             }
 
             if ( e(Input::get('maintained')) == '') {
-                $license->maintained = 0;
+                $fixture->maintained = 0;
             } else {
-                $license->maintained = e(Input::get('maintained'));
+                $fixture->maintained = e(Input::get('maintained'));
             }
 
             if ( e(Input::get('reassignable')) == '') {
-                $license->reassignable = 0;
+                $fixture->reassignable = 0;
             } else {
-                $license->reassignable = e(Input::get('reassignable'));
+                $fixture->reassignable = e(Input::get('reassignable'));
             }
 
             if ( e(Input::get('purchase_order')) == '') {
-                $license->purchase_order = '';
+                $fixture->purchase_order = '';
             } else {
-                $license->purchase_order = e(Input::get('purchase_order'));
+                $fixture->purchase_order = e(Input::get('purchase_order'));
             }
 
 
             //Are we changing the total number of seats?
-            if( $license->seats != e(Input::get('seats'))) {
+            if( $fixture->seats != e(Input::get('seats'))) {
                 //Determine how many seats we are dealing with
-                $difference = e(Input::get('seats')) - $license->licenseseats()->count();
+                $difference = e(Input::get('seats')) - $fixture->fixtureseats()->count();
 
                 if( $difference < 0 ) {
-                    //Filter out any license which have a user attached;
-                    $seats = $license->licenseseats->filter(function ($seat) {
+                    //Filter out any fixture which have a user attached;
+                    $seats = $fixture->fixtureseats->filter(function ($seat) {
                         return is_null($seat->user);
                     });
 
@@ -311,7 +311,7 @@ class LicensesController extends AdminController
 
                         //Log the deletion of seats to the log
                         $logaction = new Actionlog();
-                        $logaction->asset_id = $license->id;
+                        $logaction->asset_id = $fixture->id;
                         $logaction->asset_type = 'software';
                         $logaction->user_id = Sentry::getUser()->id;
                         $logaction->note = abs($difference)." seats";
@@ -319,83 +319,83 @@ class LicensesController extends AdminController
                         $log = $logaction->logaction('delete seats');
 
                     } else {
-                        // Redirect to the license edit page
-                        return Redirect::to("admin/licenses/$licenseId/edit")->with('error', Lang::get('admin/licenses/message.assoc_users'));
+                        // Redirect to the fixture edit page
+                        return Redirect::to("admin/fixtures/$fixtureId/edit")->with('error', Lang::get('admin/fixtures/message.assoc_users'));
                     }
                 } else {
 
                     for ($i=1; $i <= $difference; $i++) {
-                        //Create a seat for this license
-                        $license_seat = new LicenseSeat();
-                        $license_seat->license_id       = $license->id;
-                        $license_seat->user_id          = Sentry::getId();
-                        $license_seat->assigned_to      = NULL;
-                        $license_seat->notes            = NULL;
-                        $license_seat->save();
+                        //Create a seat for this fixture
+                        $fixture_seat = new FixtureSeat();
+                        $fixture_seat->fixture_id       = $fixture->id;
+                        $fixture_seat->user_id          = Sentry::getId();
+                        $fixture_seat->assigned_to      = NULL;
+                        $fixture_seat->notes            = NULL;
+                        $fixture_seat->save();
                     }
 
-                    //Log the addition of license to the log.
+                    //Log the addition of fixture to the log.
                     $logaction = new Actionlog();
-                    $logaction->asset_id = $license->id;
+                    $logaction->asset_id = $fixture->id;
                     $logaction->asset_type = 'software';
                     $logaction->user_id = Sentry::getUser()->id;
                     $logaction->note = abs($difference)." seats";
                     $log = $logaction->logaction('add seats');
                 }
-                $license->seats             = e(Input::get('seats'));
+                $fixture->seats             = e(Input::get('seats'));
             }
 
             // Was the asset created?
-            if($license->save()) {
-                // Redirect to the new license page
-                return Redirect::to("admin/licenses/$licenseId/view")->with('success', Lang::get('admin/licenses/message.update.success'));
+            if($fixture->save()) {
+                // Redirect to the new fixture page
+                return Redirect::to("admin/fixtures/$fixtureId/view")->with('success', Lang::get('admin/fixtures/message.update.success'));
             }
         } else {
             // failure
-            $errors = $license->errors();
+            $errors = $fixture->errors();
             return Redirect::back()->withInput()->withErrors($errors);
         }
 
-        // Redirect to the license edit page
-        return Redirect::to("admin/licenses/$licenseId/edit")->with('error', Lang::get('admin/licenses/message.update.error'));
+        // Redirect to the fixture edit page
+        return Redirect::to("admin/fixtures/$fixtureId/edit")->with('error', Lang::get('admin/fixtures/message.update.error'));
 
     }
 
     /**
-     * Delete the given license.
+     * Delete the given fixture.
      *
-     * @param  int  $licenseId
+     * @param  int  $fixtureId
      * @return Redirect
      */
-    public function getDelete($licenseId)
+    public function getDelete($fixtureId)
     {
-        // Check if the license exists
-        if (is_null($license = License::find($licenseId))) {
-            // Redirect to the license management page
-            return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.not_found'));
+        // Check if the fixture exists
+        if (is_null($fixture = Fixture::find($fixtureId))) {
+            // Redirect to the fixture management page
+            return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
 
-        if (($license->assignedcount()) && ($license->assignedcount() > 0)) {
+        if (($fixture->assignedcount()) && ($fixture->assignedcount() > 0)) {
 
-            // Redirect to the license management page
-            return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.assoc_users'));
+            // Redirect to the fixture management page
+            return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.assoc_users'));
 
         } else {
 
-            // Delete the license and the associated license seats
-            DB::table('license_seats')
-            ->where('id', $license->id)
+            // Delete the fixture and the associated fixture seats
+            DB::table('fixture_seats')
+            ->where('id', $fixture->id)
             ->update(array('assigned_to' => NULL,'asset_id' => NULL));
 
-            $licenseseats = $license->licenseseats();
-            $licenseseats->delete();
-            $license->delete();
+            $fixtureseats = $fixture->fixtureseats();
+            $fixtureseats->delete();
+            $fixture->delete();
 
 
 
 
-            // Redirect to the licenses management page
-            return Redirect::to('admin/licenses')->with('success', Lang::get('admin/licenses/message.delete.success'));
+            // Redirect to the fixtures management page
+            return Redirect::to('admin/fixtures')->with('success', Lang::get('admin/fixtures/message.delete.success'));
         }
 
 
@@ -408,9 +408,9 @@ class LicensesController extends AdminController
     public function getCheckout($seatId)
     {
         // Check if the asset exists
-        if (is_null($licenseseat = LicenseSeat::find($seatId))) {
+        if (is_null($fixtureseat = FixtureSeat::find($seatId))) {
             // Redirect to the asset management page with error
-            return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.not_found'));
+            return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
 
         // Get the dropdown of users and then pass it to the checkout view
@@ -441,7 +441,7 @@ class LicensesController extends AdminController
 
             }
 
-        return View::make('backend/licenses/checkout', compact('licenseseat'))->with('users_list',$users_list)->with('asset_list',$asset_element);
+        return View::make('backend/fixtures/checkout', compact('fixtureseat'))->with('users_list',$users_list)->with('asset_list',$asset_element);
 
     }
 
@@ -478,7 +478,7 @@ class LicensesController extends AdminController
         // Check if the user exists
             if (is_null($is_assigned_to = User::find($assigned_to))) {
                 // Redirect to the asset management page with error
-                return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.user_does_not_exist'));
+                return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.user_does_not_exist'));
             }
         }
 
@@ -486,12 +486,12 @@ class LicensesController extends AdminController
 
             if (is_null($is_asset_id = Asset::find($asset_id))) {
                 // Redirect to the asset management page with error
-                return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.asset_does_not_exist'));
+                return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.asset_does_not_exist'));
             }
 
             if (($is_asset_id->assigned_to!=$assigned_to) && ($assigned_to!=''))  {
-                //echo 'asset assigned to: '.$is_asset_id->assigned_to.'<br>license assigned to: '.$assigned_to;
-                return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.owner_doesnt_match_asset'));
+                //echo 'asset assigned to: '.$is_asset_id->assigned_to.'<br>fixture assigned to: '.$assigned_to;
+                return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.owner_doesnt_match_asset'));
             }
 
         }
@@ -499,27 +499,27 @@ class LicensesController extends AdminController
 
 
 		// Check if the asset exists
-        if (is_null($licenseseat = LicenseSeat::find($seatId))) {
+        if (is_null($fixtureseat = FixtureSeat::find($seatId))) {
             // Redirect to the asset management page with error
-            return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.not_found'));
+            return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
 
 		if (Input::get('asset_id') == '') {
-            $licenseseat->asset_id = NULL;
+            $fixtureseat->asset_id = NULL;
         } else {
-            $licenseseat->asset_id = e(Input::get('asset_id'));
+            $fixtureseat->asset_id = e(Input::get('asset_id'));
         }
 
         // Update the asset data
         if ( e(Input::get('assigned_to')) == '') {
-                $licenseseat->assigned_to =  NULL;
+                $fixtureseat->assigned_to =  NULL;
 
         } else {
-                $licenseseat->assigned_to = e(Input::get('assigned_to'));
+                $fixtureseat->assigned_to = e(Input::get('assigned_to'));
         }
 
         // Was the asset updated?
-        if($licenseseat->save()) {
+        if($fixtureseat->save()) {
 
             $logaction = new Actionlog();
 
@@ -527,20 +527,20 @@ class LicensesController extends AdminController
             $logaction->asset_type = 'software';
             $logaction->user_id = Sentry::getUser()->id;
             $logaction->note = e(Input::get('note'));
-            $logaction->asset_id = $licenseseat->license_id;
+            $logaction->asset_id = $fixtureseat->fixture_id;
 
 
-			$license = License::find($licenseseat->license_id);
+			$fixture = Fixture::find($fixtureseat->fixture_id);
             $settings = Setting::getSettings();
 
 
             // Update the asset data
             if ( e(Input::get('assigned_to')) == '') {
                 $logaction->checkedout_to = NULL;
-                $slack_msg = strtoupper($logaction->asset_type).' license <'.Config::get('app.url').'/admin/licenses/'.$license->id.'/view'.'|'.$license->name.'> checked out to <'.Config::get('app.url').'/hardware/'.$is_asset_id->id.'/view|'.$is_asset_id->showAssetName().'> by <'.Config::get('app.url').'/admin/users/'.$user->id.'/view'.'|'.$user->fullName().'>.';
+                $slack_msg = strtoupper($logaction->asset_type).' fixture <'.Config::get('app.url').'/admin/fixtures/'.$fixture->id.'/view'.'|'.$fixture->name.'> checked out to <'.Config::get('app.url').'/hardware/'.$is_asset_id->id.'/view|'.$is_asset_id->showAssetName().'> by <'.Config::get('app.url').'/admin/users/'.$user->id.'/view'.'|'.$user->fullName().'>.';
             } else {
                 $logaction->checkedout_to = e(Input::get('assigned_to'));
-                $slack_msg = strtoupper($logaction->asset_type).' license <'.Config::get('app.url').'/admin/licenses/'.$license->id.'/view'.'|'.$license->name.'> checked out to <'.Config::get('app.url').'/admin/users/'.$is_assigned_to->id.'/view|'.$is_assigned_to->fullName().'> by <'.Config::get('app.url').'/admin/users/'.$user->id.'/view'.'|'.$user->fullName().'>.';
+                $slack_msg = strtoupper($logaction->asset_type).' fixture <'.Config::get('app.url').'/admin/fixtures/'.$fixture->id.'/view'.'|'.$fixture->name.'> checked out to <'.Config::get('app.url').'/admin/users/'.$is_assigned_to->id.'/view|'.$is_assigned_to->fullName().'> by <'.Config::get('app.url').'/admin/users/'.$user->id.'/view'.'|'.$user->fullName().'>.';
             }
 
 
@@ -572,7 +572,7 @@ class LicensesController extends AdminController
 
 
 						    ]
-						])->send('License Checked Out');
+						])->send('Fixture Checked Out');
 
 					} catch (Exception $e) {
 
@@ -584,25 +584,25 @@ class LicensesController extends AdminController
 
 
             // Redirect to the new asset page
-            return Redirect::to("admin/licenses")->with('success', Lang::get('admin/licenses/message.checkout.success'));
+            return Redirect::to("admin/fixtures")->with('success', Lang::get('admin/fixtures/message.checkout.success'));
         }
 
         // Redirect to the asset management page with error
-        return Redirect::to('admin/licenses/$assetId/checkout')->with('error', Lang::get('admin/licenses/message.create.error'))->with('license',new License);
+        return Redirect::to('admin/fixtures/$assetId/checkout')->with('error', Lang::get('admin/fixtures/message.create.error'))->with('fixture',new Fixture);
     }
 
 
     /**
-    * Check the license back into inventory
+    * Check the fixture back into inventory
     **/
     public function getCheckin($seatId = null, $backto = null)
     {
         // Check if the asset exists
-        if (is_null($licenseseat = LicenseSeat::find($seatId))) {
+        if (is_null($fixtureseat = FixtureSeat::find($seatId))) {
             // Redirect to the asset management page with error
-            return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.not_found'));
+            return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
-        return View::make('backend/licenses/checkin', compact('licenseseat'))->with('backto',$backto);
+        return View::make('backend/fixtures/checkin', compact('fixtureseat'))->with('backto',$backto);
 
     }
 
@@ -614,16 +614,16 @@ class LicensesController extends AdminController
     public function postCheckin($seatId = null, $backto = null)
     {
         // Check if the asset exists
-        if (is_null($licenseseat = LicenseSeat::find($seatId))) {
+        if (is_null($fixtureseat = FixtureSeat::find($seatId))) {
             // Redirect to the asset management page with error
-            return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.not_found'));
+            return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
 
-        $license = License::find($licenseseat->license_id);
+        $fixture = Fixture::find($fixtureseat->fixture_id);
 
-        if(!$license->reassignable) {
+        if(!$fixture->reassignable) {
             // Not allowed to checkin
-            Session::flash('error', 'License not reassignable.');
+            Session::flash('error', 'Fixture not reassignable.');
             return Redirect::back()->withInput();
         }
 
@@ -641,19 +641,19 @@ class LicensesController extends AdminController
             // Ooops.. something went wrong
             return Redirect::back()->withInput()->withErrors($validator);
         }
-		$return_to = $licenseseat->assigned_to;
+		$return_to = $fixtureseat->assigned_to;
         $logaction = new Actionlog();
-        $logaction->checkedout_to = $licenseseat->assigned_to;
+        $logaction->checkedout_to = $fixtureseat->assigned_to;
 
         // Update the asset data
-        $licenseseat->assigned_to                   = NULL;
-        $licenseseat->asset_id                      = NULL;
+        $fixtureseat->assigned_to                   = NULL;
+        $fixtureseat->asset_id                      = NULL;
 
         $user = Sentry::getUser();
 
         // Was the asset updated?
-        if($licenseseat->save()) {
-            $logaction->asset_id = $licenseseat->license_id;
+        if($fixtureseat->save()) {
+            $logaction->asset_id = $fixtureseat->fixture_id;
             $logaction->location_id = NULL;
             $logaction->asset_type = 'software';
             $logaction->note = e(Input::get('note'));
@@ -678,7 +678,7 @@ class LicensesController extends AdminController
 						    'fields' => [
 						        [
 						            'title' => 'Checked In:',
-						            'value' => strtoupper($logaction->asset_type).' <'.Config::get('app.url').'/admin/licenses/'.$license->id.'/view'.'|'.$license->name.'> checked in by <'.Config::get('app.url').'/admin/users/'.$user->id.'/view'.'|'.$user->fullName().'>.'
+						            'value' => strtoupper($logaction->asset_type).' <'.Config::get('app.url').'/admin/fixtures/'.$fixture->id.'/view'.'|'.$fixture->name.'> checked in by <'.Config::get('app.url').'/admin/users/'.$user->id.'/view'.'|'.$user->fullName().'>.'
 						        ],
 						        [
 						            'title' => 'Note:',
@@ -686,7 +686,7 @@ class LicensesController extends AdminController
 						        ],
 
 						    ]
-						])->send('License Checked In');
+						])->send('Fixture Checked In');
 
 					} catch (Exception $e) {
 
@@ -700,15 +700,15 @@ class LicensesController extends AdminController
 
 
 			if ($backto=='user') {
-				return Redirect::to("admin/users/".$return_to.'/view')->with('success', Lang::get('admin/licenses/message.checkin.success'));
+				return Redirect::to("admin/users/".$return_to.'/view')->with('success', Lang::get('admin/fixtures/message.checkin.success'));
 			} else {
-				return Redirect::to("admin/licenses/".$licenseseat->license_id."/view")->with('success', Lang::get('admin/licenses/message.checkin.success'));
+				return Redirect::to("admin/fixtures/".$fixtureseat->fixture_id."/view")->with('success', Lang::get('admin/fixtures/message.checkin.success'));
 			}
 
         }
 
-        // Redirect to the license page with error
-        return Redirect::to("admin/licenses")->with('error', Lang::get('admin/licenses/message.checkin.error'));
+        // Redirect to the fixture page with error
+        return Redirect::to("admin/fixtures")->with('error', Lang::get('admin/fixtures/message.checkin.error'));
     }
 
     /**
@@ -717,41 +717,41 @@ class LicensesController extends AdminController
     * @param  int  $assetId
     * @return View
     **/
-    public function getView($licenseId = null)
+    public function getView($fixtureId = null)
     {
-        $license = License::find($licenseId);
+        $fixture = Fixture::find($fixtureId);
 
-        if (isset($license->id)) {
-                return View::make('backend/licenses/view', compact('license'));
+        if (isset($fixture->id)) {
+                return View::make('backend/fixtures/view', compact('fixture'));
         } else {
             // Prepare the error message
-            $error = Lang::get('admin/licenses/message.does_not_exist', compact('id'));
+            $error = Lang::get('admin/fixtures/message.does_not_exist', compact('id'));
 
             // Redirect to the user management page
-            return Redirect::route('licenses')->with('error', $error);
+            return Redirect::route('fixtures')->with('error', $error);
         }
     }
 
-    public function getClone($licenseId = null)
+    public function getClone($fixtureId = null)
     {
-         // Check if the license exists
-        if (is_null($license_to_clone = License::find($licenseId))) {
+         // Check if the fixture exists
+        if (is_null($fixture_to_clone = Fixture::find($fixtureId))) {
             // Redirect to the blogs management page
-            return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.does_not_exist'));
+            return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.does_not_exist'));
         }
 
           // Show the page
-        $license_options = array('0' => 'Top Level') + License::lists('name', 'id');
+        $fixture_options = array('0' => 'Top Level') + Fixture::lists('name', 'id');
 		$maintained_list = array('' => 'Maintained', '1' => 'Yes', '0' => 'No');
         //clone the orig
-        $license = clone $license_to_clone;
-        $license->id = null;
-        $license->serial = null;
+        $fixture = clone $fixture_to_clone;
+        $fixture->id = null;
+        $fixture->serial = null;
 
         // Show the page
-        $depreciation_list = array('0' => Lang::get('admin/licenses/form.no_depreciation')) + Depreciation::lists('name', 'id');
+        $depreciation_list = array('0' => Lang::get('admin/fixtures/form.no_depreciation')) + Depreciation::lists('name', 'id');
         $supplier_list = array('' => 'Select Supplier') + Supplier::orderBy('name', 'asc')->lists('name', 'id');
-        return View::make('backend/licenses/edit')->with('license_options',$license_options)->with('depreciation_list',$depreciation_list)->with('supplier_list',$supplier_list)->with('license',$license)->with('maintained_list',$maintained_list);
+        return View::make('backend/fixtures/edit')->with('fixture_options',$fixture_options)->with('depreciation_list',$depreciation_list)->with('supplier_list',$supplier_list)->with('fixture',$fixture)->with('maintained_list',$maintained_list);
 
     }
 
@@ -762,34 +762,34 @@ class LicensesController extends AdminController
     * @param  int  $assetId
     * @return View
     **/
-    public function postUpload($licenseId = null)
+    public function postUpload($fixtureId = null)
     {
-        $license = License::find($licenseId);
+        $fixture = Fixture::find($fixtureId);
 
-		// the license is valid
+		// the fixture is valid
 		$destinationPath = app_path().'/private_uploads';
 
-        if (isset($license->id)) {
+        if (isset($fixture->id)) {
 
-        	if (Input::hasFile('licensefile')) {
+        	if (Input::hasFile('fixturefile')) {
 
-				foreach(Input::file('licensefile') as $file) {
+				foreach(Input::file('fixturefile') as $file) {
 
 				$rules = array(
-				   'licensefile' => 'required|mimes:png,gif,jpg,jpeg,doc,docx,pdf,txt,zip,rar|max:2000'
+				   'fixturefile' => 'required|mimes:png,gif,jpg,jpeg,doc,docx,pdf,txt,zip,rar|max:2000'
 				);
-				$validator = Validator::make(array('licensefile'=> $file), $rules);
+				$validator = Validator::make(array('fixturefile'=> $file), $rules);
 
 					if($validator->passes()){
 
 						$extension = $file->getClientOriginalExtension();
-						$filename = 'license-'.$license->id.'-'.str_random(8);
+						$filename = 'fixture-'.$fixture->id.'-'.str_random(8);
 						$filename .= '-'.Str::slug($file->getClientOriginalName()).'.'.$extension;
 						$upload_success = $file->move($destinationPath, $filename);
 
 						//Log the deletion of seats to the log
 						$logaction = new Actionlog();
-						$logaction->asset_id = $license->id;
+						$logaction->asset_id = $fixture->id;
 						$logaction->asset_type = 'software';
 						$logaction->user_id = Sentry::getUser()->id;
 						$logaction->note = e(Input::get('notes'));
@@ -798,20 +798,20 @@ class LicensesController extends AdminController
 						$logaction->filename =  $filename;
 						$log = $logaction->logaction('uploaded');
 					} else {
-						 return Redirect::back()->with('error', Lang::get('admin/licenses/message.upload.invalidfiles'));
+						 return Redirect::back()->with('error', Lang::get('admin/fixtures/message.upload.invalidfiles'));
 					}
 
 
 				}
 
 				if ($upload_success) {
-				  	return Redirect::back()->with('success', Lang::get('admin/licenses/message.upload.success'));
+				  	return Redirect::back()->with('success', Lang::get('admin/fixtures/message.upload.success'));
 				} else {
-				   return Redirect::back()->with('success', Lang::get('admin/licenses/message.upload.error'));
+				   return Redirect::back()->with('success', Lang::get('admin/fixtures/message.upload.error'));
 				}
 
 			} else {
-				 return Redirect::back()->with('error', Lang::get('admin/licenses/message.upload.nofiles'));
+				 return Redirect::back()->with('error', Lang::get('admin/fixtures/message.upload.nofiles'));
 			}
 
 
@@ -820,10 +820,10 @@ class LicensesController extends AdminController
 
         } else {
             // Prepare the error message
-            $error = Lang::get('admin/licenses/message.does_not_exist', compact('id'));
+            $error = Lang::get('admin/fixtures/message.does_not_exist', compact('id'));
 
             // Redirect to the licence management page
-            return Redirect::route('licenses')->with('error', $error);
+            return Redirect::route('fixtures')->with('error', $error);
         }
     }
 
@@ -834,13 +834,13 @@ class LicensesController extends AdminController
     * @param  int  $assetId
     * @return View
     **/
-    public function getDeleteFile($licenseId = null, $fileId = null)
+    public function getDeleteFile($fixtureId = null, $fileId = null)
     {
-        $license = License::find($licenseId);
+        $fixture = Fixture::find($fixtureId);
         $destinationPath = app_path().'/private_uploads';
 
-		// the license is valid
-        if (isset($license->id)) {
+		// the fixture is valid
+        if (isset($fixture->id)) {
 
 			$log = Actionlog::find($fileId);
 			$full_filename = $destinationPath.'/'.$log->filename;
@@ -848,14 +848,14 @@ class LicensesController extends AdminController
 				unlink($destinationPath.'/'.$log->filename);
 			}
 			$log->delete();
-			return Redirect::back()->with('success', Lang::get('admin/licenses/message.deletefile.success'));
+			return Redirect::back()->with('success', Lang::get('admin/fixtures/message.deletefile.success'));
 
         } else {
             // Prepare the error message
-            $error = Lang::get('admin/licenses/message.does_not_exist', compact('id'));
+            $error = Lang::get('admin/fixtures/message.does_not_exist', compact('id'));
 
             // Redirect to the licence management page
-            return Redirect::route('licenses')->with('error', $error);
+            return Redirect::route('fixtures')->with('error', $error);
         }
     }
 
@@ -867,50 +867,50 @@ class LicensesController extends AdminController
     * @param  int  $assetId
     * @return View
     **/
-    public function displayFile($licenseId = null, $fileId = null)
+    public function displayFile($fixtureId = null, $fileId = null)
     {
 
-        $license = License::find($licenseId);
+        $fixture = Fixture::find($fixtureId);
 
-		// the license is valid
-        if (isset($license->id)) {
+		// the fixture is valid
+        if (isset($fixture->id)) {
 				$log = Actionlog::find($fileId);
 				$file = $log->get_src();
 				return Response::download($file);
         } else {
             // Prepare the error message
-            $error = Lang::get('admin/licenses/message.does_not_exist', compact('id'));
+            $error = Lang::get('admin/fixtures/message.does_not_exist', compact('id'));
 
             // Redirect to the licence management page
-            return Redirect::route('licenses')->with('error', $error);
+            return Redirect::route('fixtures')->with('error', $error);
         }
     }
 
     public function getDatatable() {
-        $licenses = License::orderBy('created_at', 'DESC')->get();
+        $fixtures = Fixture::orderBy('created_at', 'DESC')->get();
 
-        $actions = new \Chumper\Datatable\Columns\FunctionColumn('actions', function($licenses) {
-            return '<span style="white-space: nowrap;"><a href="'.route('freecheckout/license', $licenses->id).'" class="btn btn-primary btn-sm" style="margin-right:5px;" '.(($licenses->remaincount() > 0) ? '' : 'disabled').'>'.Lang::get('general.checkout').'</a> <a href="'.route('clone/license', $licenses->id).'" class="btn btn-info btn-sm" style="margin-right:5px;" title="Clone asset"><i class="fa fa-files-o"></i></a><a href="'.route('update/license', $licenses->id).'" class="btn btn-warning btn-sm" style="margin-right:5px;"><i class="fa fa-pencil icon-white"></i></a><a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="'.route('delete/license', $licenses->id).'" data-content="'.Lang::get('admin/licenses/message.delete.confirm').'" data-title="'.Lang::get('general.delete').' '.htmlspecialchars($licenses->name).'?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a></span>';
+        $actions = new \Chumper\Datatable\Columns\FunctionColumn('actions', function($fixtures) {
+            return '<span style="white-space: nowrap;"><a href="'.route('freecheckout/fixture', $fixtures->id).'" class="btn btn-primary btn-sm" style="margin-right:5px;" '.(($fixtures->remaincount() > 0) ? '' : 'disabled').'>'.Lang::get('general.checkout').'</a> <a href="'.route('clone/fixture', $fixtures->id).'" class="btn btn-info btn-sm" style="margin-right:5px;" title="Clone asset"><i class="fa fa-files-o"></i></a><a href="'.route('update/fixture', $fixtures->id).'" class="btn btn-warning btn-sm" style="margin-right:5px;"><i class="fa fa-pencil icon-white"></i></a><a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="'.route('delete/fixture', $fixtures->id).'" data-content="'.Lang::get('admin/fixtures/message.delete.confirm').'" data-title="'.Lang::get('general.delete').' '.htmlspecialchars($fixtures->name).'?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a></span>';
         });
 
-        return Datatable::collection($licenses)
-        ->addColumn('name', function($licenses) {
-            return link_to('/admin/licenses/'.$licenses->id.'/view', $licenses->name);
+        return Datatable::collection($fixtures)
+        ->addColumn('name', function($fixtures) {
+            return link_to('/admin/fixtures/'.$fixtures->id.'/view', $fixtures->name);
         })
-        ->addColumn('serial', function($licenses) {
-            return link_to('/admin/licenses/'.$licenses->id.'/view', mb_strimwidth($licenses->serial, 0, 50, "..."));
+        ->addColumn('serial', function($fixtures) {
+            return link_to('/admin/fixtures/'.$fixtures->id.'/view', mb_strimwidth($fixtures->serial, 0, 50, "..."));
         })
-        ->addColumn('totalSeats', function($licenses) {
-            return $licenses->totalSeatsByLicenseID();
+        ->addColumn('totalSeats', function($fixtures) {
+            return $fixtures->totalSeatsByFixtureID();
         })
-        ->addColumn('remaining', function($licenses) {
-            return $licenses->remaincount();
+        ->addColumn('remaining', function($fixtures) {
+            return $fixtures->remaincount();
         })
-        ->addColumn('purchase_date', function($licenses) {
-            return $licenses->purchase_date;
+        ->addColumn('purchase_date', function($fixtures) {
+            return $fixtures->purchase_date;
         })
-        ->addColumn('notes', function($licenses) {
-            return $licenses->notes;
+        ->addColumn('notes', function($fixtures) {
+            return $fixtures->notes;
         })
         ->addColumn($actions)
         ->searchColumns('name','serial','totalSeats','remaining','purchase_date','actions','notes')
@@ -918,13 +918,13 @@ class LicensesController extends AdminController
         ->make();
     }
 
-    public function getFreeLicense($licenseId) {
+    public function getFreeFixture($fixtureId) {
         // Check if the asset exists
-        if (is_null($license = License::find($licenseId))) {
+        if (is_null($fixture = Fixture::find($fixtureId))) {
             // Redirect to the asset management page with error
-            return Redirect::to('admin/licenses')->with('error', Lang::get('admin/licenses/message.not_found'));
+            return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
-        $seatId = $license->freeSeat($licenseId);
-        return Redirect::to('admin/licenses/'.$seatId.'/checkout');
+        $seatId = $fixture->freeSeat($fixtureId);
+        return Redirect::to('admin/fixtures/'.$seatId.'/checkout');
     }
 }

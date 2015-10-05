@@ -40,7 +40,7 @@
 	            @if ($log_action->asset_type=="hardware")
 	            	Asset
 	            @elseif ($log_action->asset_type=="software")
-	            	License
+	            	Fixture
 	            @elseif ($log_action->asset_type=="tool")
 	            	Tool
                 @elseif ($log_action->asset_type=="consumable")
@@ -51,8 +51,8 @@
             <td>
             @if (($log_action->assetlog) && ($log_action->asset_type=="hardware"))
                  {{ $log_action->assetlog->showAssetName() }}
-             @elseif (($log_action->licenselog) && ($log_action->asset_type=="software"))
-                 {{ $log_action->licenselog->name }}
+             @elseif (($log_action->fixturelog) && ($log_action->asset_type=="software"))
+                 {{ $log_action->fixturelog->name }}
              @elseif (($log_action->consumablelog) && ($log_action->asset_type=="consumable"))
                  {{ $log_action->consumablelog->name }}
              @elseif (($log_action->toollog) && ($log_action->asset_type=="tool"))

@@ -51,10 +51,10 @@
             Route::get( 'list/{status?}', [ 'as' => 'api.users.list', 'uses' => 'UsersController@getDatatable' ] );
         } );
 
-        /*---Licenses API---*/
-        Route::group( [ 'prefix' => 'licenses' ], function () {
+        /*---Fixtures API---*/
+        Route::group( [ 'prefix' => 'fixtures' ], function () {
 
-            Route::get( 'list', [ 'as' => 'api.licenses.list', 'uses' => 'LicensesController@getDatatable' ] );
+            Route::get( 'list', [ 'as' => 'api.fixtures.list', 'uses' => 'FixturesController@getDatatable' ] );
         } );
 
         /*---Locations API---*/
@@ -201,32 +201,32 @@
 
     Route::group( [ 'prefix' => 'admin', 'before' => 'admin-auth', 'namespace' => 'Controllers\Admin' ], function () {
 
-        # Licenses
-        Route::group( [ 'prefix' => 'licenses' ], function () {
+        # Fixtures
+        Route::group( [ 'prefix' => 'fixtures' ], function () {
 
-            Route::get( 'create', [ 'as' => 'create/licenses', 'uses' => 'LicensesController@getCreate' ] );
-            Route::post( 'create', 'LicensesController@postCreate' );
-            Route::get( '{licenseId}/edit', [ 'as' => 'update/license', 'uses' => 'LicensesController@getEdit' ] );
-            Route::post( '{licenseId}/edit', 'LicensesController@postEdit' );
-            Route::get( '{licenseId}/clone', [ 'as' => 'clone/license', 'uses' => 'LicensesController@getClone' ] );
-            Route::post( '{licenseId}/clone', 'LicensesController@postCreate' );
-            Route::get( '{licenseId}/delete', [ 'as' => 'delete/license', 'uses' => 'LicensesController@getDelete' ] );
-            Route::get( '{licenseId}/freecheckout',
-                [ 'as' => 'freecheckout/license', 'uses' => 'LicensesController@getFreeLicense' ] );
-            Route::get( '{licenseId}/checkout',
-                [ 'as' => 'checkout/license', 'uses' => 'LicensesController@getCheckout' ] );
-            Route::post( '{licenseId}/checkout', 'LicensesController@postCheckout' );
-            Route::get( '{licenseId}/checkin/{backto?}',
-                [ 'as' => 'checkin/license', 'uses' => 'LicensesController@getCheckin' ] );
-            Route::post( '{licenseId}/checkin/{backto?}', 'LicensesController@postCheckin' );
-            Route::get( '{licenseId}/view', [ 'as' => 'view/license', 'uses' => 'LicensesController@getView' ] );
-            Route::post( '{licenseId}/upload',
-                [ 'as' => 'upload/license', 'uses' => 'LicensesController@postUpload' ] );
-            Route::get( '{licenseId}/deletefile/{fileId}',
-                [ 'as' => 'delete/licensefile', 'uses' => 'LicensesController@getDeleteFile' ] );
-            Route::get( '{licenseId}/showfile/{fileId}',
-                [ 'as' => 'show/licensefile', 'uses' => 'LicensesController@displayFile' ] );
-            Route::get( '/', [ 'as' => 'licenses', 'uses' => 'LicensesController@getIndex' ] );
+            Route::get( 'create', [ 'as' => 'create/fixtures', 'uses' => 'FixturesController@getCreate' ] );
+            Route::post( 'create', 'FixturesController@postCreate' );
+            Route::get( '{fixtureId}/edit', [ 'as' => 'update/fixture', 'uses' => 'FixturesController@getEdit' ] );
+            Route::post( '{fixtureId}/edit', 'FixturesController@postEdit' );
+            Route::get( '{fixtureId}/clone', [ 'as' => 'clone/fixture', 'uses' => 'FixturesController@getClone' ] );
+            Route::post( '{fixtureId}/clone', 'FixturesController@postCreate' );
+            Route::get( '{fixtureId}/delete', [ 'as' => 'delete/fixture', 'uses' => 'FixturesController@getDelete' ] );
+            Route::get( '{fixtureId}/freecheckout',
+                [ 'as' => 'freecheckout/fixture', 'uses' => 'FixturesController@getFreeFixture' ] );
+            Route::get( '{fixtureId}/checkout',
+                [ 'as' => 'checkout/fixture', 'uses' => 'FixturesController@getCheckout' ] );
+            Route::post( '{fixtureId}/checkout', 'FixturesController@postCheckout' );
+            Route::get( '{fixtureId}/checkin/{backto?}',
+                [ 'as' => 'checkin/fixture', 'uses' => 'FixturesController@getCheckin' ] );
+            Route::post( '{fixtureId}/checkin/{backto?}', 'FixturesController@postCheckin' );
+            Route::get( '{fixtureId}/view', [ 'as' => 'view/fixture', 'uses' => 'FixturesController@getView' ] );
+            Route::post( '{fixtureId}/upload',
+                [ 'as' => 'upload/fixture', 'uses' => 'FixturesController@postUpload' ] );
+            Route::get( '{fixtureId}/deletefile/{fileId}',
+                [ 'as' => 'delete/fixturefile', 'uses' => 'FixturesController@getDeleteFile' ] );
+            Route::get( '{fixtureId}/showfile/{fileId}',
+                [ 'as' => 'show/fixturefile', 'uses' => 'FixturesController@displayFile' ] );
+            Route::get( '/', [ 'as' => 'fixtures', 'uses' => 'FixturesController@getIndex' ] );
         } );
 
         # Asset Maintenances
@@ -549,10 +549,10 @@
                 'as'   => 'reports/export/asset_maintenances',
                 'uses' => 'ReportsController@exportAssetMaintenancesReport'
             ] );
-        Route::get( 'reports/licenses',
-            [ 'as' => 'reports/licenses', 'uses' => 'ReportsController@getLicenseReport' ] );
-        Route::get( 'reports/export/licenses',
-            [ 'as' => 'reports/export/licenses', 'uses' => 'ReportsController@exportLicenseReport' ] );
+        Route::get( 'reports/fixtures',
+            [ 'as' => 'reports/fixtures', 'uses' => 'ReportsController@getFixtureReport' ] );
+        Route::get( 'reports/export/fixtures',
+            [ 'as' => 'reports/export/fixtures', 'uses' => 'ReportsController@exportFixtureReport' ] );
         Route::get( 'reports/assets', [ 'as' => 'reports/assets', 'uses' => 'ReportsController@getAssetsReport' ] );
         Route::get( 'reports/export/assets',
             [ 'as' => 'reports/export/assets', 'uses' => 'ReportsController@exportAssetReport' ] );

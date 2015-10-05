@@ -52,7 +52,7 @@
                     	<label>
 
                         {{ Form::checkbox('purchase_date', '1') }}
-                          @lang('admin/licenses/table.purchase_date')
+                          @lang('admin/fixtures/table.purchase_date')
                         </label>
                     </div>
                     <div class="checkbox col-md-12">
@@ -82,7 +82,7 @@
                     <div class="checkbox col-md-12">
                     	<label>
                         {{ Form::checkbox('assigned_to', '1') }}
-                        @lang('admin/licenses/table.assigned_to')
+                        @lang('admin/fixtures/table.assigned_to')
                         </label>
                     </div>
                     <div class="checkbox col-md-12">

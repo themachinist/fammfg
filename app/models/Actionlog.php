@@ -29,10 +29,10 @@
                         ->withTrashed();
         }
 
-        public function licenselog()
+        public function fixturelog()
         {
 
-            return $this->belongsTo( 'License', 'asset_id' )
+            return $this->belongsTo( 'Fixture', 'asset_id' )
                         ->withTrashed();
         }
 

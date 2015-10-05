@@ -136,10 +136,10 @@
                                    <i class="fa fa-barcode"></i>
                                    @lang('general.asset')</a>
                        </li>
-                       <li {{{ (Request::is('admin/licenses/create') ? 'class="active"' : '') }}}>
-                            <a href="{{ route('create/licenses') }}">
+                       <li {{{ (Request::is('admin/fixtures/create') ? 'class="active"' : '') }}}>
+                            <a href="{{ route('create/fixtures') }}">
                                 <i class="fa fa-certificate"></i>
-                                @lang('general.license')</a>
+                                @lang('general.fixture')</a>
                        </li>
 -->
                         <li {{{ (Request::is('admin/tools/create') ? 'class="active"' : '') }}}>
@@ -306,10 +306,10 @@
                 </a>
             </li>
 <!--
-            <li{{ (Request::is('admin/licenses*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
-                <a href="{{ URL::to('admin/licenses') }}"  >
+            <li{{ (Request::is('admin/fixtures*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
+                <a href="{{ URL::to('admin/fixtures') }}"  >
                     <i class="fa fa-certificate"></i>
-                     <span>@lang('general.licenses')</span>
+                     <span>@lang('general.fixtures')</span>
 
                 </a>
 
@@ -335,7 +335,7 @@
 	                 <li><a href="{{ URL::to('reports/activity') }}" {{ (Request::is('reports/activity') ? ' class="active"' : '') }} >@lang('general.activity_report')</a></li>
 <!-- # current unused reports
                     <li><a href="{{ URL::to('reports/depreciation') }}" {{{ (Request::is('reports/depreciation') ? ' class="active"' : '') }}} >@lang('general.depreciation_report')</a></li>
-					<li><a href="{{ URL::to('reports/licenses') }}" {{{ (Request::is('reports/licenses') ? ' class="active"' : '') }}} >@lang('general.license_report')</a></li>
+					<li><a href="{{ URL::to('reports/fixtures') }}" {{{ (Request::is('reports/fixtures') ? ' class="active"' : '') }}} >@lang('general.fixture_report')</a></li>
                     <li><a href="{{ URL::to('reports/asset_maintenances') }}" {{{ (Request::is('reports/asset_maintenances') ? ' class="active"' : '') }}} >@lang('general.asset_maintenance_report')</a></li>
                     <li><a href="{{ URL::to('reports/assets') }}" {{{ (Request::is('reports/assets') ? ' class="active"' : '') }}} >@lang('general.asset_report')</a></li>
                     <li><a href="{{ URL::to('reports/unaccepted_assets') }}" {{{ (Request::is('reports/unaccepted_assets') ? ' class="active"' : '') }}} >@lang('general.unaccepted_asset_report')</a></li>
@@ -392,17 +392,17 @@
                     </div>
                     <div class="col-md-3 col-sm-3 stat">
                         <div class="data">
-                            <a href="{{ URL::to('admin/licenses') }}">
-                                <span class="number">{{ number_format(License::assetcount()) }}</span>
-                                <span style="color:black">@lang('general.total_licenses')</span>
+                            <a href="{{ URL::to('admin/fixtures') }}">
+                                <span class="number">{{ number_format(Fixture::assetcount()) }}</span>
+                                <span style="color:black">@lang('general.total_fixtures')</span>
                             </a>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-3 stat last">
                         <div class="data">
-                            <a href="{{ URL::to('admin/licenses') }}">
-                                <span class="number">{{ number_format(License::availassetcount()) }}</span>
-                                <span style="color:black">@lang('general.licenses_available')</span>
+                            <a href="{{ URL::to('admin/fixtures') }}">
+                                <span class="number">{{ number_format(Fixture::availassetcount()) }}</span>
+                                <span style="color:black">@lang('general.fixtures_available')</span>
                             </a>
                         </div>
                     </div>

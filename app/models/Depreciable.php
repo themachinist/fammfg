@@ -13,7 +13,7 @@ class Depreciable extends Elegant
     //which will return the deprecation.
     //this is needed because assets get 
     //their depreciation from a model, 
-    //whereas licenses have deprecations
+    //whereas fixtures have deprecations
     //directly associated with them.
 
     //assets will override the following

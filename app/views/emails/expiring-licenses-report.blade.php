@@ -2,7 +2,7 @@
 
 @section('content')
 
-<p>There are {{{ $count }}} license(s) expiring next 60 days.</p>
+<p>There are {{{ $count }}} fixture(s) expiring next 60 days.</p>
 
 
 <table style="border: 1px solid black; padding: 5px;" width="100%" cellspacing="0" cellpadding="3">

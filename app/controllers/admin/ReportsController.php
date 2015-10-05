@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Input;
 use League\Csv\Reader;
-use License;
+use Fixture;
 use Location;
 use Model;
 use Redirect;
@@ -304,7 +304,7 @@ class ReportsController extends AdminController
                                 ->with( 'adminlog' )
                                 ->with( 'toollog' )
                                 ->with( 'assetlog' )
-                                ->with( 'licenselog' )
+                                ->with( 'fixturelog' )
                                 ->with( 'userlog' )
                                 ->orderBy( 'created_at', 'DESC' )
                                 ->get();
@@ -313,53 +313,53 @@ class ReportsController extends AdminController
     }
 
     /**
-     * Show Report for Licenses
+     * Show Report for Fixtures
      *
      * @return View
      */
-    public function getLicenseReport()
+    public function getFixtureReport()
     {
 
-        $licenses = License::orderBy( 'created_at', 'DESC' )
+        $fixtures = Fixture::orderBy( 'created_at', 'DESC' )
                            ->get();
 
-        return View::make( 'backend/reports/licenses', compact( 'licenses' ) );
+        return View::make( 'backend/reports/fixtures', compact( 'fixtures' ) );
     }
 
     /**
-     * Export License Report as CSV
+     * Export Fixture Report as CSV
      *
      * @return file download
      */
-    public function exportLicenseReport()
+    public function exportFixtureReport()
     {
 
-        $licenses = License::orderBy( 'created_at', 'DESC' )
+        $fixtures = Fixture::orderBy( 'created_at', 'DESC' )
                            ->get();
         $rows     = [ ];
         $header   = [
-            Lang::get( 'admin/licenses/table.title' ),
-            Lang::get( 'admin/licenses/table.serial' ),
-            Lang::get( 'admin/licenses/form.seats' ),
-            Lang::get( 'admin/licenses/form.remaining_seats' ),
-            Lang::get( 'admin/licenses/form.expiration' ),
-            Lang::get( 'admin/licenses/form.date' ),
-            Lang::get( 'admin/licenses/form.cost' )
+            Lang::get( 'admin/fixtures/table.title' ),
+            Lang::get( 'admin/fixtures/table.serial' ),
+            Lang::get( 'admin/fixtures/form.seats' ),
+            Lang::get( 'admin/fixtures/form.remaining_seats' ),
+            Lang::get( 'admin/fixtures/form.expiration' ),
+            Lang::get( 'admin/fixtures/form.date' ),
+            Lang::get( 'admin/fixtures/form.cost' )
         ];
 
         $header = array_map( 'trim', $header );
         $rows[] = implode( $header, ', ' );
 
-        // Row per license
-        foreach ($licenses as $license) {
+        // Row per fixture
+        foreach ($fixtures as $fixture) {
             $row   = [ ];
-            $row[] = $license->name;
-            $row[] = $license->serial;
-            $row[] = $license->seats;
-            $row[] = $license->remaincount();
-            $row[] = $license->expiration_date;
-            $row[] = $license->purchase_date;
-            $row[] = '"' . number_format( $license->purchase_cost ) . '"';
+            $row[] = $fixture->name;
+            $row[] = $fixture->serial;
+            $row[] = $fixture->seats;
+            $row[] = $fixture->remaincount();
+            $row[] = $fixture->expiration_date;
+            $row[] = $fixture->purchase_date;
+            $row[] = '"' . number_format( $fixture->purchase_cost ) . '"';
 
             $rows[] = implode( $row, ',' );
         }

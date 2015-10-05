@@ -10,7 +10,7 @@ return array(
     'email'                 => 'Email',
     'fax'                   => 'Fax',
     'id'                    => 'ID',
-    'licenses'              => 'Licenses',
+    'fixtures'              => 'Fixtures',
     'name'                  => 'Supplier Name',
     'notes'                 => 'Notes',
     'phone'                 => 'Phone',

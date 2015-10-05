@@ -75,7 +75,7 @@ View Assets for  {{{ $user->fullName() }}} ::
 
 
                             <!-- checked out assets table -->
-                            @if (count($user->licenses) > 0)
+                            @if (count($user->fixtures) > 0)
                             <br><br><br>
                             <h4>Software Checked Out to You</h4>
                             <br>
@@ -89,10 +89,10 @@ View Assets for  {{{ $user->fullName() }}} ::
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($user->licenses as $license)
+                                    @foreach ($user->fixtures as $fixture)
                                     <tr>
-                                        <td>{{{ $license->name }}}</td>
-                                        <td>{{{ $license->serial }}}</td>
+                                        <td>{{{ $fixture->name }}}</td>
+                                        <td>{{{ $fixture->serial }}}</td>
                                         </td>
                                     </tr>
                                     @endforeach
