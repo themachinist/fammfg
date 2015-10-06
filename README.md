@@ -2,7 +2,7 @@
 ## Snipe-MFG - Asset Management For the Rest of Us
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/themachinist/snipe-mfg?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Project Status](https://stillmaintained.com/themachinist/snipe-mfg.png)](https://stillmaintained.com/themachinist/snipe-mfg)
+[![Project Status](http://stillmaintained.com/themachinist/snipe-mfg.png)](https://stillmaintained.com/themachinist/snipe-mfg)
 
 This is a FOSS project for asset management in a manufacturing environment. In the case of the developer, that is in the tool crib of a machine shop. 
 
