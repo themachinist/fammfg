@@ -305,16 +305,16 @@
                     <span>@lang('general.consumables')</span>
                 </a>
             </li>
-<!--
+
             <li{{ (Request::is('admin/fixtures*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{ URL::to('admin/fixtures') }}"  >
-                    <i class="fa fa-certificate"></i>
-                     <span>@lang('general.fixtures')</span>
+					<i class="fa fa-simplybuilt"></i>
+			         <span>@lang('general.fixtures')</span>
 
                 </a>
 
             </li>
--->
+
             <li{{ (Request::is('admin/users*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{ URL::to('admin/users') }}">
                     <i class="fa fa-users"></i>
