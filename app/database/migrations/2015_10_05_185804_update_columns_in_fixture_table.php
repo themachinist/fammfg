@@ -13,8 +13,15 @@ class UpdateColumnsInFixtureTable extends Migration {
 	public function up()
 	{
 		Schema::table('fixtures', function($table) {
-			$table->renameColumn('license_name', 'fixture_name');
-			$table->renameColumn('license_email', 'fixture_email');
+			$table->decimal('build_cost', 8, 2)->nullable();
+			$table->string('job_number_built_on', 32);
+			$table->renameColumn('license_name', 'designer_name');
+			$table->renameColumn('license_email', 'designer_email');
+			$table->renameColumn('termination_date', 'maintenance_interval');
+			$table->renameColumn('seats', 'copies');
+			$table->renameColumn('maintained', 'needs_maintenance');
+			DB::statement('ALTER TABLE fixtures MODIFY COLUMN serial VARCHAR (255)');
+			$table->dropColumn('reassignable');
 		});
 	}
 
@@ -26,8 +33,15 @@ class UpdateColumnsInFixtureTable extends Migration {
 	public function down()
 	{
 		Schema::table('fixtures', function($table) {
-			$table->renameColumn('fixture_name', 'license_name');
-			$table->renameColumn('fixture_email', 'license_email');
+			$table->dropColumn('build_cost');
+			$table->dropColumn('job_number_built_on');
+			$table->renameColumn('designer_name', 'license_name');
+			$table->renameColumn('designer_email', 'license_email');
+			$table->renameColumn('maintenance_interval', 'termination_date');
+			$table->renameColumn('copies', 'seats');
+			$table->renameColumn('needs_maintenance', 'maintained');
+			DB::statement('ALTER TABLE fixtures MODIFY COLUMN serial text');
+			$table->boolean('reassignable');
 		});
 	}
 

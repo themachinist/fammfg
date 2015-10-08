@@ -14,6 +14,7 @@ class UpdateColumnsInFixtureSeatsTable extends Migration {
 	{
 		Schema::table('fixture_seats', function($table) {
 			$table->renameColumn('license_id', 'fixture_id');
+			$table->boolean('needs_maintenance');
 		});
 	}
 
@@ -26,6 +27,7 @@ class UpdateColumnsInFixtureSeatsTable extends Migration {
 	{
 		Schema::table('fixture_seats', function($table) {
 			$table->renameColumn('fixture_id', 'license_id');
+			$table->dropColumn('needs_maintenance');
 		});
 	}
 
