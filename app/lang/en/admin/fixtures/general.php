@@ -12,9 +12,9 @@ return array(
     'in_out'  					=> 'In/Out',
     'info'  					=> 'Fixture Info',
     'fixture_seats'  			=> 'Fixture Seats',
-    'seat'  					=> 'Seat',
-    'seats'  					=> 'Seats',
-    'software_fixtures'  		=> 'Software Fixtures',
+    'seat'  					=> 'Copy',
+    'seats'  					=> 'Copies',
+    'tooling_fixtures'  		=> 'Tooling and Fixtures',
     'user'  					=> 'User',
     'view'  					=> 'View Fixture',
 );
