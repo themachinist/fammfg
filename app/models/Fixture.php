@@ -10,13 +10,13 @@ class Fixture extends Depreciable
     protected $guarded = 'id';
     protected $table = 'fixtures';
     protected $rules = array(
-            'name'   => 'required|alpha_space|min:3|max:255',
-            'serial'   => 'required|min:5',
-            'seats'   => 'required|min:1|max:10000|integer',
-            'fixture_email'   => 'email|min:0|max:120',
-            'fixture_name'   => 'alpha_space|min:0|max:100',
-            'note'   => 'alpha_space',
-            'notes'   => 'alpha_space|min:0',
+            'name'			=> 'required|alpha_space|min:3|max:255',
+            'serial'		=> 'required|min:5',
+            'copies'		=> 'required|min:1|max:10000|integer',
+            'fixture_email'	=> 'email|min:0|max:120',
+            'fixture_name'  => 'alpha_space|min:0|max:100',
+            'note'			=> 'alpha_space',
+            'notes'			=> 'alpha_space|min:0',
         );
 
     /**
@@ -24,7 +24,7 @@ class Fixture extends Depreciable
      */
     public function assignedusers()
     {
-        return $this->belongsToMany('User','fixture_seats','assigned_to','fixture_id');
+        return $this->belongsToMany('User','fixture_copies','assigned_to','fixture_id');
     }
 
     /**
@@ -63,7 +63,7 @@ class Fixture extends Depreciable
     */
      public static function assetcount()
     {
-        return DB::table('fixture_seats')
+        return DB::table('fixture_copies')
                     ->whereNull('deleted_at')
                     ->count();
     }
@@ -72,21 +72,20 @@ class Fixture extends Depreciable
     /**
     * Get total fixtures
     */
-     public function totalSeatsByFixtureID()
+     public function totalCopysByFixtureID()
     {
-        return DB::table('fixture_seats')
+        return DB::table('fixture_copies')
         			->where('fixture_id', '=', $this->id)
                     ->whereNull('deleted_at')
                     ->count();
     }
-
 
     /**
     * Get total fixtures not checked out
     */
      public static function availassetcount()
     {
-        return DB::table('fixture_seats')
+        return DB::table('fixture_copies')
                     ->whereNull('assigned_to')
                     ->whereNull('asset_id')
                     ->whereNull('deleted_at')
@@ -94,11 +93,11 @@ class Fixture extends Depreciable
     }
 
     /**
-     * Get the number of available seats
+     * Get the number of available copies
      */
     public function availcount()
     {
-        return DB::table('fixture_seats')
+        return DB::table('fixture_copies')
                     ->whereNull('assigned_to')
                     ->whereNull('asset_id')
                     ->where('fixture_id', '=', $this->id)
@@ -107,33 +106,30 @@ class Fixture extends Depreciable
     }
 
     /**
-     * Get the number of assigned seats
+     * Get the number of assigned copies
      *
      */
     public function assignedcount()
     {
-
-		return FixtureSeat::where('fixture_id', '=', $this->id)
+		return FixtureCopy::where('fixture_id', '=', $this->id)
 			->where( function ( $query )
 			{
 			$query->whereNotNull('assigned_to')
 			->orWhereNotNull('asset_id');
 			})
 		->count();
-
-
     }
 
     public function remaincount()
     {
-    	$total = $this->totalSeatsByFixtureID();
+    	$total = $this->totalCopysByFixtureID();
         $taken =  $this->assignedcount();
         $diff =   ($total - $taken);
         return $diff;
     }
 
     /**
-     * Get the total number of seats
+     * Get the total number of copies
      */
     public function totalcount()
     {
@@ -144,11 +140,11 @@ class Fixture extends Depreciable
     }
 
     /**
-     * Get fixture seat data
+     * Get fixture copy data
      */
-    public function fixtureseats()
+    public function fixturecopies()
     {
-        return $this->hasMany('FixtureSeat');
+        return $this->hasMany('FixtureCopy');
     }
 
     public function supplier()
@@ -156,14 +152,14 @@ class Fixture extends Depreciable
         return $this->belongsTo('Supplier','supplier_id');
     }
 
-public function freeSeat()
+	public function freeCopy()
     {
-        $seat = FixtureSeat::where('fixture_id','=',$this->id)
+        $copy = FixtureCopy::where('fixture_id','=',$this->id)
                     ->whereNull('deleted_at')
                     ->whereNull('assigned_to')
                     ->whereNull('asset_id')
                     ->first();
-        return $seat->id;
+        return $copy->id;
     }
 
 	public static function getExpiringFixtures($days = 60) {
