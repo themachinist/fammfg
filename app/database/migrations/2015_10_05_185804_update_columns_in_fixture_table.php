@@ -14,6 +14,7 @@ class UpdateColumnsInFixtureTable extends Migration {
 	{
 		Schema::table('fixtures', function($table) {
 			$table->decimal('build_cost', 8, 2)->nullable();
+			$table->date('build_date')->nullable();
 			$table->string('job_number_built_on', 32);
 			$table->renameColumn('license_name', 'designer_name');
 			$table->renameColumn('license_email', 'designer_email');
@@ -34,6 +35,7 @@ class UpdateColumnsInFixtureTable extends Migration {
 	{
 		Schema::table('fixtures', function($table) {
 			$table->dropColumn('build_cost');
+			$table->dropColumn('build_date');
 			$table->dropColumn('job_number_built_on');
 			$table->renameColumn('designer_name', 'license_name');
 			$table->renameColumn('designer_email', 'license_email');
