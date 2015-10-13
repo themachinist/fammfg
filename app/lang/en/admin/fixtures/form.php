@@ -3,10 +3,12 @@
 return array(
 
     'asset'             => 'Asset',
+	'available_copies'  => 'Avail',
     'checkin'           => 'Checkin',
 	'build_cost'		=> 'Build Cost', 
 	'build_date'		=> 'Build Date',
     'cost'              => 'Purchase Cost',
+	'copies'			=> 'Copies',
     'create'            => 'Create Fixture',
     'date'              => 'Purchase Date',
     'depreciation'      => 'Depreciation',
@@ -20,8 +22,6 @@ return array(
     'notes'             => 'Notes',
     'order'             => 'Order No.',
     'purchase_order'    => 'Purchase Order Number',
-    'remaining_seats'   => 'Remaining Seats',
-    'seats'             => 'Copies',
     'serial'            => 'Serial',
     'supplier'          => 'Supplier',
     'termination_date'  => 'Termination Date',
