@@ -1,7 +1,7 @@
 @extends('backend/layouts/default')
 
 {{-- Page title --}}
-@lang('admin/fixtures/general.software_fixtures') ::
+@lang('admin/fixtures/general.tooling_fixtures') ::
 @parent
 @stop
 
@@ -12,7 +12,7 @@
 <div class="row header">
     <div class="col-md-12">
         <a href="{{ route('create/fixtures') }}" class="btn btn-success pull-right"><i class="fa fa-plus icon-white"></i> Create New</a>
-        <h3>@lang('admin/fixtures/general.software_fixtures')</h3>
+        <h3>@lang('admin/fixtures/general.tooling_fixtures')</h3>
     </div>
 </div>
 
@@ -20,9 +20,9 @@
     {{ Datatable::table()
                 ->addColumn(Lang::get('admin/fixtures/table.title'),
                             Lang::get('admin/fixtures/table.serial'),
-                            Lang::get('admin/fixtures/form.seats'),
-                            Lang::get('admin/fixtures/form.remaining_seats'),
-                            Lang::get('admin/fixtures/table.purchase_date'),
+                            Lang::get('admin/fixtures/form.copies'),
+                            Lang::get('admin/fixtures/form.available_copies'),
+                            Lang::get('admin/fixtures/table.needs_maintenance'),
                             Lang::get('admin/fixtures/form.notes'),
                             Lang::get('table.actions'))
                 ->setOptions(
