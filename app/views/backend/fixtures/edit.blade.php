@@ -63,13 +63,13 @@
 			</div>
 
 			<!-- Seats -->
-			<div class="form-group {{ $errors->has('seats') ? ' has-error' : '' }}">
-				<label for="seats" class="col-md-3 control-label">@lang('admin/fixtures/form.seats')
+			<div class="form-group {{ $errors->has('copies') ? ' has-error' : '' }}">
+				<label for="copies" class="col-md-3 control-label">@lang('admin/fixtures/form.copies')
 				 <i class='fa fa-asterisk'></i></label>
 				 </label>
 					<div class="col-md-3">
-						<input class="form-control" type="text" name="seats" id="seats" value="{{ Input::old('seats', $fixture->seats) }}" />
-						{{ $errors->first('seats', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
+						<input class="form-control" type="text" name="copies" id="copies" value="{{ Input::old('copies', $fixture->copies) }}" />
+						{{ $errors->first('copies', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
 					</div>
 			</div>
 
