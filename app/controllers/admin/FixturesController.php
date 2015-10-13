@@ -10,7 +10,7 @@ use User;
 use Actionlog;
 use DB;
 use Redirect;
-use FixtureSeat;
+use FixtureCopy;
 use Depreciation;
 use Setting;
 use Sentry;
@@ -31,16 +31,11 @@ class FixturesController extends AdminController
      *
      * @return View
      */
-
-
-
-
     public function getIndex()
     {
         // Show the page
         return View::make('backend/fixtures/index');
     }
-
 
     /**
      * Fixture create.
@@ -63,7 +58,6 @@ class FixturesController extends AdminController
             ->with('fixture',new Fixture);
     }
 
-
     /**
      * Fixture create form processing.
      *
@@ -71,88 +65,57 @@ class FixturesController extends AdminController
      */
     public function postCreate()
     {
-
-
         // get the POST data
-        $new = Input::all();
+        $form_input = Input::all();
 
         // create a new model instance
         $fixture = new Fixture();
 
-        // attempt validation
-        if ($fixture->validate($new)) {
-
-            if ( e(Input::get('purchase_cost')) == '') {
-                    $fixture->purchase_cost =  NULL;
-            } else {
-                    $fixture->purchase_cost = ParseFloat(e(Input::get('purchase_cost')));
-                    //$fixture->purchase_cost = e(Input::get('purchase_cost'));
-            }
-
-            if ( e(Input::get('supplier_id')) == '') {
-                $fixture->supplier_id = NULL;
-            } else {
-                $fixture->supplier_id = e(Input::get('supplier_id'));
-            }
-
-            if ( e(Input::get('maintained')) == '') {
-                $fixture->maintained = 0;
-            } else {
-                $fixture->maintained = e(Input::get('maintained'));
-            }
-
-            if ( e(Input::get('reassignable')) == '') {
-                $fixture->reassignable = 0;
-            } else {
-                $fixture->reassignable = e(Input::get('reassignable'));
-            }
-
-            if ( e(Input::get('purchase_order')) == '') {
-                $fixture->purchase_order = '';
-            } else {
-                $fixture->purchase_order = e(Input::get('purchase_order'));
-            }
+        if ($fixture->validate($form_input)) {
+			// attempt to validate form input, in order of appearance on form
 
             // Save the fixture data
-            $fixture->name              = e(Input::get('name'));
-            $fixture->serial            = e(Input::get('serial'));
-            $fixture->fixture_email     = e(Input::get('fixture_email'));
-            $fixture->fixture_name      = e(Input::get('fixture_name'));
-            $fixture->notes             = e(Input::get('notes'));
-            $fixture->order_number      = e(Input::get('order_number'));
-            $fixture->seats             = e(Input::get('seats'));
-            $fixture->purchase_date     = e(Input::get('purchase_date'));
-            $fixture->purchase_order    = e(Input::get('purchase_order'));
-            $fixture->depreciation_id   = e(Input::get('depreciation_id'));
-            $fixture->expiration_date   = e(Input::get('expiration_date'));
-            $fixture->user_id           = Sentry::getId();
-
-            if (($fixture->purchase_date == "") || ($fixture->purchase_date == "0000-00-00")) {
-                $fixture->purchase_date = NULL;
-            }
-
-            if (($fixture->expiration_date == "") || ($fixture->expiration_date == "0000-00-00")) {
-                $fixture->expiration_date = NULL;
-            }
-
-            if (($fixture->purchase_cost == "") || ($fixture->purchase_cost == "0.00")) {
-                $fixture->purchase_cost = NULL;
-            }
+            $fixture->name					= e(Input::get( 'name' ));
+            $fixture->serial				= e(Input::get( 'serial' ));
+            $fixture->copies				= e(Input::get( 'copies' ));
+			$fixture->needs_maintenance		= e(Input::get( 'needs_maintenance' )) == ''	? 0 : e(Input::get( 'needs_maintenance' ));
+            $fixture->maintenance_interval	= e(Input::get( 'maintenance_interval' ));
+			// Purchased
+			$fixture->supplier_id			= e(Input::get( 'supplier_id' )) == '' ? NULL : e(Input::get( 'supplier_id' ));
+            $fixture->order_number			= e(Input::get( 'order_number' ));
+            $fixture->purchase_date			= e(Input::get( 'purchase_date' ));
+			// as of php 5.3 it is possible to leave the middle of the ternary operator out. so i inverted the comparison.
+			$fixture->purchase_date			= (! (($fixture->purchase_date == "") || ($fixture->purchase_date == "0000-00-00")) ? : NULL );
+			$fixture->purchase_cost			= e(Input::get( 'purchase_cost' )) == '' ? 0 : ParseFloat(e(Input::get( 'purchase_cost' )));
+            $fixture->purchase_order		= e(Input::get( 'purchase_order' ));
+            $fixture->expiration_date		= e(Input::get( 'expiration_date' ));
+			$fixture->expiration_date		= (! (($fixture->expiration_date == "") || ($fixture->expiration_date == "0000-00-00")) ? : NULL );
+            $fixture->depreciation_id		= e(Input::get( 'depreciation_id' ));
+            $fixture->notes					= e(Input::get( 'notes' ));
+			// Built in-house
+            $fixture->designer_name			= e(Input::get( 'designer_email'));
+            $fixture->designer_email		= e(Input::get( 'designer_name'));
+            $fixture->build_date			= e(Input::get( 'build_date' ));
+			$fixture->build_date			= (! (($fixture->build_date == "") || ($fixture->build_date == "0000-00-00")) ? : NULL );
+			$fixture->build_cost			= e(Input::get( 'build_cost' )) == '' ? 0 : ParseFloat(e(Input::get( 'build_cost' )));
+			$fixture->build_cost			= (! (($fixture->build_cost == "") || ($fixture->build_cost == "0.00")) ? : NULL  );
+            $fixture->user_id				= Sentry::getId();
 
             // Was the fixture created?
             if($fixture->save()) {
-
+				// save the fixture copy data if the fixture was saved
                 $insertedId = $fixture->id;
-                // Save the fixture seat data
-                for ($x=0; $x<$fixture->seats; $x++) {
-                    $fixture_seat = new FixtureSeat();
-                    $fixture_seat->fixture_id       = $insertedId;
-                    $fixture_seat->user_id          = Sentry::getId();
-                    $fixture_seat->assigned_to      = NULL;
-                    $fixture_seat->notes            = NULL;
-                    $fixture_seat->save();
+			
+                for ($x=0; $x<$fixture->copies; $x++) {
+					// instantiate and save a new copy
+                    $fixture_copy = new FixtureCopy();
+                    $fixture_copy->fixture_id       = $insertedId;
+                    $fixture_copy->user_id          = Sentry::getId();
+                    $fixture_copy->assigned_to      = NULL;
+                    $fixture_copy->notes            = NULL;
+					// needs maintenance set to false by default
+                    $fixture_copy->save();
                 }
-
 
                 // Redirect to the new fixture page
                 return Redirect::to("admin/fixtures")->with('success', Lang::get('admin/fixtures/message.create.success'));
@@ -165,7 +128,6 @@ class FixturesController extends AdminController
 
         // Redirect to the fixture create page
         return Redirect::to('admin/fixtures/edit')->with('error', Lang::get('admin/fixtures/message.create.error'))->with('fixture',new Fixture);
-
     }
 
     /**
@@ -178,17 +140,17 @@ class FixturesController extends AdminController
     {
         // Check if the fixture exists
         if (is_null($fixture = Fixture::find($fixtureId))) {
-            // Redirect to the blogs management page
+            // Redirect to the blogs management page  - what?
             return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.does_not_exist'));
         }
 
-            if ($fixture->purchase_date == "0000-00-00") {
-                $fixture->purchase_date = NULL;
-            }
+		if ($fixture->purchase_date == "0000-00-00") {
+			$fixture->purchase_date = NULL;
+		}
 
-            if ($fixture->purchase_cost == "0.00") {
-                $fixture->purchase_cost = NULL;
-            }
+		if ($fixture->purchase_cost == "0.00") {
+			$fixture->purchase_cost = NULL;
+		}
 
         // Show the page
         $fixture_options = array('' => 'Top Level') + DB::table('assets')->where('id', '!=', $fixtureId)->lists('name', 'id');
@@ -211,154 +173,103 @@ class FixturesController extends AdminController
      */
     public function postEdit($fixtureId = null)
     {
-        // Check if the fixture exists
-        if (is_null($fixture = Fixture::find($fixtureId))) {
-            // Redirect to the blogs management page
-            return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.does_not_exist'));
-        }
+		// Check if the fixture exists
+		if (is_null($fixture = Fixture::find($fixtureId))) {
+			// Redirect to the blogs management page
+			return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.does_not_exist'));
+		}
+		
+		// get the POST data
+		$form_input = Input::all();
+		
+		if ($fixture->validate($form_input)) {
+			// save the updated fixture data if validation is successful
+			$fixture->name					= e(Input::get( 'name' ));
+			$fixture->serial				= e(Input::get( 'serial' ));
+			$fixture->copies				= e(Input::get( 'copies' ));
+			$fixture->needs_maintenance		= e(Input::get( 'needs_maintenance' )) == ''	? 0 : e(Input::get( 'needs_maintenance' ));
+			$fixture->maintenance_interval	= e(Input::get( 'maintenance_interval' ));
+			// Purchased
+			$fixture->supplier_id			= e(Input::get( 'supplier_id' )) == '' ? NULL : e(Input::get( 'supplier_id' ));
+			$fixture->order_number			= e(Input::get( 'order_number' ));
+			$fixture->purchase_date			= e(Input::get( 'purchase_date' ));
+			// as of php 5.3 it is possible to leave the middle of the ternary operator out. so i inverted the comparison.
+			$fixture->purchase_date			= (! (($fixture->purchase_date == "") || ($fixture->purchase_date == "0000-00-00")) ? : NULL );
+			$fixture->purchase_cost			= e(Input::get( 'purchase_cost' )) == '' ? 0 : ParseFloat(e(Input::get( 'purchase_cost' )));
+			$fixture->purchase_order		= e(Input::get( 'purchase_order' ));
+			$fixture->expiration_date		= e(Input::get( 'expiration_date' ));
+			$fixture->expiration_date		= (! (($fixture->expiration_date == "") || ($fixture->expiration_date == "0000-00-00")) ? : NULL );
+			$fixture->depreciation_id		= e(Input::get( 'depreciation_id' ));
+			$fixture->notes					= e(Input::get( 'notes' ));
+			// Built in-house
+			$fixture->designer_name			= e(Input::get( 'designer_email'));
+			$fixture->designer_email		= e(Input::get( 'designer_name'));
+			$fixture->build_date			= e(Input::get( 'build_date' ));
+			$fixture->build_date			= (! (($fixture->build_date == "") || ($fixture->build_date == "0000-00-00")) ? : NULL );
+			$fixture->build_cost			= e(Input::get( 'build_cost' )) == '' ? 0 : ParseFloat(e(Input::get( 'build_cost' )));
+			$fixture->build_cost			= (! (($fixture->build_cost == "") || ($fixture->build_cost == "0.00")) ? : NULL  );
+			$fixture->user_id				= Sentry::getId();
 
+			//Are we changing the total number of copies?
+			if( $fixture->copies != e(Input::get('copies'))) {
+				//Determine how many copies we are dealing with
+				$difference = e(Input::get('copies')) - $fixture->fixture_copys()->count();
 
-        // get the POST data
-        $new = Input::all();
+				if( $difference < 0 ) {
+					//Filter out any fixture which have a user attached;
+					$copies = $fixture->fixture_copys->filter(function ($seat) {
+						return is_null($seat->user);
+					});
 
+					//If the remaining collection is as large or larger than the number of copies we want to delete
+					if($copies->count() >= abs($difference)) {
+						for ($i=1; $i <= abs($difference); $i++) {
+							$logaction->asset_id = $fixture->id;
+							$logaction->asset_type = 'fixture';
+							$logaction->user_id = Sentry::getUser()->id;
+							$logaction->note = abs($difference)." copies";
+							$logaction->checkedout_to =  NULL;
+							$log = $logaction->logaction('delete copies');
+						}
+					} else {
+						// Redirect to the fixture edit page
+						return Redirect::to("admin/fixtures/$fixtureId/edit")->with('error', Lang::get('admin/fixtures/message.assoc_users'));
+					}
+				} else {
+					for ($i=1; $i <= $difference; $i++) {
+						//Create a seat for this fixture
+						$fixture_seat = new FixtureCopy();
+						$fixture_seat->fixture_id       = $fixture->id;
+						$fixture_seat->user_id          = Sentry::getId();
+						$fixture_seat->assigned_to      = NULL;
+						$fixture_seat->notes            = NULL;
+						$fixture_seat->save();
+					}
 
+					//Log the addition of fixture to the log.
+					$logaction = new Actionlog();
+					$logaction->asset_id = $fixture->id;
+					$logaction->asset_type = 'software';
+					$logaction->user_id = Sentry::getUser()->id;
+					$logaction->note = abs($difference)." copies";
+					$log = $logaction->logaction('add copies');
+				}
+				$fixture->copies = e(Input::get('copies'));
+			}
 
-        // attempt validation
-        if ($fixture->validate($new)) {
-
-            // Update the fixture data
-            $fixture->name              = e(Input::get('name'));
-            $fixture->serial            = e(Input::get('serial'));
-            $fixture->fixture_email     = e(Input::get('fixture_email'));
-            $fixture->fixture_name      = e(Input::get('fixture_name'));
-            $fixture->notes             = e(Input::get('notes'));
-            $fixture->order_number      = e(Input::get('order_number'));
-            $fixture->depreciation_id   = e(Input::get('depreciation_id'));
-            $fixture->purchase_order    = e(Input::get('purchase_order'));
-            $fixture->maintained        = e(Input::get('maintained'));
-            $fixture->reassignable      = e(Input::get('reassignable'));
-
-            if ( e(Input::get('supplier_id')) == '') {
-                $fixture->supplier_id = NULL;
-            } else {
-                $fixture->supplier_id = e(Input::get('supplier_id'));
-            }
-
-            // Update the asset data
-            if ( e(Input::get('purchase_date')) == '') {
-                    $fixture->purchase_date =  NULL;
-            } else {
-                    $fixture->purchase_date = e(Input::get('purchase_date'));
-            }
-
-            if ( e(Input::get('expiration_date')) == '') {
-                $fixture->expiration_date = NULL;
-            } else {
-                $fixture->expiration_date = e(Input::get('expiration_date'));
-            }
-
-            // Update the asset data
-            if ( e(Input::get('termination_date')) == '') {
-                $fixture->termination_date =  NULL;
-            } else {
-                $fixture->termination_date = e(Input::get('termination_date'));
-            }
-
-            if ( e(Input::get('purchase_cost')) == '') {
-                    $fixture->purchase_cost =  NULL;
-            } else {
-                    $fixture->purchase_cost = ParseFloat(e(Input::get('purchase_cost')));
-                    //$fixture->purchase_cost = e(Input::get('purchase_cost'));
-            }
-
-            if ( e(Input::get('maintained')) == '') {
-                $fixture->maintained = 0;
-            } else {
-                $fixture->maintained = e(Input::get('maintained'));
-            }
-
-            if ( e(Input::get('reassignable')) == '') {
-                $fixture->reassignable = 0;
-            } else {
-                $fixture->reassignable = e(Input::get('reassignable'));
-            }
-
-            if ( e(Input::get('purchase_order')) == '') {
-                $fixture->purchase_order = '';
-            } else {
-                $fixture->purchase_order = e(Input::get('purchase_order'));
-            }
-
-
-            //Are we changing the total number of seats?
-            if( $fixture->seats != e(Input::get('seats'))) {
-                //Determine how many seats we are dealing with
-                $difference = e(Input::get('seats')) - $fixture->fixtureseats()->count();
-
-                if( $difference < 0 ) {
-                    //Filter out any fixture which have a user attached;
-                    $seats = $fixture->fixtureseats->filter(function ($seat) {
-                        return is_null($seat->user);
-                    });
-
-
-                    //If the remaining collection is as large or larger than the number of seats we want to delete
-                    if($seats->count() >= abs($difference)) {
-                        for ($i=1; $i <= abs($difference); $i++) {
-                            //Delete the appropriate number of seats
-                            $seats->pop()->delete();
-                        }
-
-                        //Log the deletion of seats to the log
-                        $logaction = new Actionlog();
-                        $logaction->asset_id = $fixture->id;
-                        $logaction->asset_type = 'software';
-                        $logaction->user_id = Sentry::getUser()->id;
-                        $logaction->note = abs($difference)." seats";
-                        $logaction->checkedout_to =  NULL;
-                        $log = $logaction->logaction('delete seats');
-
-                    } else {
-                        // Redirect to the fixture edit page
-                        return Redirect::to("admin/fixtures/$fixtureId/edit")->with('error', Lang::get('admin/fixtures/message.assoc_users'));
-                    }
-                } else {
-
-                    for ($i=1; $i <= $difference; $i++) {
-                        //Create a seat for this fixture
-                        $fixture_seat = new FixtureSeat();
-                        $fixture_seat->fixture_id       = $fixture->id;
-                        $fixture_seat->user_id          = Sentry::getId();
-                        $fixture_seat->assigned_to      = NULL;
-                        $fixture_seat->notes            = NULL;
-                        $fixture_seat->save();
-                    }
-
-                    //Log the addition of fixture to the log.
-                    $logaction = new Actionlog();
-                    $logaction->asset_id = $fixture->id;
-                    $logaction->asset_type = 'software';
-                    $logaction->user_id = Sentry::getUser()->id;
-                    $logaction->note = abs($difference)." seats";
-                    $log = $logaction->logaction('add seats');
-                }
-                $fixture->seats             = e(Input::get('seats'));
-            }
-
-            // Was the asset created?
-            if($fixture->save()) {
-                // Redirect to the new fixture page
-                return Redirect::to("admin/fixtures/$fixtureId/view")->with('success', Lang::get('admin/fixtures/message.update.success'));
-            }
-        } else {
-            // failure
-            $errors = $fixture->errors();
-            return Redirect::back()->withInput()->withErrors($errors);
-        }
-
-        // Redirect to the fixture edit page
-        return Redirect::to("admin/fixtures/$fixtureId/edit")->with('error', Lang::get('admin/fixtures/message.update.error'));
-
+			// Was the asset created?
+			if($fixture->save()) {
+				// Redirect to the new fixture page
+				return Redirect::to("admin/fixtures/$fixtureId/view")->with('success', Lang::get('admin/fixtures/message.update.success'));
+			}
+		} else {
+			// failure
+			$errors = $fixture->errors();
+			return Redirect::back()->withInput()->withErrors($errors);
+		}
+		
+		// Redirect to the fixture edit page
+		return Redirect::to("admin/fixtures/$fixtureId/edit")->with('error', Lang::get('admin/fixtures/message.update.error'));
     }
 
     /**
@@ -374,33 +285,23 @@ class FixturesController extends AdminController
             // Redirect to the fixture management page
             return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
-
+		
         if (($fixture->assignedcount()) && ($fixture->assignedcount() > 0)) {
-
             // Redirect to the fixture management page
             return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.assoc_users'));
-
         } else {
-
-            // Delete the fixture and the associated fixture seats
-            DB::table('fixture_seats')
+            // Delete the fixture and the associated fixture copies
+            DB::table('fixture_copies')
             ->where('id', $fixture->id)
             ->update(array('assigned_to' => NULL,'asset_id' => NULL));
 
-            $fixtureseats = $fixture->fixtureseats();
-            $fixtureseats->delete();
+            $fixture->fixture_copies->delete();
             $fixture->delete();
-
-
-
 
             // Redirect to the fixtures management page
             return Redirect::to('admin/fixtures')->with('success', Lang::get('admin/fixtures/message.delete.success'));
         }
-
-
     }
-
 
     /**
     * Check out the asset to a person
@@ -408,7 +309,7 @@ class FixturesController extends AdminController
     public function getCheckout($seatId)
     {
         // Check if the asset exists
-        if (is_null($fixtureseat = FixtureSeat::find($seatId))) {
+        if (is_null($fixture_copy = FixtureCopy::find($seatId))) {
             // Redirect to the asset management page with error
             return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
@@ -441,19 +342,15 @@ class FixturesController extends AdminController
 
             }
 
-        return View::make('backend/fixtures/checkout', compact('fixtureseat'))->with('users_list',$users_list)->with('asset_list',$asset_element);
+        return View::make('backend/fixtures/checkout', compact('fixture_copy'))->with('users_list',$users_list)->with('asset_list',$asset_element);
 
     }
-
-
 
     /**
     * Check out the asset to a person
     **/
     public function postCheckout($seatId)
     {
-
-
         $assigned_to = e(Input::get('assigned_to'));
         $asset_id = e(Input::get('asset_id'));
         $user = Sentry::getUser();
@@ -483,7 +380,6 @@ class FixturesController extends AdminController
         }
 
         if ($asset_id!='') {
-
             if (is_null($is_asset_id = Asset::find($asset_id))) {
                 // Redirect to the asset management page with error
                 return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.asset_does_not_exist'));
@@ -493,44 +389,40 @@ class FixturesController extends AdminController
                 //echo 'asset assigned to: '.$is_asset_id->assigned_to.'<br>fixture assigned to: '.$assigned_to;
                 return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.owner_doesnt_match_asset'));
             }
-
         }
 
-
-
 		// Check if the asset exists
-        if (is_null($fixtureseat = FixtureSeat::find($seatId))) {
+        if (is_null($fixture_copy = FixtureCopy::find($seatId))) {
             // Redirect to the asset management page with error
             return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
 
 		if (Input::get('asset_id') == '') {
-            $fixtureseat->asset_id = NULL;
+            $fixture_copy->asset_id = NULL;
         } else {
-            $fixtureseat->asset_id = e(Input::get('asset_id'));
+            $fixture_copy->asset_id = e(Input::get('asset_id'));
         }
 
         // Update the asset data
         if ( e(Input::get('assigned_to')) == '') {
-                $fixtureseat->assigned_to =  NULL;
+                $fixture_copy->assigned_to =  NULL;
 
         } else {
-                $fixtureseat->assigned_to = e(Input::get('assigned_to'));
+                $fixture_copy->assigned_to = e(Input::get('assigned_to'));
         }
 
         // Was the asset updated?
-        if($fixtureseat->save()) {
-
+        if($fixture_copy->save()) {
             $logaction = new Actionlog();
 
             //$logaction->location_id = $assigned_to->location_id;
             $logaction->asset_type = 'software';
             $logaction->user_id = Sentry::getUser()->id;
             $logaction->note = e(Input::get('note'));
-            $logaction->asset_id = $fixtureseat->fixture_id;
+            $logaction->asset_id = $fixture_copy->fixture_id;
 
 
-			$fixture = Fixture::find($fixtureseat->fixture_id);
+			$fixture = Fixture::find($fixture_copy->fixture_id);
             $settings = Setting::getSettings();
 
 
@@ -591,22 +483,19 @@ class FixturesController extends AdminController
         return Redirect::to('admin/fixtures/$assetId/checkout')->with('error', Lang::get('admin/fixtures/message.create.error'))->with('fixture',new Fixture);
     }
 
-
     /**
     * Check the fixture back into inventory
     **/
     public function getCheckin($seatId = null, $backto = null)
     {
         // Check if the asset exists
-        if (is_null($fixtureseat = FixtureSeat::find($seatId))) {
+        if (is_null($fixture_copy = FixtureCopy::find($seatId))) {
             // Redirect to the asset management page with error
             return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
-        return View::make('backend/fixtures/checkin', compact('fixtureseat'))->with('backto',$backto);
+        return View::make('backend/fixtures/checkin', compact('fixture_copy'))->with('backto',$backto);
 
     }
-
-
 
     /**
     * Check in the item so that it can be checked out again to someone else
@@ -614,12 +503,12 @@ class FixturesController extends AdminController
     public function postCheckin($seatId = null, $backto = null)
     {
         // Check if the asset exists
-        if (is_null($fixtureseat = FixtureSeat::find($seatId))) {
+        if (is_null($fixture_copy = FixtureCopy::find($seatId))) {
             // Redirect to the asset management page with error
             return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
 
-        $fixture = Fixture::find($fixtureseat->fixture_id);
+        $fixture = Fixture::find($fixture_copy->fixture_id);
 
         if(!$fixture->reassignable) {
             // Not allowed to checkin
@@ -641,19 +530,19 @@ class FixturesController extends AdminController
             // Ooops.. something went wrong
             return Redirect::back()->withInput()->withErrors($validator);
         }
-		$return_to = $fixtureseat->assigned_to;
+		$return_to = $fixture_copy->assigned_to;
         $logaction = new Actionlog();
-        $logaction->checkedout_to = $fixtureseat->assigned_to;
+        $logaction->checkedout_to = $fixture_copy->assigned_to;
 
         // Update the asset data
-        $fixtureseat->assigned_to                   = NULL;
-        $fixtureseat->asset_id                      = NULL;
+        $fixture_copy->assigned_to                   = NULL;
+        $fixture_copy->asset_id                      = NULL;
 
         $user = Sentry::getUser();
 
         // Was the asset updated?
-        if($fixtureseat->save()) {
-            $logaction->asset_id = $fixtureseat->fixture_id;
+        if($fixture_copy->save()) {
+            $logaction->asset_id = $fixture_copy->fixture_id;
             $logaction->location_id = NULL;
             $logaction->asset_type = 'software';
             $logaction->note = e(Input::get('note'));
@@ -702,7 +591,7 @@ class FixturesController extends AdminController
 			if ($backto=='user') {
 				return Redirect::to("admin/users/".$return_to.'/view')->with('success', Lang::get('admin/fixtures/message.checkin.success'));
 			} else {
-				return Redirect::to("admin/fixtures/".$fixtureseat->fixture_id."/view")->with('success', Lang::get('admin/fixtures/message.checkin.success'));
+				return Redirect::to("admin/fixtures/".$fixture_copy->fixture_id."/view")->with('success', Lang::get('admin/fixtures/message.checkin.success'));
 			}
 
         }
@@ -755,7 +644,6 @@ class FixturesController extends AdminController
 
     }
 
-
     /**
     *  Upload the file to the server
     *
@@ -787,7 +675,7 @@ class FixturesController extends AdminController
 						$filename .= '-'.Str::slug($file->getClientOriginalName()).'.'.$extension;
 						$upload_success = $file->move($destinationPath, $filename);
 
-						//Log the deletion of seats to the log
+						//Log the deletion of copies to the log
 						$logaction = new Actionlog();
 						$logaction->asset_id = $fixture->id;
 						$logaction->asset_type = 'software';
@@ -827,7 +715,6 @@ class FixturesController extends AdminController
         }
     }
 
-
     /**
     *  Delete the associated file
     *
@@ -858,8 +745,6 @@ class FixturesController extends AdminController
             return Redirect::route('fixtures')->with('error', $error);
         }
     }
-
-
 
     /**
     *  Display/download the uploaded file
@@ -900,21 +785,21 @@ class FixturesController extends AdminController
         ->addColumn('serial', function($fixtures) {
             return link_to('/admin/fixtures/'.$fixtures->id.'/view', mb_strimwidth($fixtures->serial, 0, 50, "..."));
         })
-        ->addColumn('totalSeats', function($fixtures) {
-            return $fixtures->totalSeatsByFixtureID();
+        ->addColumn('totalCopies', function($fixtures) {
+            return $fixtures->totalCopiesByFixtureID();
         })
         ->addColumn('remaining', function($fixtures) {
             return $fixtures->remaincount();
         })
-        ->addColumn('purchase_date', function($fixtures) {
-            return $fixtures->purchase_date;
+        ->addColumn('needs_maintenance', function($fixtures) {
+            return $fixtures->needs_maintenance;
         })
         ->addColumn('notes', function($fixtures) {
             return $fixtures->notes;
         })
         ->addColumn($actions)
-        ->searchColumns('name','serial','totalSeats','remaining','purchase_date','actions','notes')
-        ->orderColumns('name','serial','totalSeats','remaining','purchase_date','actions','notes')
+        ->searchColumns('name','serial','totalCopies','remaining','needs_maintenance','actions','notes')
+        ->orderColumns('name','serial','totalCopies','remaining','needs_maintenance','actions','notes')
         ->make();
     }
 
@@ -928,3 +813,4 @@ class FixturesController extends AdminController
         return Redirect::to('admin/fixtures/'.$seatId.'/checkout');
     }
 }
+?>
