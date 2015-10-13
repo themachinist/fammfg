@@ -791,15 +791,12 @@ class FixturesController extends AdminController
         ->addColumn('remaining', function($fixtures) {
             return $fixtures->remaincount();
         })
-        ->addColumn('needs_maintenance', function($fixtures) {
-            return $fixtures->needs_maintenance;
-        })
         ->addColumn('notes', function($fixtures) {
             return $fixtures->notes;
         })
         ->addColumn($actions)
-        ->searchColumns('name','serial','totalCopies','remaining','needs_maintenance','actions','notes')
-        ->orderColumns('name','serial','totalCopies','remaining','needs_maintenance','actions','notes')
+        ->searchColumns('name','serial','totalCopies','remaining','actions','notes')
+        ->orderColumns('name','serial','totalCopies','remaining','actions','notes')
         ->make();
     }
 
