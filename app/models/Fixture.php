@@ -61,29 +61,28 @@ class Fixture extends Depreciable
     /**
     * Get total fixtures
     */
-     public static function assetcount()
+    public static function assetcount()
     {
         return DB::table('fixture_copies')
                     ->whereNull('deleted_at')
                     ->count();
     }
-
 
     /**
     * Get total fixtures
     */
-     public function totalCopysByFixtureID()
+    public function totalCopiesByFixtureID()
     {
         return DB::table('fixture_copies')
-        			->where('fixture_id', '=', $this->id)
-                    ->whereNull('deleted_at')
-                    ->count();
-    }
+		->where('fixture_id', '=', $this->id)
+		->whereNull('deleted_at')
+		->count();
+	}
 
     /**
     * Get total fixtures not checked out
     */
-     public static function availassetcount()
+    public static function availassetcount()
     {
         return DB::table('fixture_copies')
                     ->whereNull('assigned_to')
@@ -122,7 +121,7 @@ class Fixture extends Depreciable
 
     public function remaincount()
     {
-    	$total = $this->totalCopysByFixtureID();
+    	$total = $this->totalCopiesByFixtureID();
         $taken =  $this->assignedcount();
         $diff =   ($total - $taken);
         return $diff;
@@ -163,13 +162,11 @@ class Fixture extends Depreciable
     }
 
 	public static function getExpiringFixtures($days = 60) {
-
 	    return Fixture::whereNotNull('expiration_date')
 		->whereNull('deleted_at')
 		->whereRaw(DB::raw( 'DATE_SUB(`expiration_date`,INTERVAL '.$days.' DAY) <= DATE(NOW()) ' ))
 		->where('expiration_date','>',date("Y-m-d"))
 		->orderBy('expiration_date', 'ASC')
 		->get();
-
     }
 }
