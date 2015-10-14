@@ -202,7 +202,7 @@
 				<div class="form-group {{ $errors->has('designer_email') ? ' has-error' : '' }}">
 					<label for="designer_email" class="col-md-3 control-label">@lang('admin/designers/form.to_email')</label>
 						<div class="col-md-7">
-							<input class="form-control" type="text" name="designer_email" id="designer_email" value="{{ Input::old('designer_email', $designer->designer_email) }}" />
+							<input class="form-control" type="text" name="designer_email" id="designer_email" value="{{ Input::old('designer_email', $fixture->designer_email) }}" />
 							{{ $errors->first('designer_email', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
 						</div>
 				</div>
