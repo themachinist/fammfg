@@ -54,12 +54,12 @@
 			<!-- Serial -->
 			<div class="form-group {{ $errors->has('serial') ? ' has-error' : '' }}">
 				<label for="serial" class="col-md-3 control-label">@lang('admin/fixtures/form.serial')
-				 <i class='fa fa-asterisk'></i></label>
+					 <i class='fa fa-asterisk'></i>
 				 </label>
-					<div class="col-md-7">
-						<input class="form-control" type="text" name="serial" id="serial">{{ Input::old('serial', $fixture->serial) }}</input>
-						{{ $errors->first('serial', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
-					</div>
+				<div class="col-md-7">
+					<input class="form-control" type="text" name="serial" id="serial">{{ Input::old('serial', $fixture->serial) }}</input>
+					{{ $errors->first('serial', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
+				</div>
 			</div>
 
 			<!-- Seats -->
@@ -190,20 +190,20 @@
 			<div class="row form-wrapper"> <br><br>
 
 				<!-- Designer name -->
-				<div class="form-group {{ $errors->has('fixture_name') ? ' has-error' : '' }}">
-					<label for="fixture_name" class="col-md-3 control-label">@lang('admin/fixtures/form.to_name')</label>
+				<div class="form-group {{ $errors->has('designer_name') ? ' has-error' : '' }}">
+					<label for="designer_name" class="col-md-3 control-label">@lang('admin/designers/form.to_name')</label>
 						<div class="col-md-7">
-							<input class="form-control" type="text" name="fixture_name" id="fixture_name" value="{{ Input::old('fixture_name', $fixture->fixture_name) }}" />
-							{{ $errors->first('fixture_name', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
+							<input class="form-control" type="text" name="designer_name" id="designer_name" value="{{ Input::old('designer_name', $designer->designer_name) }}" />
+							{{ $errors->first('designer_name', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
 						</div>
 				</div>
 
 				<!-- Designer email -->
-				<div class="form-group {{ $errors->has('fixture_email') ? ' has-error' : '' }}">
-					<label for="fixture_email" class="col-md-3 control-label">@lang('admin/fixtures/form.to_email')</label>
+				<div class="form-group {{ $errors->has('designer_email') ? ' has-error' : '' }}">
+					<label for="designer_email" class="col-md-3 control-label">@lang('admin/designers/form.to_email')</label>
 						<div class="col-md-7">
-							<input class="form-control" type="text" name="fixture_email" id="fixture_email" value="{{ Input::old('fixture_email', $fixture->fixture_email) }}" />
-							{{ $errors->first('fixture_email', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
+							<input class="form-control" type="text" name="designer_email" id="designer_email" value="{{ Input::old('designer_email', $designer->designer_email) }}" />
+							{{ $errors->first('designer_email', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
 						</div>
 				</div>
 
