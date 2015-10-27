@@ -23,6 +23,7 @@ use Datatable;
 use Slack;
 use Config;
 use Session;
+use Log;
 
 class FixturesController extends AdminController
 {
@@ -38,7 +39,7 @@ class FixturesController extends AdminController
     }
 
     /**
-     * Fixture create.
+     * Returns a view .
      *
      * @return View
      */
@@ -79,26 +80,49 @@ class FixturesController extends AdminController
             $fixture->serial				= e(Input::get( 'serial' ));
             $fixture->copies				= e(Input::get( 'copies' ));
 			$fixture->needs_maintenance		= e(Input::get( 'needs_maintenance' )) == ''	? 0 : e(Input::get( 'needs_maintenance' ));
-            $fixture->maintenance_interval	= e(Input::get( 'maintenance_interval' ));
+			switch ( e(Input::get( 'maintenance_interval' )) ) {
+				// maintenance interval needs to be converted from dropdown item # to value
+				case 0:
+					// 1 month
+					$fixture->maintenance_interval	= 1;
+					break;
+				case 1:
+					// 3 month
+					$fixture->maintenance_interval	= 3;
+					break;
+				case 2:
+					// 6 month
+					$fixture->maintenance_interval	= 6;
+					break;
+				case 3:
+					// 9 month
+					$fixture->maintenance_interval	= 9;
+					break;
+				case 4:
+					// 12 month
+					$fixture->maintenance_interval	= 12;
+					break;
+			}
 			// Purchased
 			$fixture->supplier_id			= e(Input::get( 'supplier_id' )) == '' ? NULL : e(Input::get( 'supplier_id' ));
             $fixture->order_number			= e(Input::get( 'order_number' ));
             $fixture->purchase_date			= e(Input::get( 'purchase_date' ));
-			// as of php 5.3 it is possible to leave the middle of the ternary operator out. so i inverted the comparison.
-			$fixture->purchase_date			= (! (($fixture->purchase_date == "") || ($fixture->purchase_date == "0000-00-00")) ? : NULL );
+			$fixture->purchase_date			= (! (($fixture->purchase_date == "") || ($fixture->purchase_date == "0000-00-00")) ? $fixture->purchase_date : NULL );
 			$fixture->purchase_cost			= e(Input::get( 'purchase_cost' )) == '' ? 0 : ParseFloat(e(Input::get( 'purchase_cost' )));
+			$fixture->purchase_cost			= (! (($fixture->purchase_cost == "") || ($fixture->purchase_cost == "0.00")) ? $fixture->purchase_cost : NULL  );
             $fixture->purchase_order		= e(Input::get( 'purchase_order' ));
             $fixture->expiration_date		= e(Input::get( 'expiration_date' ));
-			$fixture->expiration_date		= (! (($fixture->expiration_date == "") || ($fixture->expiration_date == "0000-00-00")) ? : NULL );
+			$fixture->expiration_date		= (! (($fixture->expiration_date == "") || ($fixture->expiration_date == "0000-00-00")) ? $fixture->expiration_date : NULL );
             $fixture->depreciation_id		= e(Input::get( 'depreciation_id' ));
             $fixture->notes					= e(Input::get( 'notes' ));
 			// Built in-house
-            $fixture->designer_name			= e(Input::get( 'designer_email'));
-            $fixture->designer_email		= e(Input::get( 'designer_name'));
+            $fixture->designer_name			= e(Input::get( 'designer_name'));
+            $fixture->designer_email		= e(Input::get( 'designer_email'));
             $fixture->build_date			= e(Input::get( 'build_date' ));
-			$fixture->build_date			= (! (($fixture->build_date == "") || ($fixture->build_date == "0000-00-00")) ? : NULL );
+			$fixture->build_date			= (! (($fixture->build_date == "") || ($fixture->build_date == "0000-00-00")) ? $fixture->build_date : NULL );
 			$fixture->build_cost			= e(Input::get( 'build_cost' )) == '' ? 0 : ParseFloat(e(Input::get( 'build_cost' )));
-			$fixture->build_cost			= (! (($fixture->build_cost == "") || ($fixture->build_cost == "0.00")) ? : NULL  );
+			$fixture->build_cost			= (! (($fixture->build_cost == "") || ($fixture->build_cost == "0.00")) ? $fixture->build_cost : NULL  );
+			$fixture->job_number_built_on	= e(Input::get( 'job_number' ));
             $fixture->user_id				= Sentry::getId();
 
             // Was the fixture created?
@@ -175,7 +199,7 @@ class FixturesController extends AdminController
     {
 		// Check if the fixture exists
 		if (is_null($fixture = Fixture::find($fixtureId))) {
-			// Redirect to the blogs management page
+			// Redirect to index with error message
 			return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.does_not_exist'));
 		}
 		
@@ -183,32 +207,57 @@ class FixturesController extends AdminController
 		$form_input = Input::all();
 		
 		if ($fixture->validate($form_input)) {
-			// save the updated fixture data if validation is successful
-			$fixture->name					= e(Input::get( 'name' ));
-			$fixture->serial				= e(Input::get( 'serial' ));
-			$fixture->copies				= e(Input::get( 'copies' ));
+			// attempt to validate form input, in order of appearance on form
+
+            // Save the fixture data
+            $fixture->name					= e(Input::get( 'name' ));
+            $fixture->serial				= e(Input::get( 'serial' ));
+            $fixture->copies				= e(Input::get( 'copies' ));
 			$fixture->needs_maintenance		= e(Input::get( 'needs_maintenance' )) == ''	? 0 : e(Input::get( 'needs_maintenance' ));
-			$fixture->maintenance_interval	= e(Input::get( 'maintenance_interval' ));
+			switch ( e(Input::get( 'maintenance_interval' )) ) {
+				// maintenance interval needs to be converted from dropdown item # to value
+				case 0:
+					// 1 month
+		            $fixture->maintenance_interval	= 1;
+					break;
+				case 1:
+					// 3 month
+		            $fixture->maintenance_interval	= 3;
+					break;
+				case 2:
+					// 6 month
+		            $fixture->maintenance_interval	= 6;
+					break;
+				case 3:
+					// 9 month
+					$fixture->maintenance_interval	= 9;
+					break;
+				case 4:
+					// 12 month
+		            $fixture->maintenance_interval	= 12;
+					break;
+			}
 			// Purchased
 			$fixture->supplier_id			= e(Input::get( 'supplier_id' )) == '' ? NULL : e(Input::get( 'supplier_id' ));
-			$fixture->order_number			= e(Input::get( 'order_number' ));
-			$fixture->purchase_date			= e(Input::get( 'purchase_date' ));
-			// as of php 5.3 it is possible to leave the middle of the ternary operator out. so i inverted the comparison.
-			$fixture->purchase_date			= (! (($fixture->purchase_date == "") || ($fixture->purchase_date == "0000-00-00")) ? : NULL );
+            $fixture->order_number			= e(Input::get( 'order_number' ));
+            $fixture->purchase_date			= e(Input::get( 'purchase_date' ));
+			$fixture->purchase_date			= (! (($fixture->purchase_date == "") || ($fixture->purchase_date == "0000-00-00")) ? $fixture->purchase_date : NULL );
 			$fixture->purchase_cost			= e(Input::get( 'purchase_cost' )) == '' ? 0 : ParseFloat(e(Input::get( 'purchase_cost' )));
-			$fixture->purchase_order		= e(Input::get( 'purchase_order' ));
-			$fixture->expiration_date		= e(Input::get( 'expiration_date' ));
-			$fixture->expiration_date		= (! (($fixture->expiration_date == "") || ($fixture->expiration_date == "0000-00-00")) ? : NULL );
-			$fixture->depreciation_id		= e(Input::get( 'depreciation_id' ));
-			$fixture->notes					= e(Input::get( 'notes' ));
+			$fixture->purchase_cost			= (! (($fixture->purchase_cost == "") || ($fixture->purchase_cost == "0.00")) ? $fixture->purchase_cost : NULL  );
+            $fixture->purchase_order		= e(Input::get( 'purchase_order' ));
+            $fixture->expiration_date		= e(Input::get( 'expiration_date' ));
+			$fixture->expiration_date		= (! (($fixture->expiration_date == "") || ($fixture->expiration_date == "0000-00-00")) ? $fixture->expiration_date : NULL );
+            $fixture->depreciation_id		= e(Input::get( 'depreciation_id' ));
+            $fixture->notes					= e(Input::get( 'notes' ));
 			// Built in-house
-			$fixture->designer_name			= e(Input::get( 'designer_email'));
-			$fixture->designer_email		= e(Input::get( 'designer_name'));
-			$fixture->build_date			= e(Input::get( 'build_date' ));
-			$fixture->build_date			= (! (($fixture->build_date == "") || ($fixture->build_date == "0000-00-00")) ? : NULL );
+            $fixture->designer_name			= e(Input::get( 'designer_name'));
+            $fixture->designer_email		= e(Input::get( 'designer_email'));
+            $fixture->build_date			= e(Input::get( 'build_date' ));
+			$fixture->build_date			= (! (($fixture->build_date == "") || ($fixture->build_date == "0000-00-00")) ? $fixture->build_date : NULL );
 			$fixture->build_cost			= e(Input::get( 'build_cost' )) == '' ? 0 : ParseFloat(e(Input::get( 'build_cost' )));
-			$fixture->build_cost			= (! (($fixture->build_cost == "") || ($fixture->build_cost == "0.00")) ? : NULL  );
-			$fixture->user_id				= Sentry::getId();
+			$fixture->build_cost			= (! (($fixture->build_cost == "") || ($fixture->build_cost == "0.00")) ? $fixture->build_cost : NULL  );
+			$fixture->job_number_built_on	= e(Input::get( 'job_number' ));
+            $fixture->user_id				= Sentry::getId();
 
 			//Are we changing the total number of copies?
 			if( $fixture->copies != e(Input::get('copies'))) {
@@ -295,7 +344,10 @@ class FixturesController extends AdminController
             ->where('id', $fixture->id)
             ->update(array('assigned_to' => NULL,'asset_id' => NULL));
 
-            $fixture->fixture_copies->delete();
+            $fixture->fixturecopies->each( function($copy){ 
+				// delete each copy
+				 $copy->delete();
+			});
             $fixture->delete();
 
             // Redirect to the fixtures management page
