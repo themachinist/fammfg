@@ -62,7 +62,7 @@
 				</div>
 			</div>
 
-			<!-- Seats -->
+			<!-- Copies -->
 			<div class="form-group {{ $errors->has('copies') ? ' has-error' : '' }}">
 				<label for="copies" class="col-md-3 control-label">@lang('admin/fixtures/form.copies')
 				 <i class='fa fa-asterisk'></i></label>

@@ -83,7 +83,7 @@
 
 		<div class="col-md-12" style="padding-top: 60px;">
 			<!-- checked out assets table -->
-			<h6>{{ $fixture->seats }} @lang('admin/fixtures/general.fixture_seats')</h6>
+			<h6>{{ $fixture->copies }} @lang('admin/fixtures/general.fixture_copies')</h6>
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -95,10 +95,10 @@
 				</thead>
 				<tbody>
 				<?php $count=1; ?>
-					@if ($fixture->fixtureseats)
-						@foreach ($fixture->fixtureseats as $fixturedto)
+					@if ($fixture->fixturecopies)
+						@foreach ($fixture->fixturecopies as $fixturedto)
 						<tr>
-							<td>Seat {{ $count }} </td>
+							<td>@lang('admin/fixtures/general.seat') {{ $count }} </td>
 							<td>
 								@if (($fixturedto->assigned_to) && ($fixturedto->deleted_at == NULL))
 									<a href="{{ route('view/user', $fixturedto->assigned_to) }}">
@@ -300,8 +300,8 @@
 			@if ($fixture->order_number)
 				<li><strong>@lang('admin/fixtures/form.order'):</strong>			{{{ $fixture->order_number }}} </li>
 			@endif
-			@if (($fixture->seats) && ($fixture->seats) > 0)
-				<li><strong>@lang('admin/fixtures/form.seats'):</strong>			{{{ $fixture->seats }}} </li>
+			@if (($fixture->copies) && ($fixture->copies) > 0)
+				<li><strong>@lang('admin/fixtures/form.copies'):</strong>			{{{ $fixture->copies }}} </li>
 			@endif
 			@if ($fixture->notes)
 				<li><strong>@lang('admin/fixtures/form.notes'):</strong>
