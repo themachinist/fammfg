@@ -30,7 +30,7 @@
 			<div class="form-group">
 			<label class="col-sm-2 control-label">@lang('admin/hardware/form.name')</label>
 				<div class="col-md-6">
-				  <p class="form-control-static">{{{ $fixtureseat->fixture->name }}}</p>
+				  <p class="form-control-static">{{{ $fixturecopy->fixture->name }}}</p>
 				</div>
 			</div>
 
@@ -38,7 +38,7 @@
 			<div class="form-group">
 			<label class="col-sm-2 control-label">@lang('admin/hardware/form.serial')</label>
 				<div class="col-md-10">
-				  <p class="form-control-static" style="word-wrap: break-word;">{{{ $fixtureseat->fixture->serial }}}</p>
+				  <p class="form-control-static" style="word-wrap: break-word;">{{{ $fixturecopy->fixture->serial }}}</p>
 				</div>
 			</div>
 
@@ -48,7 +48,7 @@
 				 </label>
 
 				<div class="col-md-10">
-					{{ Form::select('asset_id', $asset_list , Input::old('asset_id', $fixtureseat->asset_id), array('class'=>'select2', 'style'=>'min-width:600px')) }}
+					{{ Form::select('asset_id', $asset_list , Input::old('asset_id', $fixturecopy->asset_id), array('class'=>'select2', 'style'=>'min-width:600px')) }}
 					{{ $errors->first('asset_id', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
 				</div>
 			</div>
@@ -59,7 +59,7 @@
 				</label>
 
 				<div class="col-md-9">
-					{{ Form::select('assigned_to', $users_list , Input::old('assigned_to', $fixtureseat->assigned_to), array('class'=>'select2', 'style'=>'min-width:350px')) }}
+					{{ Form::select('assigned_to', $users_list , Input::old('assigned_to', $fixturecopy->assigned_to), array('class'=>'select2', 'style'=>'min-width:350px')) }}
 					{{ $errors->first('assigned_to', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
 
 					<p class="help-block">
@@ -73,7 +73,7 @@
 			<div class="form-group {{ $errors->has('note') ? 'error' : '' }}">
 				<label for="note" class="col-md-2 control-label">@lang('admin/hardware/form.notes')</label>
 				<div class="col-md-7">
-					<textarea class="col-md-6 form-control" id="note" name="note">{{{ Input::old('note', $fixtureseat->note) }}}</textarea>
+					<textarea class="col-md-6 form-control" id="note" name="note">{{{ Input::old('note', $fixturecopy->note) }}}</textarea>
 					{{ $errors->first('note', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
 				</div>
 			</div>
