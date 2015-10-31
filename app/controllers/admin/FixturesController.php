@@ -132,13 +132,13 @@ class FixturesController extends AdminController
 			
                 for ($x=0; $x<$fixture->copies; $x++) {
 					// instantiate and save a new copy
-                    $fixture_copy = new FixtureCopy();
-                    $fixture_copy->fixture_id       = $insertedId;
-                    $fixture_copy->user_id          = Sentry::getId();
-                    $fixture_copy->assigned_to      = NULL;
-                    $fixture_copy->notes            = NULL;
+                    $fixturecopy = new FixtureCopy();
+                    $fixturecopy->fixture_id       = $insertedId;
+                    $fixturecopy->user_id          = Sentry::getId();
+                    $fixturecopy->assigned_to      = NULL;
+                    $fixturecopy->notes            = NULL;
 					// needs maintenance set to false by default
-                    $fixture_copy->save();
+                    $fixturecopy->save();
                 }
 
                 // Redirect to the new fixture page
@@ -218,15 +218,15 @@ class FixturesController extends AdminController
 				// maintenance interval needs to be converted from dropdown item # to value
 				case 0:
 					// 1 month
-		            $fixture->maintenance_interval	= 1;
+					$fixture->maintenance_interval	= 1;
 					break;
 				case 1:
 					// 3 month
-		            $fixture->maintenance_interval	= 3;
+					$fixture->maintenance_interval	= 3;
 					break;
 				case 2:
 					// 6 month
-		            $fixture->maintenance_interval	= 6;
+					$fixture->maintenance_interval	= 6;
 					break;
 				case 3:
 					// 9 month
@@ -234,7 +234,7 @@ class FixturesController extends AdminController
 					break;
 				case 4:
 					// 12 month
-		            $fixture->maintenance_interval	= 12;
+					$fixture->maintenance_interval	= 12;
 					break;
 			}
 			// Purchased
@@ -262,11 +262,11 @@ class FixturesController extends AdminController
 			//Are we changing the total number of copies?
 			if( $fixture->copies != e(Input::get('copies'))) {
 				//Determine how many copies we are dealing with
-				$difference = e(Input::get('copies')) - $fixture->fixture_copys()->count();
+				$difference = e(Input::get('copies')) - $fixture->fixturecopys()->count();
 
 				if( $difference < 0 ) {
 					//Filter out any fixture which have a user attached;
-					$copies = $fixture->fixture_copys->filter(function ($seat) {
+					$copies = $fixture->fixturecopys->filter(function ($seat) {
 						return is_null($seat->user);
 					});
 
@@ -361,41 +361,37 @@ class FixturesController extends AdminController
     public function getCheckout($seatId)
     {
         // Check if the asset exists
-        if (is_null($fixture_copy = FixtureCopy::find($seatId))) {
-            // Redirect to the asset management page with error
-            return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
+        if (is_null($fixturecopy = FixtureCopy::find($seatId))) {
+			// Redirect to the asset management page with error
+			return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
 
         // Get the dropdown of users and then pass it to the checkout view
-         $users_list = array('' => 'Select a User') + DB::table('users')->select(DB::raw('concat(last_name,", ",first_name," (",username,")") as full_name, id'))->whereNull('deleted_at')->orderBy('last_name', 'asc')->orderBy('first_name', 'asc')->lists('full_name', 'id');
-
+		$users_list = array('' => 'Select a User') + DB::table('users')->select(DB::raw('concat(last_name,", ",first_name," (",username,")") as full_name, id'))->whereNull('deleted_at')->orderBy('last_name', 'asc')->orderBy('first_name', 'asc')->lists('full_name', 'id');
 
         // Left join to get a list of assets and some other helpful info
         $asset = DB::table('assets')
-            ->leftJoin('users', 'users.id', '=', 'assets.assigned_to')
-            ->leftJoin('models', 'assets.model_id', '=', 'models.id')
-            ->select('assets.id', 'assets.name', 'first_name', 'last_name','asset_tag',
-            DB::raw('concat(first_name," ",last_name) as full_name, assets.id as id, models.name as modelname'))
-            ->whereNull('assets.deleted_at')
-            ->get();
+			->leftJoin('users', 'users.id', '=', 'assets.assigned_to')
+		    ->leftJoin('models', 'assets.model_id', '=', 'models.id')
+			->select('assets.id', 'assets.name', 'first_name', 'last_name','asset_tag',
+		    DB::raw('concat(first_name," ",last_name) as full_name, assets.id as id, models.name as modelname'))
+	        ->whereNull('assets.deleted_at')
+			->get();
 
-            $asset_array = json_decode(json_encode($asset), true);
-            $asset_element[''] = 'Please select an asset';
+		$asset_array = json_decode(json_encode($asset), true);
+		$asset_element[''] = 'Please select an asset';
 
-            // Build a list out of the data results
-            for ($x=0; $x<count($asset_array); $x++) {
+        // Build a list out of the data results
+        for ($x=0; $x<count($asset_array); $x++) {
+			if ($asset_array[$x]['full_name']!='') {
+				$full_name = ' ('.$asset_array[$x]['full_name'].') '.$asset_array[$x]['modelname'];
+			} else {
+				$full_name = ' (Unassigned) '.$asset_array[$x]['modelname'];
+			}
+			$asset_element[$asset_array[$x]['id']] = $asset_array[$x]['asset_tag'].' - '.$asset_array[$x]['name'].$full_name;
+        }
 
-                if ($asset_array[$x]['full_name']!='') {
-                    $full_name = ' ('.$asset_array[$x]['full_name'].') '.$asset_array[$x]['modelname'];
-                } else {
-                    $full_name = ' (Unassigned) '.$asset_array[$x]['modelname'];
-                }
-                $asset_element[$asset_array[$x]['id']] = $asset_array[$x]['asset_tag'].' - '.$asset_array[$x]['name'].$full_name;
-
-            }
-
-        return View::make('backend/fixtures/checkout', compact('fixture_copy'))->with('users_list',$users_list)->with('asset_list',$asset_element);
-
+		return View::make('backend/fixtures/checkout', compact('fixturecopy'))->with('users_list',$users_list)->with('asset_list',$asset_element);
     }
 
     /**
@@ -444,37 +440,37 @@ class FixturesController extends AdminController
         }
 
 		// Check if the asset exists
-        if (is_null($fixture_copy = FixtureCopy::find($seatId))) {
+        if (is_null($fixturecopy = FixtureCopy::find($seatId))) {
             // Redirect to the asset management page with error
             return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
 
 		if (Input::get('asset_id') == '') {
-            $fixture_copy->asset_id = NULL;
+            $fixturecopy->asset_id = NULL;
         } else {
-            $fixture_copy->asset_id = e(Input::get('asset_id'));
+            $fixturecopy->asset_id = e(Input::get('asset_id'));
         }
 
         // Update the asset data
         if ( e(Input::get('assigned_to')) == '') {
-                $fixture_copy->assigned_to =  NULL;
+                $fixturecopy->assigned_to =  NULL;
 
         } else {
-                $fixture_copy->assigned_to = e(Input::get('assigned_to'));
+                $fixturecopy->assigned_to = e(Input::get('assigned_to'));
         }
 
         // Was the asset updated?
-        if($fixture_copy->save()) {
+        if($fixturecopy->save()) {
             $logaction = new Actionlog();
 
             //$logaction->location_id = $assigned_to->location_id;
             $logaction->asset_type = 'software';
             $logaction->user_id = Sentry::getUser()->id;
             $logaction->note = e(Input::get('note'));
-            $logaction->asset_id = $fixture_copy->fixture_id;
+            $logaction->asset_id = $fixturecopy->fixture_id;
 
 
-			$fixture = Fixture::find($fixture_copy->fixture_id);
+			$fixture = Fixture::find($fixturecopy->fixture_id);
             $settings = Setting::getSettings();
 
 
@@ -493,29 +489,29 @@ class FixturesController extends AdminController
 
 
 				$slack_settings = [
-				    'username' => $settings->botname,
-				    'channel' => $settings->slack_channel,
-				    'link_names' => true
+					'username' => $settings->botname,
+					'channel' => $settings->slack_channel,
+					'link_names' => true
 				];
 
 				$client = new \Maknz\Slack\Client($settings->slack_endpoint,$slack_settings);
 
 				try {
 						$client->attach([
-						    'color' => 'good',
-						    'fields' => [
-						        [
-						            'title' => 'Checked Out:',
-						            'value' => $slack_msg
-						        ],
-						        [
-						            'title' => 'Note:',
-						            'value' => e($logaction->note)
-						        ],
+							'color' => 'good',
+							'fields' => [
+								[
+									'title' => 'Checked Out:',
+									'value' => $slack_msg
+								],
+								[
+									'title' => 'Note:',
+									'value' => e($logaction->note)
+								],
 
 
 
-						    ]
+							]
 						])->send('Fixture Checked Out');
 
 					} catch (Exception $e) {
@@ -541,11 +537,11 @@ class FixturesController extends AdminController
     public function getCheckin($seatId = null, $backto = null)
     {
         // Check if the asset exists
-        if (is_null($fixture_copy = FixtureCopy::find($seatId))) {
+        if (is_null($fixturecopy = FixtureCopy::find($seatId))) {
             // Redirect to the asset management page with error
             return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
-        return View::make('backend/fixtures/checkin', compact('fixture_copy'))->with('backto',$backto);
+        return View::make('backend/fixtures/checkin', compact('fixturecopy'))->with('backto',$backto);
 
     }
 
@@ -555,12 +551,12 @@ class FixturesController extends AdminController
     public function postCheckin($seatId = null, $backto = null)
     {
         // Check if the asset exists
-        if (is_null($fixture_copy = FixtureCopy::find($seatId))) {
+        if (is_null($fixturecopy = FixtureCopy::find($seatId))) {
             // Redirect to the asset management page with error
             return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
 
-        $fixture = Fixture::find($fixture_copy->fixture_id);
+        $fixture = Fixture::find($fixturecopy->fixture_id);
 
         if(!$fixture->reassignable) {
             // Not allowed to checkin
@@ -582,19 +578,19 @@ class FixturesController extends AdminController
             // Ooops.. something went wrong
             return Redirect::back()->withInput()->withErrors($validator);
         }
-		$return_to = $fixture_copy->assigned_to;
+		$return_to = $fixturecopy->assigned_to;
         $logaction = new Actionlog();
-        $logaction->checkedout_to = $fixture_copy->assigned_to;
+        $logaction->checkedout_to = $fixturecopy->assigned_to;
 
         // Update the asset data
-        $fixture_copy->assigned_to                   = NULL;
-        $fixture_copy->asset_id                      = NULL;
+        $fixturecopy->assigned_to                   = NULL;
+        $fixturecopy->asset_id                      = NULL;
 
         $user = Sentry::getUser();
 
         // Was the asset updated?
-        if($fixture_copy->save()) {
-            $logaction->asset_id = $fixture_copy->fixture_id;
+        if($fixturecopy->save()) {
+            $logaction->asset_id = $fixturecopy->fixture_id;
             $logaction->location_id = NULL;
             $logaction->asset_type = 'software';
             $logaction->note = e(Input::get('note'));
@@ -606,27 +602,27 @@ class FixturesController extends AdminController
 
 
 				$slack_settings = [
-				    'username' => $settings->botname,
-				    'channel' => $settings->slack_channel,
-				    'link_names' => true
+					'username' => $settings->botname,
+					'channel' => $settings->slack_channel,
+					'link_names' => true
 				];
 
 				$client = new \Maknz\Slack\Client($settings->slack_endpoint,$slack_settings);
 
 				try {
 						$client->attach([
-						    'color' => 'good',
-						    'fields' => [
-						        [
-						            'title' => 'Checked In:',
-						            'value' => strtoupper($logaction->asset_type).' <'.Config::get('app.url').'/admin/fixtures/'.$fixture->id.'/view'.'|'.$fixture->name.'> checked in by <'.Config::get('app.url').'/admin/users/'.$user->id.'/view'.'|'.$user->fullName().'>.'
-						        ],
-						        [
-						            'title' => 'Note:',
-						            'value' => e($logaction->note)
-						        ],
+							'color' => 'good',
+							'fields' => [
+								[
+									'title' => 'Checked In:',
+									'value' => strtoupper($logaction->asset_type).' <'.Config::get('app.url').'/admin/fixtures/'.$fixture->id.'/view'.'|'.$fixture->name.'> checked in by <'.Config::get('app.url').'/admin/users/'.$user->id.'/view'.'|'.$user->fullName().'>.'
+								],
+								[
+									'title' => 'Note:',
+									'value' => e($logaction->note)
+								],
 
-						    ]
+							]
 						])->send('Fixture Checked In');
 
 					} catch (Exception $e) {
@@ -643,7 +639,7 @@ class FixturesController extends AdminController
 			if ($backto=='user') {
 				return Redirect::to("admin/users/".$return_to.'/view')->with('success', Lang::get('admin/fixtures/message.checkin.success'));
 			} else {
-				return Redirect::to("admin/fixtures/".$fixture_copy->fixture_id."/view")->with('success', Lang::get('admin/fixtures/message.checkin.success'));
+				return Redirect::to("admin/fixtures/".$fixturecopy->fixture_id."/view")->with('success', Lang::get('admin/fixtures/message.checkin.success'));
 			}
 
         }
@@ -711,7 +707,7 @@ class FixturesController extends AdminController
 
         if (isset($fixture->id)) {
 
-        	if (Input::hasFile('fixturefile')) {
+			if (Input::hasFile('fixturefile')) {
 
 				foreach(Input::file('fixturefile') as $file) {
 
@@ -745,7 +741,7 @@ class FixturesController extends AdminController
 				}
 
 				if ($upload_success) {
-				  	return Redirect::back()->with('success', Lang::get('admin/fixtures/message.upload.success'));
+					return Redirect::back()->with('success', Lang::get('admin/fixtures/message.upload.success'));
 				} else {
 				   return Redirect::back()->with('success', Lang::get('admin/fixtures/message.upload.error'));
 				}
