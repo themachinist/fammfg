@@ -34,24 +34,31 @@
 				<div class="col-md-12 col-sm-12" style="padding-bottom: 10px; margin-left: 15px; word-wrap: break-word;"><strong>@lang('admin/fixtures/form.serial'): </strong>	{{{ $fixture->serial }}}</div>
 			@endif
 
-				<div class="col-md-12" style="padding-bottom: 20px">
-
-			@if ($fixture->fixture_name)
-				<div class="col-md-6" style="padding-bottom: 5px"><strong>@lang('admin/fixtures/form.to_name'): </strong>{{{ $fixture->fixture_name }}} </div>
+			@if ($fixture->revision_level)
+				<div class="col-md-12 col-sm-12" style="padding-bottom: 10px; margin-left: 15px; word-wrap: break-word;"><strong>@lang('admin/fixtures/general.revision_level'): </strong>	{{{ $fixture->revision_level }}}</div>
 			@endif
 
-			@if ($fixture->fixture_email)
-				<div class="col-md-6" style="padding-bottom: 5px"><strong>@lang('admin/fixtures/form.to_email'): </strong>{{{ $fixture->fixture_email }}} </div>
+			<div class="col-md-12" style="padding-bottom: 20px">
+
+			@if ($fixture->designer_name)
+				<div class="col-md-6" style="padding-bottom: 5px"><strong>@lang('admin/fixtures/form.to_name'): </strong>{{{ $fixture->designer_name }}} </div>
+			@endif
+
+			@if ($fixture->designer_email)
+				<div class="col-md-6" style="padding-bottom: 5px"><strong>@lang('admin/fixtures/form.to_email'): </strong>{{{ $fixture->designer_email }}} </div>
 			@endif
 
 			@if ($fixture->supplier_id)
 				<div class="col-md-6" style="padding-bottom: 5px"><strong>@lang('admin/fixtures/form.supplier'): </strong><a href="{{ route('view/supplier', $fixture->supplier_id) }}">{{{ $fixture->supplier->name }}}</a></div>
 			@endif
 
+			<div class="col-md-6"><strong>@lang('admin/fixtures/general.needs_regular_maintenance'): </strong>
+				<label class="checkbox-inline" style="padding-bottom:5px;margin-left:5px">@if ( $fixture->needs_maintenance ) <input type="checkbox" checked="checked" disabled="disabled"> @else <input type="checkbox" disabled="disabled"> @endif</label>
+			</div>
+
 			@if ($fixture->expiration_date > 0)
 				<div class="col-md-6" style="padding-bottom: 5px"><strong>@lang('admin/fixtures/form.expiration'): </strong>{{{ $fixture->expiration_date }}} </div>
 			@endif
-
 
 			@if ($fixture->depreciation)
 				<div class="col-md-6" style="padding-bottom: 5px">
@@ -230,18 +237,18 @@
 			<table class="table table-hover table-fixed break-word">
 				<thead>
 					<tr>
-						<th class="col-md-3">@lang('general.date')</th>
-						<th class="col-md-3"><span class="line"></span>@lang('general.admin')</th>
-						<th class="col-md-3"><span class="line"></span>@lang('button.actions')</th>
-						<th class="col-md-3"><span class="line"></span>@lang('admin/fixtures/general.user')</th>
-						<th class="col-md-3"><span class="line"></span>@lang('admin/fixtures/form.notes')</th>
+						<th class="col-md-2">@lang('general.date')</th>
+						<th class="col-md-2"><span class="line"></span>@lang('general.admin')</th>
+						<th class="col-md-2"><span class="line"></span>@lang('button.actions')</th>
+						<th class="col-md-2"><span class="line"></span>@lang('admin/fixtures/general.user')</th>
+						<th class="col-md-4"><span class="line"></span>@lang('admin/fixtures/form.notes')</th>
 					</tr>
 				</thead>
 				<tbody>
 					@if (count($fixture->assetlog) > 0)
 						@foreach ($fixture->assetlog as $log)
 						<tr>
-							<td>{{ $log->created_at }}</td>
+							<td>{{{ date("M d G:i", strtotime($log->created_at)) }}}</td>
 							<td>
 								@if (isset($log->user_id))
 									{{{ $log->adminlog->fullName() }}}
@@ -262,7 +269,7 @@
 						@endforeach
 					@endif
 					<tr>
-						<td>{{{ $fixture->created_at }}}</td>
+						<td>{{{ date("M d G:i", strtotime($fixture->created_at)) }}}</td>
 						<td>
 							@if ($fixture->adminuser) 
 								{{{ $fixture->adminuser->fullName() }}}
@@ -299,6 +306,18 @@
 			@endif
 			@if ($fixture->order_number)
 				<li><strong>@lang('admin/fixtures/form.order'):</strong>			{{{ $fixture->order_number }}} </li>
+			@endif
+			@if ($fixture->purchase_order)
+				<li><strong>@lang('admin/fixtures/form.purchase_order'):</strong>	{{{ $fixture->purchase_order }}} </li>
+			@endif
+			@if ($fixture->build_date > 0)
+				<li><strong>@lang('admin/fixtures/form.build_date'):</strong>				{{{ $fixture->build_date }}} </li>
+			@endif
+			@if ($fixture->build_cost > 0)
+				<li><strong>@lang('admin/fixtures/form.build_cost'):</strong>	@lang('general.currency') {{{ number_format($fixture->build_cost,2) }}} </li>
+			@endif
+			@if ($fixture->job_number_built_on)
+				<li><strong>@lang('admin/fixtures/form.job_number'):</strong>			{{{ $fixture->job_number_built_on }}} </li>
 			@endif
 			@if (($fixture->copies) && ($fixture->copies) > 0)
 				<li><strong>@lang('admin/fixtures/form.copies'):</strong>			{{{ $fixture->copies }}} </li>
