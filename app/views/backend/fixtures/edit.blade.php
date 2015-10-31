@@ -57,7 +57,7 @@
 					 <i class='fa fa-asterisk'></i>
 				 </label>
 				<div class="col-md-7">
-					<input class="form-control" type="text" name="serial" id="serial">{{ Input::old('serial', $fixture->serial) }}</input>
+					<input class="form-control" type="text" name="serial" id="serial" value="{{ Input::old('serial', $fixture->serial) }}"></input>
 					{{ $errors->first('serial', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
 				</div>
 			</div>
