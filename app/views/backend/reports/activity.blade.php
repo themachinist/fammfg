@@ -26,8 +26,8 @@
             <th class="col-sm-1">@lang('general.action')</th>
             <th class="col-sm-1">@lang('general.type')</th>
             <th class="col-sm-1">@lang('general.item')</th>
-            <th class="col-sm-1"></th>
-            <th class="col-sm-1">@lang('general.date')</th
+            <th class="col-sm-1">@lang('general.user')</th>
+            <th class="col-sm-1">@lang('general.date')</th>
         </tr>
     </thead>
     <tbody>
@@ -39,7 +39,7 @@
             <td>
 	            @if ($log_action->asset_type=="hardware")
 	            	Asset
-	            @elseif ($log_action->asset_type=="software")
+	            @elseif ($log_action->asset_type=="fixture")
 	            	Fixture
 	            @elseif ($log_action->asset_type=="tool")
 	            	Tool
@@ -51,7 +51,7 @@
             <td>
             @if (($log_action->assetlog) && ($log_action->asset_type=="hardware"))
                  {{ $log_action->assetlog->showAssetName() }}
-             @elseif (($log_action->fixturelog) && ($log_action->asset_type=="software"))
+             @elseif (($log_action->fixturelog) && ($log_action->asset_type=="fixture"))
                  {{ $log_action->fixturelog->name }}
              @elseif (($log_action->consumablelog) && ($log_action->asset_type=="consumable"))
                  {{ $log_action->consumablelog->name }}
