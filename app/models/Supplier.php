@@ -35,14 +35,14 @@ class Supplier extends Elegant
         return $this->hasMany('Asset', 'supplier_id')->count();
     }
 
-    public function licenses()
+    public function fixtures()
     {
-        return $this->hasMany('License', 'supplier_id');
+        return $this->hasMany('Fixture', 'supplier_id');
     }
 
-    public function num_licenses()
+    public function num_fixtures()
     {
-        return $this->hasMany('License', 'supplier_id')->count();
+        return $this->hasMany('Fixture', 'supplier_id')->count();
     }
 
     public function addhttp($url)

@@ -122,7 +122,7 @@ class ViewAssetsController extends AuthorizedController
 
         // software
         } elseif (($findlog->asset_id!='') && ($findlog->asset_type=='software')) {
-	        $item = License::find($findlog->asset_id);
+	        $item = Fixture::find($findlog->asset_id);
 	    // tools
 	    } elseif ($findlog->tool_id!='') {
 		   $item = Tool::find($findlog->tool_id);

@@ -2,7 +2,7 @@
 
 {{-- Page title --}}
 @section('title')
-@lang('general.license_report') ::
+@lang('general.fixture_report') ::
 @parent
 @stop
 
@@ -13,11 +13,11 @@
 <div class="page-header">
 
     <div class="pull-right">
-        <a href="{{ route('reports/export/licenses') }}" class="btn btn-flat gray pull-right"><i class="fa fa-download icon-white"></i>
+        <a href="{{ route('reports/export/fixtures') }}" class="btn btn-flat gray pull-right"><i class="fa fa-download icon-white"></i>
         @lang('admin/hardware/table.dl_csv')</a>
         </div>
 
-    <h3>@lang('general.license_report')</h3>
+    <h3>@lang('general.fixture_report')</h3>
 </div>
 
 <div class="row">
@@ -26,28 +26,28 @@
 <table id="example">
         <thead>
             <tr role="row">
-            <th class="col-sm-1">@lang('admin/licenses/table.title')</th>
-            <th class="col-sm-1">@lang('admin/licenses/table.serial')</th>
-            <th class="col-sm-1">@lang('admin/licenses/form.seats')</th>
-            <th class="col-sm-1">@lang('admin/licenses/form.remaining_seats')</th>
-            <th class="col-sm-1">@lang('admin/licenses/form.expiration')</th>
-            <th class="col-sm-1">@lang('admin/licenses/form.date')</th>
-            <th class="col-sm-1">@lang('admin/licenses/form.cost')</th>
+            <th class="col-sm-1">@lang('admin/fixtures/table.title')</th>
+            <th class="col-sm-1">@lang('admin/fixtures/table.serial')</th>
+            <th class="col-sm-1">@lang('admin/fixtures/form.seats')</th>
+            <th class="col-sm-1">@lang('admin/fixtures/form.remaining_seats')</th>
+            <th class="col-sm-1">@lang('admin/fixtures/form.expiration')</th>
+            <th class="col-sm-1">@lang('admin/fixtures/form.date')</th>
+            <th class="col-sm-1">@lang('admin/fixtures/form.cost')</th>
         </tr>
     </thead>
     <tbody>
 
-        @foreach ($licenses as $license)
+        @foreach ($fixtures as $fixture)
         <tr>
-            <td>{{{ $license->name }}}</td>
-            <td>{{{ mb_strimwidth($license->serial, 0, 50, "...") }}}</td>
-            <td>{{ $license->seats }}</td>
-            <td>{{ $license->remaincount() }}</td>
-            <td>{{ $license->expiration_date }}</td>
-            <td>{{ $license->purchase_date }}</td>
+            <td>{{{ $fixture->name }}}</td>
+            <td>{{{ mb_strimwidth($fixture->serial, 0, 50, "...") }}}</td>
+            <td>{{ $fixture->seats }}</td>
+            <td>{{ $fixture->remaincount() }}</td>
+            <td>{{ $fixture->expiration_date }}</td>
+            <td>{{ $fixture->purchase_date }}</td>
             <td>
             {{{ Setting::first()->default_currency }}}
-            {{{ number_format($license->purchase_cost) }}}</td>
+            {{{ number_format($fixture->purchase_cost) }}}</td>
         </tr>
         @endforeach
     </tbody>

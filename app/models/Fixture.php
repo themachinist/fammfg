@@ -1,6 +1,6 @@
 <?php
 
-class License extends Depreciable
+class Fixture extends Depreciable
 {
 	use SoftDeletingTrait;
     protected $dates = ['deleted_at'];
@@ -8,15 +8,15 @@ class License extends Depreciable
     public $timestamps = true;
 
     protected $guarded = 'id';
-    protected $table = 'licenses';
+    protected $table = 'fixtures';
     protected $rules = array(
-            'name'   => 'required|alpha_space|min:3|max:255',
-            'serial'   => 'required|min:5',
-            'seats'   => 'required|min:1|max:10000|integer',
-            'license_email'   => 'email|min:0|max:120',
-            'license_name'   => 'alpha_space|min:0|max:100',
-            'note'   => 'alpha_space',
-            'notes'   => 'alpha_space|min:0',
+            'name'			=> 'required|alpha_space|min:3|max:255',
+            'serial'		=> 'required|min:5',
+            'copies'		=> 'required|min:1|max:10000|integer',
+            'fixture_email'	=> 'email|min:0|max:120',
+            'fixture_name'  => 'alpha_space|min:0|max:100',
+            'note'			=> 'alpha_space',
+            'notes'			=> 'alpha_space|min:0',
         );
 
     /**
@@ -24,7 +24,7 @@ class License extends Depreciable
      */
     public function assignedusers()
     {
-        return $this->belongsToMany('User','license_seats','assigned_to','license_id');
+        return $this->belongsToMany('User','fixture_copies','assigned_to','fixture_id');
     }
 
     /**
@@ -59,34 +59,32 @@ class License extends Depreciable
     }
 
     /**
-    * Get total licenses
+    * Get total fixtures
     */
-     public static function assetcount()
+    public static function assetcount()
     {
-        return DB::table('license_seats')
+        return DB::table('fixture_copies')
                     ->whereNull('deleted_at')
                     ->count();
     }
 
+    /**
+    * Get total fixtures
+    */
+    public function totalCopiesByFixtureID()
+    {
+        return DB::table('fixture_copies')
+		->where('fixture_id', '=', $this->id)
+		->whereNull('deleted_at')
+		->count();
+	}
 
     /**
-    * Get total licenses
+    * Get total fixtures not checked out
     */
-     public function totalSeatsByLicenseID()
+    public static function availassetcount()
     {
-        return DB::table('license_seats')
-        			->where('license_id', '=', $this->id)
-                    ->whereNull('deleted_at')
-                    ->count();
-    }
-
-
-    /**
-    * Get total licenses not checked out
-    */
-     public static function availassetcount()
-    {
-        return DB::table('license_seats')
+        return DB::table('fixture_copies')
                     ->whereNull('assigned_to')
                     ->whereNull('asset_id')
                     ->whereNull('deleted_at')
@@ -94,46 +92,43 @@ class License extends Depreciable
     }
 
     /**
-     * Get the number of available seats
+     * Get the number of available copies
      */
     public function availcount()
     {
-        return DB::table('license_seats')
+        return DB::table('fixture_copies')
                     ->whereNull('assigned_to')
                     ->whereNull('asset_id')
-                    ->where('license_id', '=', $this->id)
+                    ->where('fixture_id', '=', $this->id)
                     ->whereNull('deleted_at')
                     ->count();
     }
 
     /**
-     * Get the number of assigned seats
+     * Get the number of assigned copies
      *
      */
     public function assignedcount()
     {
-
-		return LicenseSeat::where('license_id', '=', $this->id)
+		return FixtureCopy::where('fixture_id', '=', $this->id)
 			->where( function ( $query )
 			{
 			$query->whereNotNull('assigned_to')
 			->orWhereNotNull('asset_id');
 			})
 		->count();
-
-
     }
 
     public function remaincount()
     {
-    	$total = $this->totalSeatsByLicenseID();
+    	$total = $this->totalCopiesByFixtureID();
         $taken =  $this->assignedcount();
         $diff =   ($total - $taken);
         return $diff;
     }
 
     /**
-     * Get the total number of seats
+     * Get the total number of copies
      */
     public function totalcount()
     {
@@ -144,11 +139,11 @@ class License extends Depreciable
     }
 
     /**
-     * Get license seat data
+     * Get fixture copy data
      */
-    public function licenseseats()
+    public function fixturecopies()
     {
-        return $this->hasMany('LicenseSeat');
+        return $this->hasMany('FixtureCopy');
     }
 
     public function supplier()
@@ -156,24 +151,22 @@ class License extends Depreciable
         return $this->belongsTo('Supplier','supplier_id');
     }
 
-public function freeSeat()
+	public function freeCopy()
     {
-        $seat = LicenseSeat::where('license_id','=',$this->id)
+        $copy = FixtureCopy::where('fixture_id','=',$this->id)
                     ->whereNull('deleted_at')
                     ->whereNull('assigned_to')
                     ->whereNull('asset_id')
                     ->first();
-        return $seat->id;
+        return $copy->id;
     }
 
-	public static function getExpiringLicenses($days = 60) {
-
-	    return License::whereNotNull('expiration_date')
+	public static function getExpiringFixtures($days = 60) {
+	    return Fixture::whereNotNull('expiration_date')
 		->whereNull('deleted_at')
 		->whereRaw(DB::raw( 'DATE_SUB(`expiration_date`,INTERVAL '.$days.' DAY) <= DATE(NOW()) ' ))
 		->where('expiration_date','>',date("Y-m-d"))
 		->orderBy('expiration_date', 'ASC')
 		->get();
-
     }
 }

@@ -13,8 +13,8 @@ class Depreciation extends Elegant
         return $this->hasMany('Model', 'depreciation_id')->count();
     }
 
-    public function has_licenses()
+    public function has_fixtures()
     {
-      return $this->hasMany('License','depreciation_id')->count();
+      return $this->hasMany('Fixture','depreciation_id')->count();
     }
 }

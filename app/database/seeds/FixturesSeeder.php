@@ -1,17 +1,17 @@
 <?php
-class LicensesSeeder extends Seeder
+class FixturesSeeder extends Seeder
 {
     public function run()
     {
 
 
         // Initialize empty array
-        $license = array();
+        $fixture = array();
 
         $date = new DateTime;
 
 
-        $license[] = array(
+        $fixture[] = array(
             'name'      		=> 'Adobe Photoshop CS6',
             'serial'      		=> 'ZOMG-WtF-BBQ-SRSLY',
             'purchase_date' 	=> '2013-10-02',
@@ -22,8 +22,8 @@ class LicensesSeeder extends Seeder
             'created_at' 		=> $date->modify('-10 day'),
             'updated_at' 		=> $date->modify('-3 day'),
             'seats' 			=> 5,
-            'license_name'		=> '',
-            'license_email'		=> '',
+            'fixture_name'		=> '',
+            'fixture_email'		=> '',
             'notes' 			=> '',
             'user_id'			=> 1,
             'depreciation_id'	=> 2,
@@ -32,7 +32,7 @@ class LicensesSeeder extends Seeder
         );
 
 
-        $license[] = array(
+        $fixture[] = array(
             'name'      		=> 'Git Tower',
             'serial'      		=> '98049890394-340485934',
             'purchase_date' 	=> '2013-10-02',
@@ -43,8 +43,8 @@ class LicensesSeeder extends Seeder
             'created_at' 		=> $date->modify('-10 day'),
             'updated_at' 		=> $date->modify('-3 day'),
             'seats' 			=> 2,
-            'license_name'		=> 'Alison Gianotto',
-            'license_email'		=> 'snipe@snipe.net',
+            'fixture_name'		=> 'Alison Gianotto',
+            'fixture_email'		=> 'snipe@snipe.net',
             'notes' 			=> '',
             'user_id'			=> 1,
             'depreciation_id'	=> 2,
@@ -53,10 +53,10 @@ class LicensesSeeder extends Seeder
         );
 
         // Delete all the old data
-        DB::table('licenses')->truncate();
+        DB::table('fixtures')->truncate();
 
         // Insert the new posts
-        License::insert($license);
+        License::insert($fixture);
     }
 
 }

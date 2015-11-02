@@ -19,7 +19,7 @@ class DashboardController extends AdminController
 		// need to add a limit clause to the query
 		$checkedout_tools = Actionlog::getListingOfCheckedOutItems();
 		
-        $recent_activity = Actionlog::orderBy('created_at','DESC')->with('toollog','consumablelog','licenselog','assetlog','adminlog','userlog')->take(7)->get();
+        $recent_activity = Actionlog::orderBy('created_at','DESC')->with('toollog','consumablelog','fixturelog','assetlog','adminlog','userlog')->take(7)->get();
 
         $asset_stats['total'] = Asset::Hardware()->count();
 

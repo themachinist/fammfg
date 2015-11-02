@@ -159,25 +159,25 @@
 
 
 <div class="col-md-12">
-  		<!-- Licenses assets table -->
+  		<!-- Fixtures assets table -->
         <h6>Software Assigned </h6>
 		<br>
 		<!-- checked out assets table -->
-		@if (count($asset->licenses) > 0)
+		@if (count($asset->fixtures) > 0)
 		<table class="table table-hover">
 			<thead>
 				<tr>
 					<th class="col-md-4"><span class="line"></span>@lang('general.name')</th>
-					<th class="col-md-4"><span class="line"></span>@lang('admin/licenses/form.serial')</th>
+					<th class="col-md-4"><span class="line"></span>@lang('admin/fixtures/form.serial')</th>
 					<th class="col-md-1"><span class="line"></span>@lang('table.actions')</th>
 				</tr>
 			</thead>
 			<tbody>
-				@foreach ($asset->licenseseats as $seat)
+				@foreach ($asset->fixtureseats as $seat)
 				<tr>
-					<td><a href="{{ route('view/license', $seat->license->id) }}">{{{ $seat->license->name }}}</a></td>
-					<td>{{{ $seat->license->serial }}}</td>
-					<td><a href="{{ route('checkin/license', $seat->id) }}" class="btn-flat info">@lang('general.checkin')</a>
+					<td><a href="{{ route('view/fixture', $seat->fixture->id) }}">{{{ $seat->fixture->name }}}</a></td>
+					<td>{{{ $seat->fixture->serial }}}</td>
+					<td><a href="{{ route('checkin/fixture', $seat->id) }}" class="btn-flat info">@lang('general.checkin')</a>
 					</td>
 				</tr>
 				@endforeach

@@ -121,7 +121,7 @@
                             <br>
                             <h6>@lang('general.tools')</h6>
                             <br>
-                            <!-- checked out licenses table -->
+                            <!-- checked out fixtures table -->
                             @if (count($user->tools) > 0)
                             <div class="table-responsive">
 							<table class="display table table-hover">
@@ -156,7 +156,7 @@
                             <br>
                             <h6>@lang('general.consumables')</h6>
                             <br>
-                            <!-- checked out licenses table -->
+                            <!-- checked out fixtures table -->
                             @if (count($user->consumables) > 0)
                             <div class="table-responsive">
 							<table class="display table table-hover">
@@ -295,7 +295,7 @@
                                                 <i class="fa fa-keyboard-o"></i>
                                             @elseif (($log->consumablelog) && ($log->asset_type=="consumable"))
                                                 <i class="fa fa-tint"></i>
-                                            @elseif (($log->licenselog) && ($log->asset_type=="software"))
+                                            @elseif (($log->fixturelog) && ($log->asset_type=="software"))
                                                 <i class="fa fa-certificate"></i>
                                             @else
                                             <i class="fa fa-times"></i>
@@ -318,14 +318,14 @@
                                                     <del>{{{ $log->assetlog->showAssetName() }}}</del> (deleted)
                                                 @endif
 
-                                            @elseif (($log->licenselog) && ($log->asset_type=="software"))
+                                            @elseif (($log->fixturelog) && ($log->asset_type=="software"))
 
-                                                @if ($log->licenselog->deleted_at=='')
-                                                    <a href="{{ route('view/license', $log->license_id) }}">
-                                                        {{{ $log->licenselog->name }}}
+                                                @if ($log->fixturelog->deleted_at=='')
+                                                    <a href="{{ route('view/fixture', $log->fixture_id) }}">
+                                                        {{{ $log->fixturelog->name }}}
                                                     </a>
                                                 @else
-                                                    <del>{{{ $log->licenselog->name }}}</del> (deleted)
+                                                    <del>{{{ $log->fixturelog->name }}}</del> (deleted)
                                                 @endif
 
                                              @elseif (($log->consumablelog) && ($log->asset_type=="consumable"))

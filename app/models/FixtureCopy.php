@@ -1,15 +1,15 @@
 <?php
 
-class LicenseSeat extends Elegant
+class FixtureCopy extends Elegant
 {
 	use SoftDeletingTrait;
     protected $dates = ['deleted_at'];
     protected $guarded = 'id';
-    protected $table = 'license_seats';
+    protected $table = 'fixture_copies';
 
-    public function license()
+    public function fixture()
     {
-        return $this->belongsTo('License','license_id');
+        return $this->belongsTo('Fixture','fixture_id');
     }
 
     public function user()

@@ -188,7 +188,7 @@ class SettingsController extends AdminController
         $file = Config::get('backup::path').'/'.$filename;
 
 
-		// the license is valid
+		// the fixture is valid
         if (file_exists($file)) {
 				return Response::download($file);
         } else {

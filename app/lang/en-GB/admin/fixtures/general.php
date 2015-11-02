@@ -2,19 +2,19 @@
 
 return array(
 
-    'checkin'  					=> 'Checkin License Seat',
+    'checkin'  					=> 'Checkin Fixture Seat',
     'checkout_history'  		=> 'Checkout History',
-    'checkout'  				=> 'Checkout License Seat',
-    'edit'  					=> 'Edit License',
+    'checkout'  				=> 'Checkout Fixture Seat',
+    'edit'  					=> 'Edit Fixture',
     'filetype_info'				=> 'Allowed filetypes are png, gif, jpg, jpeg, doc, docx, pdf, txt, zip, and rar.',
-    'clone'  					=> 'Clone License',
+    'clone'  					=> 'Clone Fixture',
     'history_for'  				=> 'History for ',
     'in_out'  					=> 'In/Out',
-    'info'  					=> 'License Info',
-    'license_seats'  			=> 'License Seats',
+    'info'  					=> 'Fixture Info',
+    'fixture_seats'  			=> 'Fixture Seats',
     'seat'  					=> 'Seat',
     'seats'  					=> 'Seats',
-    'software_licenses'  		=> 'Software Licenses',
+    'software_fixtures'  		=> 'Software Fixtures',
     'user'  					=> 'User',
-    'view'  					=> 'View License',
+    'view'  					=> 'View Fixture',
 );

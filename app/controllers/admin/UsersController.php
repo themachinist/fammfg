@@ -458,10 +458,10 @@ class UsersController extends AdminController {
                 return Redirect::route('users')->with('error', 'This user still has ' . count($user->assets) . ' assets associated with them.');
             }
 
-            if (count($user->licenses) > 0) {
+            if (count($user->fixtures) > 0) {
 
                 // Redirect to the user management page
-                return Redirect::route('users')->with('error', 'This user still has ' . count($user->licenses) . ' licenses associated with them.');
+                return Redirect::route('users')->with('error', 'This user still has ' . count($user->fixtures) . ' fixtures associated with them.');
             }
 
             // Delete the user
@@ -597,9 +597,9 @@ class UsersController extends AdminController {
      */
     public function getView($userId = null) {
 
-        $user = User::with('assets', 'assets.model', 'consumables', 'tools', 'licenses', 'userloc')->withTrashed()->find($userId);
+        $user = User::with('assets', 'assets.model', 'consumables', 'tools', 'fixtures', 'userloc')->withTrashed()->find($userId);
 
-        $userlog = $user->userlog->load('assetlog', 'consumablelog', 'assetlog.model', 'licenselog', 'toollog', 'userlog', 'adminlog');
+        $userlog = $user->userlog->load('assetlog', 'consumablelog', 'assetlog.model', 'fixturelog', 'toollog', 'userlog', 'adminlog');
 
         if (isset($user->id)) {
             return View::make('backend/users/view', compact('user', 'userlog'));
@@ -826,7 +826,7 @@ class UsersController extends AdminController {
 
     public function getDatatable($status = null) {
 
-        $users = User::with('assets', 'tools', 'consumables', 'licenses', 'manager', 'sentryThrottle', 'groups', 'userloc');
+        $users = User::with('assets', 'tools', 'consumables', 'fixtures', 'manager', 'sentryThrottle', 'groups', 'userloc');
 
         switch ($status) {
             case 'deleted':
@@ -889,8 +889,8 @@ class UsersController extends AdminController {
                         ->addColumn('assets', function($users) {
                             return $users->assets->count();
                         })
-                        ->addColumn('licenses', function($users) {
-                            return $users->licenses->count();
+                        ->addColumn('fixtures', function($users) {
+                            return $users->fixtures->count();
                         })
                         ->addColumn('tools', function($users) {
                             return $users->tools->count();
@@ -907,7 +907,7 @@ class UsersController extends AdminController {
                         })
                         ->addColumn($actions)
                         ->searchColumns('name', 'email', 'manager', 'activated', 'groups', 'location')
-                        ->orderColumns('name', 'email', 'manager', 'activated', 'licenses', 'assets', 'tools', 'consumables', 'groups', 'location')
+                        ->orderColumns('name', 'email', 'manager', 'activated', 'fixtures', 'assets', 'tools', 'consumables', 'groups', 'location')
                         ->make();
     }
 
@@ -920,7 +920,7 @@ class UsersController extends AdminController {
     public function postUpload($userId = null) {
         $user = User::find($userId);
 
-        // the license is valid
+        // the fixture is valid
         $destinationPath = app_path() . '/private_uploads';
 
         if (isset($user->id)) {
@@ -983,7 +983,7 @@ class UsersController extends AdminController {
         $user = User::find($userId);
         $destinationPath = app_path() . '/private_uploads';
 
-        // the license is valid
+        // the fixture is valid
         if (isset($user->id)) {
 
             $log = Actionlog::find($fileId);
@@ -1012,7 +1012,7 @@ class UsersController extends AdminController {
 
         $user = User::find($userId);
 
-        // the license is valid
+        // the fixture is valid
         if (isset($user->id)) {
             $log = Actionlog::find($fileId);
             $file = $log->get_src();

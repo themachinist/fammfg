@@ -79,7 +79,7 @@
             <br>
             <h6>Software</h6>
             <br>
-            @if (count($supplier->licenses) > 0)
+            @if (count($supplier->fixtures) > 0)
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -88,10 +88,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($supplier->licenses as $license)
+                    @foreach ($supplier->fixtures as $fixture)
                     <tr>
-                        <td><a href="{{ route('view/license', $license->id) }}">{{{ $license->name }}}</a></td>
-                        <td><a href="{{ route('view/license', $license->id) }}">{{{ $license->serial }}}</a></td>
+                        <td><a href="{{ route('view/fixture', $fixture->id) }}">{{{ $fixture->name }}}</a></td>
+                        <td><a href="{{ route('view/fixture', $fixture->id) }}">{{{ $fixture->serial }}}</a></td>
                         </td>
                     </tr>
                     @endforeach

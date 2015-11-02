@@ -54,9 +54,9 @@ class User extends SentryUserModel
        return $this->belongsToMany('Consumable', 'consumables_users', 'assigned_to','consumable_id')->withPivot('id')->withTrashed();
    }
 
-    public function licenses()
+    public function fixtures()
     {
-        return $this->belongsToMany('License', 'license_seats', 'assigned_to', 'license_id')->withPivot('id');
+        return $this->belongsToMany('Fixture', 'fixture_seats', 'assigned_to', 'fixture_id')->withPivot('id');
     }
 
     /**

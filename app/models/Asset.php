@@ -317,19 +317,19 @@
         }
 
         /**
-         * Get the license seat information
+         * Get the fixture seat information
          **/
-        public function licenses()
+        public function fixtures()
         {
 
-            return $this->belongsToMany( 'License', 'license_seats', 'asset_id', 'license_id' );
+            return $this->belongsToMany( 'Fixture', 'fixture_seats', 'asset_id', 'fixture_id' );
 
         }
 
-        public function licenseseats()
+        public function fixtureseats()
         {
 
-            return $this->hasMany( 'LicenseSeat', 'asset_id' );
+            return $this->hasMany( 'FixtureSeat', 'asset_id' );
         }
 
         public function supplier()

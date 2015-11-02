@@ -64,28 +64,28 @@ class SendExpirationAlerts extends Command {
 				$asset_data['email_content'] .= '</tr>';
 		}
 
-		// Expiring licenses
-		$expiring_licenses = License::getExpiringLicenses(60);
-		$this->info(count($expiring_licenses).' expiring licenses');
+		// Expiring fixtures
+		$expiring_fixtures = Fixture::getExpiringFixtures(60);
+		$this->info(count($expiring_fixtures).' expiring fixtures');
 
 
-		$license_data['count'] =  count($expiring_licenses);
-		$license_data['email_content'] = '';
+		$fixture_data['count'] =  count($expiring_fixtures);
+		$fixture_data['email_content'] = '';
 
-		foreach ($expiring_licenses as $license) {
-			$expires = $license->expiration_date;
+		foreach ($expiring_fixtures as $fixture) {
+			$expires = $fixture->expiration_date;
 			$difference =  round(abs(strtotime($expires) - strtotime($now))/86400);
 
 			if ($difference > 30) {
-				$license_data['email_content'] .= '<tr style="background-color: #fcffa3;">';
+				$fixture_data['email_content'] .= '<tr style="background-color: #fcffa3;">';
 			} else {
-				$license_data['email_content'] .= '<tr style="background-color:#d9534f;">';
+				$fixture_data['email_content'] .= '<tr style="background-color:#d9534f;">';
 			}
-				$license_data['email_content'] .= '<td><a href="'.Config::get('app.url').'/admin/licenses/'.$license->id.'/view">';
-				$license_data['email_content'] .= $license->name.'</a></td>';
-				$license_data['email_content'] .= '<td>'.$license->expiration_date.'</td>';
-				$license_data['email_content'] .= '<td>'.$difference.' days</td>';
-				$license_data['email_content'] .= '</tr>';
+				$fixture_data['email_content'] .= '<td><a href="'.Config::get('app.url').'/admin/fixtures/'.$fixture->id.'/view">';
+				$fixture_data['email_content'] .= $fixture->name.'</a></td>';
+				$fixture_data['email_content'] .= '<td>'.$fixture->expiration_date.'</td>';
+				$fixture_data['email_content'] .= '<td>'.$difference.' days</td>';
+				$fixture_data['email_content'] .= '</tr>';
 		}
 
 		if ((Setting::getSettings()->alert_email!='')  && (Setting::getSettings()->alerts_enabled==1)) {
@@ -99,10 +99,10 @@ class SendExpirationAlerts extends Command {
 
 			}
 
-			if (count($expiring_licenses) > 0) {
-				Mail::send('emails.expiring-licenses-report', $license_data, function ($m)  {
+			if (count($expiring_fixtures) > 0) {
+				Mail::send('emails.expiring-fixtures-report', $fixture_data, function ($m)  {
 	                $m->to(Setting::getSettings()->alert_email, Setting::getSettings()->site_name);
-	                $m->subject('Expiring Licenses Report');
+	                $m->subject('Expiring Fixtures Report');
 	        	});
 
 			}
