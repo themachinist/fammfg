@@ -260,25 +260,29 @@ class FixturesController extends AdminController
             $fixture->user_id				= Sentry::getId();
 
 			//Are we changing the total number of copies?
-			if( $fixture->copies != e(Input::get('copies'))) {
-				//Determine how many copies we are dealing with
-				$difference = e(Input::get('copies')) - $fixture->fixturecopys()->count();
+			if( $difference = e(Input::get('copies')) - $fixture->fixturecopies()->count() ) {
 
 				if( $difference < 0 ) {
+					//remove the difference quantity of fixtures
+
 					//Filter out any fixture which have a user attached;
-					$copies = $fixture->fixturecopys->filter(function ($seat) {
-						return is_null($seat->user);
+					$copies = $fixture->fixturecopies->filter(function ($copy) {
+						return is_null($copy->user);
 					});
 
 					//If the remaining collection is as large or larger than the number of copies we want to delete
+					// note: why abs() here but not above?
 					if($copies->count() >= abs($difference)) {
+						// delete our copies then log the action
 						for ($i=1; $i <= abs($difference); $i++) {
+							$copies->pop()->delete();
+							$logaction = new Actionlog();
 							$logaction->asset_id = $fixture->id;
 							$logaction->asset_type = 'fixture';
 							$logaction->user_id = Sentry::getUser()->id;
 							$logaction->note = abs($difference)." copies";
 							$logaction->checkedout_to =  NULL;
-							$log = $logaction->logaction('delete copies');
+							$log = $logaction->logaction('delete copies');	
 						}
 					} else {
 						// Redirect to the fixture edit page
@@ -286,19 +290,19 @@ class FixturesController extends AdminController
 					}
 				} else {
 					for ($i=1; $i <= $difference; $i++) {
-						//Create a seat for this fixture
-						$fixture_seat = new FixtureCopy();
-						$fixture_seat->fixture_id       = $fixture->id;
-						$fixture_seat->user_id          = Sentry::getId();
-						$fixture_seat->assigned_to      = NULL;
-						$fixture_seat->notes            = NULL;
-						$fixture_seat->save();
+						//Create a copy for this fixture
+						$fixture_copy = new FixtureCopy();
+						$fixture_copy->fixture_id       = $fixture->id;
+						$fixture_copy->user_id          = Sentry::getId();
+						$fixture_copy->assigned_to      = NULL;
+						$fixture_copy->notes            = NULL;
+						$fixture_copy->save();
 					}
 
 					//Log the addition of fixture to the log.
 					$logaction = new Actionlog();
 					$logaction->asset_id = $fixture->id;
-					$logaction->asset_type = 'software';
+					$logaction->asset_type = 'fixture';
 					$logaction->user_id = Sentry::getUser()->id;
 					$logaction->note = abs($difference)." copies";
 					$log = $logaction->logaction('add copies');
@@ -358,10 +362,10 @@ class FixturesController extends AdminController
     /**
     * Check out the asset to a person
     **/
-    public function getCheckout($seatId)
+    public function getCheckout($copyId)
     {
         // Check if the asset exists
-        if (is_null($fixturecopy = FixtureCopy::find($seatId))) {
+        if (is_null($fixturecopy = FixtureCopy::find($copyId))) {
 			// Redirect to the asset management page with error
 			return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
@@ -854,8 +858,8 @@ class FixturesController extends AdminController
             // Redirect to the asset management page with error
             return Redirect::to('admin/fixtures')->with('error', Lang::get('admin/fixtures/message.not_found'));
         }
-        $seatId = $fixture->freeSeat($fixtureId);
-        return Redirect::to('admin/fixtures/'.$seatId.'/checkout');
+        $copyId = $fixture->freeCopy($fixtureId);
+        return Redirect::to('admin/fixtures/'.$copyId.'/checkout');
     }
 }
 ?>
