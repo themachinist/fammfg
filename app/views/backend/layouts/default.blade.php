@@ -130,33 +130,36 @@
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-<!--
-                       <li {{{ (Request::is('hardware/create') ? 'class="active"' : '') }}}>
-                               <a href="{{ route('create/hardware') }}">
-                                   <i class="fa fa-barcode"></i>
-                                   @lang('general.asset')</a>
-                       </li>
-                       <li {{{ (Request::is('admin/fixtures/create') ? 'class="active"' : '') }}}>
-                            <a href="{{ route('create/fixtures') }}">
-                                <i class="fa fa-certificate"></i>
-                                @lang('general.fixture')</a>
-                       </li>
--->
-                        <li {{{ (Request::is('admin/tools/create') ? 'class="active"' : '') }}}>
-                            <a href="{{ route('create/tool') }}">
-                                <i class="fa fa-wrench"></i>
-                                @lang('general.tool')</a>
+						<li {{{ (Request::is('admin/categories/create') ? 'class="active"' : '') }}}>
+							<a href="{{ route('create/category') }}">
+							<i class="fa fa-tag"></i>
+							@lang('general.category')</a>
+						</li>
+						<li {{{ (Request::is('admin/assets/create') ? 'class="active"' : '') }}}>
+							<a href="{{ route('create/asset') }}">
+							<i class="fa fa-barcode"></i>
+							@lang('general.asset')</a>
+						</li>
+						<li {{{ (Request::is('admin/tools/create') ? 'class="active"' : '') }}}>
+							<a href="{{ route('create/tool') }}">
+							<i class="fa fa-wrench"></i>
+							@lang('general.tool')</a>
+						</li>
+						<li {{{ (Request::is('admin/consumables/create') ? 'class="active"' : '') }}}>
+							<a href="{{ route('create/consumable') }}">
+							<i class="fa fa-recycle"></i>
+							@lang('general.consumable')</a>
                         </li>
-                        <li {{{ (Request::is('admin/consumables/create') ? 'class="active"' : '') }}}>
-                            <a href="{{ route('create/consumable') }}">
-                                <i class="fa fa-recycle"></i>
-                                @lang('general.consumable')</a>
-                        </li>
+						<li {{{ (Request::is('admin/fixtures/create') ? 'class="active"' : '') }}}>
+							<a href="{{ route('create/fixtures') }}">
+							<i class="fa fa-certificate"></i>
+							@lang('general.fixture')</a>
+                       </li>
                         <li {{{ (Request::is('admin/users/create') ? 'class="active"' : '') }}}>
-                            <a href="{{ route('create/user') }}">
-                            <i class="fa fa-user"></i>
-                            @lang('general.user')</a>
-                        </li>
+					        <a href="{{ route('create/user') }}">
+							<i class="fa fa-user"></i>
+							@lang('general.user')</a>
+						</li>
                     </ul>
                 </li>
                 @endif
@@ -196,8 +199,8 @@
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                        <li{{ (Request::is('hardware/models*') ? ' class="active"' : '') }}>
-                            <a href="{{ URL::to('hardware/models') }}">
+                        <li{{ (Request::is('asset/models*') ? ' class="active"' : '') }}>
+                            <a href="{{ URL::to('asset/models') }}">
                                 <i class="fa fa-th"></i> @lang('general.asset_models')
                             </a>
                         </li>
@@ -268,31 +271,26 @@
 			<li{{ (Request::is('*/') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{Config::get('app.url')}}"><i class="fa fa-dashboard"></i><span>Dashboard</span></a>
             </li>
+            <li{{ (Request::is('*assets') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
+                <a href="{{ URL::to('admin/assets') }}" class="dropdown-toggle">
+                    <i class="fa fa-industry"></i>
+                    <span>@lang('general.assets')</span>
+					<b class="fa fa-chevron-down"></b>
+                </a>
+                <ul class="submenu{{ (Request::is('admin/assets*') ? ' active' : '') }}">
+                    <li><a href="{{ URL::to('admin/assets') }}">@lang('general.list_all')</a></li>
+                    <li class="divider">&nbsp;</li>
+                    <li><a href="{{ URL::to('asset/models') }}" {{{ (Request::is('asset/models*') ? ' class="active"' : '') }}} >@lang('general.asset_models')</a></li> 
+                    <li><a href="{{ URL::to('asset?status=Deleted') }}" {{{ (Request::query('Deleted') ? ' class="active"' : '') }}} >@lang('general.deleted')</a></li>
+                    <li><a href="{{ URL::to('admin/asset_maintenances') }}"  >@lang('general.asset_maintenances') </a></li> 
+                </ul>
+            </li>
             <li{{ (Request::is('*admin/settings/categories') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{ URL::to('admin/settings/categories') }}">
                     <i class="fa fa-tags"></i>
                     <span>@lang('general.categories')</span>
                 </a>
-<!--
-                <ul class="submenu{{ (Request::is('hardware*') ? ' active' : '') }}">
-                    <li><a href="{{ URL::to('hardware?status=Deployed') }}" {{ (Request::query('status') == 'Deployed' ? ' class="active"' : '') }} >@lang('general.deployed')</a></li>
-                    <li><a href="{{ URL::to('hardware?status=RTD') }}" {{ (Request::query('status') == 'RTD' ? ' class="active"' : '') }} >@lang('general.ready_to_deploy')</a></li>
-                    <li><a href="{{ URL::to('hardware?status=Pending') }}" {{ (Request::query('status') == 'Pending' ? ' class="active"' : '') }} >@lang('general.pending')</a></li>
-                    <li><a href="{{ URL::to('hardware?status=Undeployable') }}" {{ (Request::query('status') == 'Undeployable' ? ' class="active"' : '') }} >@lang('general.undeployable')</a></li>
-                    <li><a href="{{ URL::to('hardware?status=Archived') }}" {{ (Request::query('status') == 'Archived' ? ' class="active"' : '') }} >@lang('admin/hardware/general.archived')</a></li>
-                    <li><a href="{{ URL::to('hardware?status=Requestable') }}" {{ (Request::query('status') == 'Requestable' ? ' class="active"' : '') }} >@lang('admin/hardware/general.requestable')</a></li>
-
-                    <li><a href="{{ URL::to('hardware') }}">@lang('general.list_all')</a></li>
-
-                    <li class="divider">&nbsp;</li>
-                    <li><a href="{{ URL::to('hardware/models') }}" {{{ (Request::is('hardware/models*') ? ' class="active"' : '') }}} >@lang('general.asset_models')</a></li> 
-                    <li><a href="{{ URL::to('admin/settings/categories') }}" {{{ (Request::is('admin/settings/categories*') ? ' class="active"' : '') }}} >@lang('general.categories')</a></li>
-                    <li><a href="{{ URL::to('hardware?status=Deleted') }}" {{{ (Request::query('Deleted') ? ' class="active"' : '') }}} >@lang('general.deleted')</a></li>
-                    <li><a href="{{ URL::to('admin/asset_maintenances') }}"  >@lang('general.asset_maintenances') </a></li> 
-                </ul> -->
             </li>
-			
-
             <li{{ (Request::is('admin/tools*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{ URL::to('admin/tools') }}">
                     <i class="fa fa-wrench"></i>
