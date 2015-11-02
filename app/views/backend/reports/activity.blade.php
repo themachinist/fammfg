@@ -37,7 +37,7 @@
             <td><a href="../admin/users/{{ $log_action->adminlog->id }}/view">{{{ $log_action->adminlog->fullName() }}}</a></td>
             <td>{{{ $log_action->action_type }}}</td>
             <td>
-	            @if ($log_action->asset_type=="hardware")
+	            @if ($log_action->asset_type=="asset")
 	            	Asset
 	            @elseif ($log_action->asset_type=="fixture")
 	            	Fixture
@@ -49,7 +49,7 @@
             </td>
 
             <td>
-            @if (($log_action->assetlog) && ($log_action->asset_type=="hardware"))
+            @if (($log_action->assetlog) && ($log_action->asset_type=="asset"))
                  {{ $log_action->assetlog->showAssetName() }}
              @elseif (($log_action->fixturelog) && ($log_action->asset_type=="fixture"))
                  {{ $log_action->fixturelog->name }}
