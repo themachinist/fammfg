@@ -55,6 +55,8 @@
 						<a href="{{ route('view/tool', $tool->tool_id) }}">{{ $tool->name }}</a>
 						@elseif ($tool->asset_type == "consumable")
 						<a href="{{ route('view/consumable', $tool->tool_id) }}">{{ $tool->name }}</a>
+						@elseif ($tool->asset_type == "fixture")
+						<a href="{{ route('view/fixture', $tool->tool_id) }}">{{ $tool->name }}</a>
 						@endif
 					</td>
 					<td>
