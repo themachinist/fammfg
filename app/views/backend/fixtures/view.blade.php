@@ -90,7 +90,7 @@
 
 		<div class="col-md-12" style="padding-top: 60px;">
 			<!-- checked out assets table -->
-			<h6>{{ $fixture->copies }} @lang('admin/fixtures/general.fixture_copies')</h6>
+			<h6>{{ $fixture->fixturecopies->count() }} @lang('admin/fixtures/general.fixture_copies')</h6>
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -311,16 +311,16 @@
 				<li><strong>@lang('admin/fixtures/form.purchase_order'):</strong>	{{{ $fixture->purchase_order }}} </li>
 			@endif
 			@if ($fixture->build_date > 0)
-				<li><strong>@lang('admin/fixtures/form.build_date'):</strong>				{{{ $fixture->build_date }}} </li>
+				<li><strong>@lang('admin/fixtures/form.build_date'):</strong>		{{{ $fixture->build_date }}} </li>
 			@endif
 			@if ($fixture->build_cost > 0)
 				<li><strong>@lang('admin/fixtures/form.build_cost'):</strong>	@lang('general.currency') {{{ number_format($fixture->build_cost,2) }}} </li>
 			@endif
 			@if ($fixture->job_number_built_on)
-				<li><strong>@lang('admin/fixtures/form.job_number'):</strong>			{{{ $fixture->job_number_built_on }}} </li>
+				<li><strong>@lang('admin/fixtures/form.job_number'):</strong>		{{{ $fixture->job_number_built_on }}} </li>
 			@endif
-			@if (($fixture->copies) && ($fixture->copies) > 0)
-				<li><strong>@lang('admin/fixtures/form.copies'):</strong>			{{{ $fixture->copies }}} </li>
+			@if (($fixture->fixturecopies->count()) && ($fixture->fixturecopies->count()) > 0)
+				<li><strong>@lang('admin/fixtures/form.copies'):</strong>			{{{ $fixture->fixturecopies->count() }}} </li>
 			@endif
 			@if ($fixture->notes)
 				<li><strong>@lang('admin/fixtures/form.notes'):</strong>

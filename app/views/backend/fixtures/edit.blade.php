@@ -68,7 +68,7 @@
 				 <i class='fa fa-asterisk'></i></label>
 				 </label>
 					<div class="col-md-3">
-						<input class="form-control" type="text" name="copies" id="copies" value="{{ Input::old('copies', $fixture->copies) }}" />
+						<input class="form-control" type="text" name="copies" id="copies" value="{{ Input::old('copies', $fixture->fixturecopies->count()) }}" />
 						{{ $errors->first('copies', '<br><span class="alert-msg"><i class="fa fa-times"></i> :message</span>') }}
 					</div>
 			</div>
