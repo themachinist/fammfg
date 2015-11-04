@@ -9,7 +9,7 @@
         /*---Asset API---*/
         Route::group( [ 'prefix' => 'assets' ], function () {
 
-            Route::get( 'list/{status?}', [ 'as' => 'api.asset.list', 'uses' => 'AssetsController@getDatatable' ] );
+            Route::get( 'list/{status?}', [ 'as' => 'api.assets.list', 'uses' => 'AssetsController@getDatatable' ] );
         } );
 
         /*---Status Label API---*/
@@ -148,8 +148,8 @@
             Route::get( '{assetId}/deletefile/{fileId}',['as' => 'delete/assetfile',	'uses' => 'AssetsController@getDeleteFile' ] );
             Route::get( '{assetId}/showfile/{fileId}',	['as' => 'show/assetfile',		'uses' => 'AssetsController@displayFile' ] );
             Route::post( '{assetId}/edit',				 'AssetsController@postEdit' );
-            Route::post( 'bulkedit',					['as' => 'asset/bulkedit',		'uses' => 'AssetsController@postBulkEdit' ] );
-            Route::post( 'bulksave',					['as'   => 'asset/bulksave',	'uses' => 'AssetsController@postBulkSave' ] );
+            Route::post( 'bulkedit',					['as' => 'assets/bulkedit',		'uses' => 'AssetsController@postBulkEdit' ] );
+            Route::post( 'bulksave',					['as' => 'assets/bulksave',	'uses' => 'AssetsController@postBulkSave' ] );
 
             # Asset Model Management
             Route::group( [ 'prefix' => 'models', 'before' => 'admin-auth' ], function () {
