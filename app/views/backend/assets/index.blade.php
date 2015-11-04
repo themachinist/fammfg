@@ -12,7 +12,7 @@
         @elseif (Input::get('status')=='Deployable')
             @lang('general.deployed')
          @elseif (Input::get('status')=='Requestable')
-            @lang('admin/hardware/general.requestable')
+            @lang('admin/assets/general.requestable')
         @elseif (Input::get('status')=='Archived')
             @lang('general.archived')
          @elseif (Input::get('status')=='Deleted')
@@ -40,7 +40,7 @@
 
 <div class="row header">
     <div class="col-md-12">
-        <a href="{{ route('create/hardware') }}" class="btn btn-success pull-right"><i class="fa fa-plus icon-white"></i> @lang('general.create')</a>
+        <a href="{{ route('create/asset') }}" class="btn btn-success pull-right"><i class="fa fa-plus icon-white"></i> @lang('general.create')</a>
         <h3>@yield('title0')</h3>
     </div>
 </div>
@@ -51,25 +51,25 @@
 
  {{ Form::open([
       'method' => 'POST',
-      'route' => ['hardware/bulkedit'],
+      'route' => ['assets/bulkedit'],
 	  'class' => 'form-horizontal' ]) }}
 
 
 
 {{ Datatable::table()
-    ->addColumn('<div class="text-center"><input type="checkbox" id="checkAll" style="padding-left: 0px;"></div>',Lang::get('admin/hardware/form.name'),
-    	Lang::get('admin/hardware/table.asset_tag'),
-    	Lang::get('admin/hardware/table.serial'),
-		Lang::get('admin/hardware/form.model'),
-    	Lang::get('admin/hardware/table.status'),
-		Lang::get('admin/hardware/table.location'),
+    ->addColumn('<div class="text-center"><input type="checkbox" id="checkAll" style="padding-left: 0px;"></div>',Lang::get('admin/assets/form.name'),
+    	Lang::get('admin/assets/table.asset_tag'),
+    	Lang::get('admin/assets/table.serial'),
+		Lang::get('admin/assets/form.model'),
+    	Lang::get('admin/assets/table.status'),
+		Lang::get('admin/assets/table.location'),
     	Lang::get('general.category'),
-    	Lang::get('admin/hardware/table.eol'),
+    	Lang::get('admin/assets/table.eol'),
         Lang::get('general.notes'),
-        Lang::get('admin/hardware/form.mac_address'),
-        Lang::get('admin/hardware/form.order'),
-    	Lang::get('admin/hardware/table.checkout_date'),
-    	Lang::get('admin/hardware/table.change'),
+        Lang::get('admin/assets/form.mac_address'),
+        Lang::get('admin/assets/form.order'),
+    	Lang::get('admin/assets/table.checkout_date'),
+    	Lang::get('admin/assets/table.change'),
     	Lang::get('table.actions'))
     ->setOptions(
             array(
@@ -87,14 +87,14 @@
 	            		'last'=>Lang::get('general.last'),
 	            		),
 	            	),
-            	'sAjaxSource'=> route('api.hardware.list', array(''=>Input::get('status'),'order_number'=>Input::get('order_number'))),
+            	'sAjaxSource'=> route('api.assets.list', array(''=>Input::get('status'),'order_number'=>Input::get('order_number'))),
                 'dom' =>'CT<"clear">lfrtip',
                 'colVis'=> array('showAll'=>'Show All','restore'=>'Restore','exclude'=>array(0,13,14),'activate'=>'mouseover'),
                 'columnDefs'=> array(array('visible'=>false,'targets'=>array(7,8,9)),array('orderable'=>false,'targets'=>array(0,13,14))),
                 'order'=>array(array(1,'asc')),
             )
         )
-    ->render('backend/hardware/datatable') }}
+    ->render('backend/assets/datatable') }}
 
  {{ Form::close() }}
 
