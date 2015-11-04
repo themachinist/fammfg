@@ -6,10 +6,10 @@
     */
     Route::group( [ 'prefix' => 'api', 'namespace' => 'Controllers\Admin', 'before' => 'admin-auth' ], function () {
 
-        /*---Hardware API---*/
-        Route::group( [ 'prefix' => 'hardware' ], function () {
+        /*---Asset API---*/
+        Route::group( [ 'prefix' => 'assets' ], function () {
 
-            Route::get( 'list/{status?}', [ 'as' => 'api.hardware.list', 'uses' => 'AssetsController@getDatatable' ] );
+            Route::get( 'list/{status?}', [ 'as' => 'api.asset.list', 'uses' => 'AssetsController@getDatatable' ] );
         } );
 
         /*---Status Label API---*/
@@ -115,80 +115,6 @@
     |
     */
 
-    Route::group( [ 'prefix' => 'hardware', 'namespace' => 'Controllers\Admin', 'before' => 'admin-auth' ],
-        function () {
-
-            Route::get( '/', [
-                    'as'   => 'hardware',
-                    'uses' => 'AssetsController@getIndex'
-                ]
-            );
-
-            Route::get( 'create/{model?}', [
-                    'as'   => 'create/hardware',
-                    'uses' => 'AssetsController@getCreate'
-                ]
-            );
-
-            Route::post( 'create', [
-                    'as'   => 'savenew/hardware',
-                    'uses' => 'AssetsController@postCreate'
-                ]
-            );
-
-            Route::get( '{assetId}/edit', [
-                    'as'   => 'update/hardware',
-                    'uses' => 'AssetsController@getEdit'
-                ]
-            );
-
-            Route::get( '{assetId}/clone', [ 'as' => 'clone/hardware', 'uses' => 'AssetsController@getClone' ] );
-            Route::post( '{assetId}/clone', 'AssetsController@postCreate' );
-            Route::get( '{assetId}/delete', [ 'as' => 'delete/hardware', 'uses' => 'AssetsController@getDelete' ] );
-            Route::get( '{assetId}/checkout',
-                [ 'as' => 'checkout/hardware', 'uses' => 'AssetsController@getCheckout' ] );
-            Route::post( '{assetId}/checkout', 'AssetsController@postCheckout' );
-            Route::get( '{assetId}/checkin/{backto?}',
-                [ 'as' => 'checkin/hardware', 'uses' => 'AssetsController@getCheckin' ] );
-            Route::post( '{assetId}/checkin/{backto?}', 'AssetsController@postCheckin' );
-            Route::get( '{assetId}/view', [ 'as' => 'view/hardware', 'uses' => 'AssetsController@getView' ] );
-            Route::get( '{assetId}/qr-view', [ 'as' => 'qr-view/hardware', 'uses' => 'AssetsController@getView' ] );
-            Route::get( '{assetId}/qr_code', [ 'as' => 'qr_code/hardware', 'uses' => 'AssetsController@getQrCode' ] );
-            Route::get( '{assetId}/restore', [ 'as' => 'restore/hardware', 'uses' => 'AssetsController@getRestore' ] );
-            Route::post( '{assetId}/upload', [ 'as' => 'upload/asset', 'uses' => 'AssetsController@postUpload' ] );
-            Route::get( '{assetId}/deletefile/{fileId}',
-                [ 'as' => 'delete/assetfile', 'uses' => 'AssetsController@getDeleteFile' ] );
-            Route::get( '{assetId}/showfile/{fileId}',
-                [ 'as' => 'show/assetfile', 'uses' => 'AssetsController@displayFile' ] );
-            Route::post( '{assetId}/edit', 'AssetsController@postEdit' );
-
-            Route::post( 'bulkedit',
-                [
-                    'as'   => 'hardware/bulkedit',
-                    'uses' => 'AssetsController@postBulkEdit'
-                ] );
-            Route::post( 'bulksave',
-                [
-                    'as'   => 'hardware/bulksave',
-                    'uses' => 'AssetsController@postBulkSave'
-                ] );
-
-            # Asset Model Management
-            Route::group( [ 'prefix' => 'models', 'before' => 'admin-auth' ], function () {
-
-                Route::get( '/', [ 'as' => 'models', 'uses' => 'ModelsController@getIndex' ] );
-                Route::get( 'create', [ 'as' => 'create/model', 'uses' => 'ModelsController@getCreate' ] );
-                Route::post( 'create', 'ModelsController@postCreate' );
-                Route::get( '{modelId}/edit', [ 'as' => 'update/model', 'uses' => 'ModelsController@getEdit' ] );
-                Route::post( '{modelId}/edit', 'ModelsController@postEdit' );
-                Route::get( '{modelId}/clone', [ 'as' => 'clone/model', 'uses' => 'ModelsController@getClone' ] );
-                Route::post( '{modelId}/clone', 'ModelsController@postCreate' );
-                Route::get( '{modelId}/delete', [ 'as' => 'delete/model', 'uses' => 'ModelsController@getDelete' ] );
-                Route::get( '{modelId}/view', [ 'as' => 'view/model', 'uses' => 'ModelsController@getView' ] );
-                Route::get( '{modelID}/restore', [ 'as' => 'restore/model', 'uses' => 'ModelsController@getRestore' ] );
-            } );
-
-        } );
 
     /*
     |--------------------------------------------------------------------------
@@ -200,6 +126,45 @@
     */
 
     Route::group( [ 'prefix' => 'admin', 'before' => 'admin-auth', 'namespace' => 'Controllers\Admin' ], function () {
+
+		Route::group( [ 'prefix' => 'assets' ], function () {
+
+            Route::get( '/',							['as' => 'assets',				'uses' => 'AssetsController@getIndex'] );
+            Route::get( 'create/{model?}',				['as' => 'create/asset',		'uses' => 'AssetsController@getCreate'] );
+            Route::post('create',						['as' => 'savenew/asset',		'uses' => 'AssetsController@postCreate'] );
+            Route::get( '{assetId}/edit',				['as' => 'update/asset',		'uses' => 'AssetsController@getEdit'] );
+            Route::get( '{assetId}/clone',				['as' => 'clone/asset',			'uses' => 'AssetsController@getClone' ] );
+            Route::post('{assetId}/clone',				 'AssetsController@postCreate' );
+            Route::get(	'{assetId}/delete',				['as' => 'delete/asset',		'uses' => 'AssetsController@getDelete' ] );
+            Route::get(	'{assetId}/checkout',			['as' => 'checkout/asset',		'uses' => 'AssetsController@getCheckout' ] );
+            Route::post('{assetId}/checkout',			 'AssetsController@postCheckout' );
+            Route::get( '{assetId}/checkin/{backto?}',	['as' => 'checkin/asset',		'uses' => 'AssetsController@getCheckin' ] );
+            Route::post('{assetId}/checkin/{backto?}',	 'AssetsController@postCheckin' );
+            Route::get( '{assetId}/view',				['as' => 'view/asset',			'uses' => 'AssetsController@getView' ] );
+            Route::get( '{assetId}/qr-view',			['as' => 'qr-view/asset',		'uses' => 'AssetsController@getView' ] );
+            Route::get( '{assetId}/qr_code',			['as' => 'qr_code/asset',		'uses' => 'AssetsController@getQrCode' ] );
+            Route::get( '{assetId}/restore',			['as' => 'restore/asset',		'uses' => 'AssetsController@getRestore' ] );
+            Route::post('{assetId}/upload',				['as' => 'upload/asset',		'uses' => 'AssetsController@postUpload' ] );
+            Route::get( '{assetId}/deletefile/{fileId}',['as' => 'delete/assetfile',	'uses' => 'AssetsController@getDeleteFile' ] );
+            Route::get( '{assetId}/showfile/{fileId}',	['as' => 'show/assetfile',		'uses' => 'AssetsController@displayFile' ] );
+            Route::post( '{assetId}/edit',				 'AssetsController@postEdit' );
+            Route::post( 'bulkedit',					['as' => 'asset/bulkedit',		'uses' => 'AssetsController@postBulkEdit' ] );
+            Route::post( 'bulksave',					['as'   => 'asset/bulksave',	'uses' => 'AssetsController@postBulkSave' ] );
+
+            # Asset Model Management
+            Route::group( [ 'prefix' => 'models', 'before' => 'admin-auth' ], function () {
+                Route::get( '/',				['as' => 'models',				'uses' => 'ModelsController@getIndex' ] );
+                Route::get( 'create',			['as' => 'create/model',		'uses' => 'ModelsController@getCreate' ] );
+                Route::post( 'create',			 'ModelsController@postCreate' );
+                Route::get( '{modelId}/edit',	['as' => 'update/model',		'uses' => 'ModelsController@getEdit' ] );
+                Route::post( '{modelId}/edit',	 'ModelsController@postEdit' );
+                Route::get( '{modelId}/clone',	['as' => 'clone/model',			'uses' => 'ModelsController@getClone' ] );
+                Route::post( '{modelId}/clone',  'ModelsController@postCreate' );
+                Route::get( '{modelId}/delete', [ 'as' => 'delete/model',		'uses' => 'ModelsController@getDelete' ] );
+                Route::get( '{modelId}/view',	[ 'as' => 'view/model',			'uses' => 'ModelsController@getView' ] );
+                Route::get( '{modelID}/restore',[ 'as' => 'restore/model',		'uses' => 'ModelsController@getRestore' ] );
+            } );
+        } );
 
         # Fixtures
         Route::group( [ 'prefix' => 'fixtures' ], function () {
@@ -262,7 +227,6 @@
             Route::get( '{toolID}/checkin/{backto?}',
                 [ 'as' => 'checkin/tool', 'uses' => 'ToolsController@getCheckin' ] );
             Route::post( '{toolID}/checkin/{backto?}', 'ToolsController@postCheckin' );
-
             Route::get( '/', [ 'as' => 'tools', 'uses' => 'ToolsController@getIndex' ] );
         } );
 
@@ -281,7 +245,7 @@
             Route::get( '{consumableID}/checkout',
                 [ 'as' => 'checkout/consumable', 'uses' => 'ConsumablesController@getCheckout' ] );
             Route::post( '{consumableID}/checkout', 'ConsumablesController@postCheckout' );
-            Route::get( '/', [ 'as' => 'tools', 'uses' => 'ConsumablesController@getIndex' ] );
+            Route::get( '/', [ 'as' => 'consumables', 'uses' => 'ConsumablesController@getIndex' ] );
         } );
 
         # Admin Settings Routes (for categories, maufactureres, etc)
