@@ -43,7 +43,7 @@ class AssetsController extends AdminController
 
     public function getIndex()
     {
-        return View::make('backend/hardware/index');
+        return View::make('backend/assets/index');
     }
 
     /**
@@ -65,7 +65,7 @@ class AssetsController extends AdminController
         $assigned_to = usersList();
         $statuslabel_types = statusTypeList();
 
-        $view = View::make('backend/hardware/edit');
+        $view = View::make('backend/asset/edit');
         $view->with('supplier_list',$supplier_list);
         $view->with('model_list',$model_list);
         $view->with('statuslabel_list',$statuslabel_list);
@@ -175,19 +175,19 @@ class AssetsController extends AdminController
 					$logaction = new Actionlog();
 					$logaction->asset_id = $asset->id;
 					$logaction->checkedout_to = $asset->assigned_to;
-					$logaction->asset_type = 'hardware';
+					$logaction->asset_type = 'asset';
 					$logaction->user_id = Sentry::getUser()->id;
 					$logaction->note = e(Input::get('note'));
 					$log = $logaction->logaction('checkout');
 				}
 
                 // Redirect to the asset listing page
-                return Redirect::to("hardware")->with('success', Lang::get('admin/hardware/message.create.success'));
+                return Redirect::to("asset")->with('success', Lang::get('admin/asset/message.create.success'));
             }
         }
 
         // Redirect to the asset create page with an error
-        return Redirect::to('assets/create')->with('error', Lang::get('admin/hardware/message.create.error'));
+        return Redirect::to('assets/create')->with('error', Lang::get('admin/asset/message.create.error'));
 
 
     }
@@ -203,7 +203,7 @@ class AssetsController extends AdminController
         // Check if the asset exists
         if (is_null($asset = Asset::find($assetId))) {
             // Redirect to the asset management page
-            return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.does_not_exist'));
+            return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.does_not_exist'));
         }
 
         // Grab the dropdown lists
@@ -216,7 +216,7 @@ class AssetsController extends AdminController
         $assigned_to = usersList();
         $statuslabel_types = statusTypeList();
 
-        return View::make('backend/hardware/edit', compact('asset'))
+        return View::make('backend/asset/edit', compact('asset'))
         ->with('model_list',$model_list)
         ->with('supplier_list',$supplier_list)
         ->with('location_list',$location_list)
@@ -239,7 +239,7 @@ class AssetsController extends AdminController
         // Check if the asset exists
         if (is_null($asset = Asset::find($assetId))) {
             // Redirect to the asset management page with error
-            return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.does_not_exist'));
+            return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.does_not_exist'));
         }
 
         //attempt to validate
@@ -311,17 +311,17 @@ class AssetsController extends AdminController
             // Was the asset updated?
             if($asset->save()) {
                 // Redirect to the new asset page
-                return Redirect::to("hardware/$assetId/view")->with('success', Lang::get('admin/hardware/message.update.success'));
+                return Redirect::to("asset/$assetId/view")->with('success', Lang::get('admin/asset/message.update.success'));
             }
             else
             {
-                 return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.does_not_exist'));
+                 return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.does_not_exist'));
              }
         }
 
 
         // Redirect to the asset management page with error
-        return Redirect::to("hardware/$assetId/edit")->with('error', Lang::get('admin/hardware/message.update.error'));
+        return Redirect::to("asset/$assetId/edit")->with('error', Lang::get('admin/asset/message.update.error'));
 
     }
 
@@ -336,12 +336,12 @@ class AssetsController extends AdminController
         // Check if the asset exists
         if (is_null($asset = Asset::find($assetId))) {
             // Redirect to the asset management page with error
-            return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.not_found'));
+            return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.not_found'));
         }
 
         if (isset($asset->assigneduser->id) && ($asset->assigneduser->id!=0)) {
             // Redirect to the asset management page
-            return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.assoc_users'));
+            return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.assoc_users'));
         } else {
             // Delete the asset
 
@@ -353,7 +353,7 @@ class AssetsController extends AdminController
             $asset->delete();
 
             // Redirect to the asset management page
-            return Redirect::to('hardware')->with('success', Lang::get('admin/hardware/message.delete.success'));
+            return Redirect::to('asset')->with('success', Lang::get('admin/asset/message.delete.success'));
         }
 
 
@@ -368,13 +368,13 @@ class AssetsController extends AdminController
         // Check if the asset exists
         if (is_null($asset = Asset::find($assetId))) {
             // Redirect to the asset management page with error
-            return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.not_found'));
+            return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.not_found'));
         }
 
         // Get the dropdown of users and then pass it to the checkout view
         $users_list = usersList();
 
-        return View::make('backend/hardware/checkout', compact('asset'))->with('users_list',$users_list);
+        return View::make('backend/asset/checkout', compact('asset'))->with('users_list',$users_list);
 
     }
 
@@ -386,7 +386,7 @@ class AssetsController extends AdminController
 
         // Check if the asset exists
         if (!$asset = Asset::find($assetId)) {
-            return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.not_found'));
+            return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.not_found'));
         }
 
         // Declare the rules for the form validation
@@ -404,11 +404,11 @@ class AssetsController extends AdminController
         }
 
         if (!$user = User::find(e(Input::get('assigned_to')))) {
-            return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.user_does_not_exist'));
+            return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.user_does_not_exist'));
         }
 
         if (!$admin = Sentry::getUser()) {
-            return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.admin_user_does_not_exist'));
+            return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.admin_user_does_not_exist'));
         }
 
 
@@ -429,11 +429,11 @@ class AssetsController extends AdminController
 
         if ($asset->checkOutToUser($user, $admin, $checkout_at, $expected_checkin, e(Input::get('note')), e(Input::get('name')))) {
             // Redirect to the new asset page
-            return Redirect::to("hardware")->with('success', Lang::get('admin/hardware/message.checkout.success'));
+            return Redirect::to("asset")->with('success', Lang::get('admin/asset/message.checkout.success'));
         }
 
         // Redirect to the asset management page with error
-        return Redirect::to("hardware/$assetId/checkout")->with('error', Lang::get('admin/hardware/message.checkout.error'));
+        return Redirect::to("asset/$assetId/checkout")->with('error', Lang::get('admin/asset/message.checkout.error'));
     }
 
 
@@ -448,10 +448,10 @@ class AssetsController extends AdminController
         // Check if the asset exists
         if (is_null($asset = Asset::find($assetId))) {
             // Redirect to the asset management page with error
-            return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.not_found'));
+            return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.not_found'));
         }
 
-        return View::make('backend/hardware/checkin', compact('asset'))->with('backto', $backto);
+        return View::make('backend/asset/checkin', compact('asset'))->with('backto', $backto);
     }
 
 
@@ -466,7 +466,7 @@ class AssetsController extends AdminController
         // Check if the asset exists
         if (is_null($asset = Asset::find($assetId))) {
             // Redirect to the asset management page with error
-            return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.not_found'));
+            return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.not_found'));
         }
 
         if (!is_null($asset->assigned_to)) {
@@ -498,7 +498,7 @@ class AssetsController extends AdminController
 
             $logaction->asset_id = $asset->id;
             $logaction->location_id = NULL;
-            $logaction->asset_type = 'hardware';
+            $logaction->asset_type = 'asset';
             $logaction->note = e(Input::get('note'));
             $logaction->user_id = Sentry::getUser()->id;
             $log = $logaction->logaction('checkin from');
@@ -522,7 +522,7 @@ class AssetsController extends AdminController
 						    'fields' => [
 						        [
 						            'title' => 'Checked In:',
-						            'value' => strtoupper($logaction->asset_type).' asset <'.Config::get('app.url').'/hardware/'.$asset->id.'/view'.'|'.$asset->showAssetName().'> checked in by <'.Config::get('app.url').'/hardware/'.$asset->id.'/view'.'|'.Sentry::getUser()->fullName().'>.'
+						            'value' => strtoupper($logaction->asset_type).' asset <'.Config::get('app.url').'/asset/'.$asset->id.'/view'.'|'.$asset->showAssetName().'> checked in by <'.Config::get('app.url').'/asset/'.$asset->id.'/view'.'|'.Sentry::getUser()->fullName().'>.'
 						        ],
 						        [
 						            'title' => 'Note:',
@@ -553,15 +553,15 @@ class AssetsController extends AdminController
             		}
 
 			if ($backto=='user') {
-				return Redirect::to("admin/users/".$return_to.'/view')->with('success', Lang::get('admin/hardware/message.checkin.success'));
+				return Redirect::to("admin/users/".$return_to.'/view')->with('success', Lang::get('admin/asset/message.checkin.success'));
 			} else {
-				return Redirect::to("hardware")->with('success', Lang::get('admin/hardware/message.checkin.success'));
+				return Redirect::to("asset")->with('success', Lang::get('admin/asset/message.checkin.success'));
 			}
 
         }
 
         // Redirect to the asset management page with error
-        return Redirect::to("hardware")->with('error', Lang::get('admin/hardware/message.checkin.error'));
+        return Redirect::to("asset")->with('error', Lang::get('admin/asset/message.checkin.error'));
     }
 
 
@@ -581,16 +581,16 @@ class AssetsController extends AdminController
 
             $qr_code = (object) array(
                 'display' => $settings->qr_code == '1',
-                'url' => route('qr_code/hardware', $asset->id)
+                'url' => route('qr_code/asset', $asset->id)
             );
 
-            return View::make('backend/hardware/view', compact('asset', 'qr_code'));
+            return View::make('backend/asset/view', compact('asset', 'qr_code'));
         } else {
             // Prepare the error message
-            $error = Lang::get('admin/hardware/message.does_not_exist', compact('id'));
+            $error = Lang::get('admin/asset/message.does_not_exist', compact('id'));
 
             // Redirect to the user management page
-            return Redirect::route('hardware')->with('error', $error);
+            return Redirect::route('asset')->with('error', $error);
         }
 
     }
@@ -611,11 +611,11 @@ class AssetsController extends AdminController
             if (isset($asset->id,$asset->asset_tag)) {
 
                 if ($settings->barcode_type == 'C128'){
-		$content = DNS1D::getBarcodePNG(route('view/hardware', $asset->id), $settings->barcode_type,
+		$content = DNS1D::getBarcodePNG(route('view/asset', $asset->id), $settings->barcode_type,
                     $this->barCodeDimensions['height'],$this->barCodeDimensions['width']);
 		}
 		else{
-                $content = DNS2D::getBarcodePNG(route('view/hardware', $asset->id), $settings->barcode_type,
+                $content = DNS2D::getBarcodePNG(route('view/asset', $asset->id), $settings->barcode_type,
                     $this->qrCodeDimensions['height'],$this->qrCodeDimensions['width']);
 		}
                 $img = imagecreatefromstring(base64_decode($content));
@@ -645,7 +645,7 @@ class AssetsController extends AdminController
         // Check if the asset exists
         if (is_null($asset_to_clone = Asset::find($assetId))) {
             // Redirect to the asset management page
-            return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.does_not_exist'));
+            return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.does_not_exist'));
         }
 
         // Grab the dropdown lists
@@ -664,7 +664,7 @@ class AssetsController extends AdminController
         $asset->serial = '';
         $asset->assigned_to = '';
         $asset->mac_address = '';
-        return View::make('backend/hardware/edit')
+        return View::make('backend/asset/edit')
         ->with('supplier_list',$supplier_list)
         ->with('model_list',$model_list)
         ->with('statuslabel_list',$statuslabel_list)
@@ -690,13 +690,13 @@ class AssetsController extends AdminController
 			$asset->restore();
 
 			// Prepare the success message
-			$success = Lang::get('admin/hardware/message.restore.success');
+			$success = Lang::get('admin/asset/message.restore.success');
 
 			// Redirect to the user management page
-			return Redirect::route('hardware')->with('success', $success);
+			return Redirect::route('asset')->with('success', $success);
 
 		 } else {
-			 return Redirect::to('hardware')->with('error', Lang::get('admin/hardware/message.not_found'));
+			 return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.not_found'));
 		 }
 
     }
@@ -729,14 +729,14 @@ class AssetsController extends AdminController
 					if($validator->passes()){
 
 						$extension = $file->getClientOriginalExtension();
-						$filename = 'hardware-'.$asset->id.'-'.str_random(8);
+						$filename = 'asset-'.$asset->id.'-'.str_random(8);
 						$filename .= '-'.Str::slug($file->getClientOriginalName()).'.'.$extension;
 						$upload_success = $file->move($destinationPath, $filename);
 
 						//Log the deletion of seats to the log
 						$logaction = new Actionlog();
 						$logaction->asset_id = $asset->id;
-						$logaction->asset_type = 'hardware';
+						$logaction->asset_type = 'asset';
 						$logaction->user_id = Sentry::getUser()->id;
 						$logaction->note = e(Input::get('notes'));
 						$logaction->checkedout_to =  NULL;
@@ -744,20 +744,20 @@ class AssetsController extends AdminController
 						$logaction->filename =  $filename;
 						$log = $logaction->logaction('uploaded');
 					} else {
-						 return Redirect::back()->with('error', Lang::get('admin/hardware/message.upload.invalidfiles'));
+						 return Redirect::back()->with('error', Lang::get('admin/asset/message.upload.invalidfiles'));
 					}
 
 
 				}
 
 				if ($upload_success) {
-				  	return Redirect::back()->with('success', Lang::get('admin/hardware/message.upload.success'));
+				  	return Redirect::back()->with('success', Lang::get('admin/asset/message.upload.success'));
 				} else {
-				   return Redirect::back()->with('success', Lang::get('admin/hardware/message.upload.error'));
+				   return Redirect::back()->with('success', Lang::get('admin/asset/message.upload.error'));
 				}
 
 			} else {
-				 return Redirect::back()->with('error', Lang::get('admin/hardware/message.upload.nofiles'));
+				 return Redirect::back()->with('error', Lang::get('admin/asset/message.upload.nofiles'));
 			}
 
 
@@ -766,10 +766,10 @@ class AssetsController extends AdminController
 
         } else {
             // Prepare the error message
-            $error = Lang::get('admin/hardware/message.does_not_exist', compact('id'));
+            $error = Lang::get('admin/asset/message.does_not_exist', compact('id'));
 
-            // Redirect to the hardware management page
-            return Redirect::route('hardware')->with('error', $error);
+            // Redirect to the asset management page
+            return Redirect::route('asset')->with('error', $error);
         }
     }
 
@@ -794,14 +794,14 @@ class AssetsController extends AdminController
 				unlink($destinationPath.'/'.$log->filename);
 			}
 			$log->delete();
-			return Redirect::back()->with('success', Lang::get('admin/hardware/message.deletefile.success'));
+			return Redirect::back()->with('success', Lang::get('admin/asset/message.deletefile.success'));
 
         } else {
             // Prepare the error message
-            $error = Lang::get('admin/hardware/message.does_not_exist', compact('id'));
+            $error = Lang::get('admin/asset/message.does_not_exist', compact('id'));
 
-            // Redirect to the hardware management page
-            return Redirect::route('hardware')->with('error', $error);
+            // Redirect to the asset management page
+            return Redirect::route('asset')->with('error', $error);
         }
     }
 
@@ -825,10 +825,10 @@ class AssetsController extends AdminController
 				return Response::download($file);
         } else {
             // Prepare the error message
-            $error = Lang::get('admin/hardware/message.does_not_exist', compact('id'));
+            $error = Lang::get('admin/asset/message.does_not_exist', compact('id'));
 
-            // Redirect to the hardware management page
-            return Redirect::route('hardware')->with('error', $error);
+            // Redirect to the asset management page
+            return Redirect::route('asset')->with('error', $error);
         }
     }
 
@@ -864,7 +864,7 @@ class AssetsController extends AdminController
 			    $count = 0;
 
 			    $settings = Setting::getSettings();
-			    return View::make('backend/hardware/labels')->with('assets',$assets)->with('settings',$settings)->with('count',$count);
+			    return View::make('backend/asset/labels')->with('assets',$assets)->with('settings',$settings)->with('count',$count);
 
 
 			 // Bulk edit
@@ -876,7 +876,7 @@ class AssetsController extends AdminController
                 $statuslabel_list = array('' => '') + Statuslabel::lists('name', 'id');
                 $location_list = array('' => '') + Location::lists('name', 'id');
 
-                return View::make('backend/hardware/bulk')->with('assets',$assets)->with('supplier_list',$supplier_list)->with('statuslabel_list',$statuslabel_list)->with('location_list',$location_list);
+                return View::make('backend/asset/bulk')->with('assets',$assets)->with('supplier_list',$supplier_list)->with('statuslabel_list',$statuslabel_list)->with('location_list',$location_list);
 
 
 			}
@@ -950,7 +950,7 @@ class AssetsController extends AdminController
 
 			            $logaction = new Actionlog();
 			            $logaction->asset_id = $key;
-			            $logaction->asset_type = 'hardware';
+			            $logaction->asset_type = 'asset';
 			            $logaction->created_at =  date("Y-m-d h:i:s");
 
 			            if (Input::has('rtd_location_id')) {
@@ -963,18 +963,18 @@ class AssetsController extends AdminController
 
 				} // endforeach
 
-				return Redirect::to("hardware")->with('success', Lang::get('admin/hardware/message.update.success'));
+				return Redirect::to("asset")->with('success', Lang::get('admin/asset/message.update.success'));
 
 			// no values given, nothing to update
 			} else {
-				return Redirect::to("hardware")->with('info',Lang::get('admin/hardware/message.update.nothing_updated'));
+				return Redirect::to("asset")->with('info',Lang::get('admin/asset/message.update.nothing_updated'));
 
 			}
 
 
 		} // endif
 
-		return Redirect::to("hardware");
+		return Redirect::to("asset");
 
     }
 
@@ -1020,9 +1020,9 @@ class AssetsController extends AdminController
       $actions = new \Chumper\Datatable\Columns\FunctionColumn('actions', function ($assets)
       	{
         	if ($assets->deleted_at=='') {
-        		return '<div style=" white-space: nowrap;"><a href="'.route('clone/hardware', $assets->id).'" class="btn btn-info btn-sm" title="Clone asset"><i class="fa fa-files-o"></i></a> <a href="'.route('update/hardware', $assets->id).'" class="btn btn-warning btn-sm"><i class="fa fa-pencil icon-white"></i></a> <a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="'.route('delete/hardware', $assets->id).'" data-content="'.Lang::get('admin/hardware/message.delete.confirm').'" data-title="'.Lang::get('general.delete').' '.htmlspecialchars($assets->asset_tag).'?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a></div>';
+        		return '<div style=" white-space: nowrap;"><a href="'.route('clone/asset', $assets->id).'" class="btn btn-info btn-sm" title="Clone asset"><i class="fa fa-files-o"></i></a> <a href="'.route('update/asset', $assets->id).'" class="btn btn-warning btn-sm"><i class="fa fa-pencil icon-white"></i></a> <a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="'.route('delete/asset', $assets->id).'" data-content="'.Lang::get('admin/asset/message.delete.confirm').'" data-title="'.Lang::get('general.delete').' '.htmlspecialchars($assets->asset_tag).'?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a></div>';
         	} elseif ($assets->deleted_at!='') {
-        		return '<a href="'.route('restore/hardware', $assets->id).'" class="btn btn-warning btn-sm"><i class="fa fa-recycle icon-white"></i></a>';
+        		return '<a href="'.route('restore/asset', $assets->id).'" class="btn btn-warning btn-sm"><i class="fa fa-recycle icon-white"></i></a>';
         	}
 
         });
@@ -1034,9 +1034,9 @@ class AssetsController extends AdminController
 
                 if ($assets->assetstatus->deployable != 0) {
                     if (($assets->assigned_to !='') && ($assets->assigned_to > 0)) {
-                        return '<a href="'.route('checkin/hardware', $assets->id).'" class="btn btn-primary btn-sm">'.Lang::get('general.checkin').'</a>';
+                        return '<a href="'.route('checkin/asset', $assets->id).'" class="btn btn-primary btn-sm">'.Lang::get('general.checkin').'</a>';
                     } else {
-                        return '<a href="'.route('checkout/hardware', $assets->id).'" class="btn btn-info btn-sm">'.Lang::get('general.checkout').'</a>';
+                        return '<a href="'.route('checkout/asset', $assets->id).'" class="btn btn-info btn-sm">'.Lang::get('general.checkout').'</a>';
                     }
                 }
             }
@@ -1051,11 +1051,11 @@ class AssetsController extends AdminController
             })
         ->addColumn('name',function($assets)
 	        {
-		        return '<a title="'.$assets->name.'" href="hardware/'.$assets->id.'/view">'.$assets->name.'</a>';
+		        return '<a title="'.$assets->name.'" href="asset/'.$assets->id.'/view">'.$assets->name.'</a>';
 	        })
 	    ->addColumn('asset_tag',function($assets)
 	        {
-		        return '<a title="'.$assets->asset_tag.'" href="hardware/'.$assets->id.'/view">'.$assets->asset_tag.'</a>';
+		        return '<a title="'.$assets->asset_tag.'" href="asset/'.$assets->id.'/view">'.$assets->asset_tag.'</a>';
 	        })
 
       ->showColumns('serial')
@@ -1115,7 +1115,7 @@ class AssetsController extends AdminController
 
       ->addColumn('order_number',function($assets)
       {
-        return '<a href="../hardware/?order_number='.$assets->order_number.'">'.$assets->order_number.'';
+        return '<a href="../asset/?order_number='.$assets->order_number.'">'.$assets->order_number.'';
       })
 
 
