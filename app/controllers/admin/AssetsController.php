@@ -43,7 +43,7 @@ class AssetsController extends AdminController
 
     public function getIndex()
     {
-        return View::make('backend/assetss/index');
+        return View::make('backend/assets/index');
     }
 
     /**
@@ -311,7 +311,7 @@ class AssetsController extends AdminController
             // Was the asset updated?
             if($asset->save()) {
                 // Redirect to the new asset page
-                return Redirect::to("asset/$assetId/view")->with('success', Lang::get('admin/asset/message.update.success'));
+                return Redirect::to("assets/$assetId/view")->with('success', Lang::get('admin/asset/message.update.success'));
             }
             else
             {
@@ -522,7 +522,7 @@ class AssetsController extends AdminController
 						    'fields' => [
 						        [
 						            'title' => 'Checked In:',
-						            'value' => strtoupper($logaction->asset_type).' asset <'.Config::get('app.url').'/asset/'.$asset->id.'/view'.'|'.$asset->showAssetName().'> checked in by <'.Config::get('app.url').'/asset/'.$asset->id.'/view'.'|'.Sentry::getUser()->fullName().'>.'
+						            'value' => strtoupper($logaction->asset_type).' asset <'.Config::get('app.url').'/assets/'.$asset->id.'/view'.'|'.$asset->showAssetName().'> checked in by <'.Config::get('app.url').'/assets/'.$asset->id.'/view'.'|'.Sentry::getUser()->fullName().'>.'
 						        ],
 						        [
 						            'title' => 'Note:',
@@ -581,7 +581,7 @@ class AssetsController extends AdminController
 
             $qr_code = (object) array(
                 'display' => $settings->qr_code == '1',
-                'url' => route('qr_code/asset', $asset->id)
+                'url' => route('qr_code/assets', $asset->id)
             );
 
             return View::make('backend/assets/view', compact('asset', 'qr_code'));
@@ -982,7 +982,7 @@ class AssetsController extends AdminController
     public function getDatatable($status = null)
     {
 
-       $assets = Asset::with('model','assigneduser','assigneduser.userloc','assetstatus','defaultLoc','assetlog','model','model.category')->Hardware()->select(array('id', 'name','model_id','assigned_to','asset_tag','serial','status_id','purchase_date','deleted_at','rtd_location_id','notes','order_number','mac_address'));
+       $assets = Asset::with('model','assigneduser','assigneduser.userloc','assetstatus','defaultlocation','assetlog','model','model.category')->Hardware()->select(array('id', 'name','model_id','assigned_to','asset_tag','serial','status_id','purchase_date','deleted_at','rtd_location_id','notes','order_number','mac_address'));
 
 
       switch ($status) {
@@ -1020,7 +1020,7 @@ class AssetsController extends AdminController
       $actions = new \Chumper\Datatable\Columns\FunctionColumn('actions', function ($assets)
       	{
         	if ($assets->deleted_at=='') {
-        		return '<div style=" white-space: nowrap;"><a href="'.route('clone/asset', $assets->id).'" class="btn btn-info btn-sm" title="Clone asset"><i class="fa fa-files-o"></i></a> <a href="'.route('update/asset', $assets->id).'" class="btn btn-warning btn-sm"><i class="fa fa-pencil icon-white"></i></a> <a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="'.route('delete/asset', $assets->id).'" data-content="'.Lang::get('admin/asset/message.delete.confirm').'" data-title="'.Lang::get('general.delete').' '.htmlspecialchars($assets->asset_tag).'?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a></div>';
+        		return '<div style=" white-space: nowrap;"><a href="'.route('clone/assets', $assets->id).'" class="btn btn-info btn-sm" title="Clone asset"><i class="fa fa-files-o"></i></a> <a href="'.route('update/assets', $assets->id).'" class="btn btn-warning btn-sm"><i class="fa fa-pencil icon-white"></i></a> <a data-html="false" class="btn delete-asset btn-danger btn-sm" data-toggle="modal" href="'.route('delete/assets', $assets->id).'" data-content="'.Lang::get('admin/asset/message.delete.confirm').'" data-title="'.Lang::get('general.delete').' '.htmlspecialchars($assets->asset_tag).'?" onClick="return false;"><i class="fa fa-trash icon-white"></i></a></div>';
         	} elseif ($assets->deleted_at!='') {
         		return '<a href="'.route('restore/asset', $assets->id).'" class="btn btn-warning btn-sm"><i class="fa fa-recycle icon-white"></i></a>';
         	}
@@ -1051,11 +1051,11 @@ class AssetsController extends AdminController
             })
         ->addColumn('name',function($assets)
 	        {
-		        return '<a title="'.$assets->name.'" href="asset/'.$assets->id.'/view">'.$assets->name.'</a>';
+		        return '<a title="'.$assets->name.'" href="assets/'.$assets->id.'/view">'.$assets->name.'</a>';
 	        })
 	    ->addColumn('asset_tag',function($assets)
 	        {
-		        return '<a title="'.$assets->asset_tag.'" href="asset/'.$assets->id.'/view">'.$assets->asset_tag.'</a>';
+		        return '<a title="'.$assets->asset_tag.'" href="assets/'.$assets->id.'/view">'.$assets->asset_tag.'</a>';
 	        })
 
       ->showColumns('serial')
