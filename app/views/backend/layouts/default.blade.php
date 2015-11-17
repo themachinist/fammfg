@@ -2,7 +2,6 @@
 
 <html lang="en">
     <head>
-
         <!-- Basic Page Needs
         ================================================== -->
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -15,17 +14,12 @@
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
 		 <!-- bootstrap -->
 	    <link href="{{ asset('assets/css/bootstrap/bootstrap.css') }}" rel="stylesheet" />
-
-
 	    <!-- global styles -->
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/compiled/layout.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/compiled/elements.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/compiled/icons.css') }}">
-
 	    <!-- libraries -->
 	    <link rel="stylesheet" href="{{ asset('assets/css/lib/jquery-ui-1.10.2.custom.css') }}" type="text/css">
 	    <link rel="stylesheet" href="{{ asset('assets/css/lib/font-awesome.min.css') }}" type="text/css">
@@ -35,14 +29,11 @@
         <link rel="stylesheet" href="{{ asset('assets/css/compiled/index.css') }}" type="text/css" media="screen" />
         <link rel="stylesheet" href="{{ asset('assets/css/compiled/user-list.css') }}" type="text/css" media="screen" />
         <link rel="stylesheet" href="{{ asset('assets/css/compiled/user-profile.css') }}" type="text/css" media="screen" />
-
         <link rel="stylesheet" href="{{ asset('assets/css/lib/jquery.dataTables.css') }}" type="text/css" media="screen" />
         <link rel="stylesheet" href="{{ asset('assets/css/compiled/dataTables.colVis.css') }}" type="text/css" media="screen" />
         <link rel="stylesheet" href="{{ asset('assets/css/compiled/dataTables.tableTools.css') }}" type="text/css" media="screen" />
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/compiled/print.css') }}" media="print" />
         <link href="{{ asset('assets/css/bootstrap/bootstrap-overrides.css') }}" type="text/css" rel="stylesheet" />
-
-
         <!-- global header javascripts -->
         <script src="{{ asset('assets/js/jquery-latest.js') }}"></script>
         <script src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>
@@ -56,8 +47,6 @@
                 }
             };
         </script>
-
-
 
 		@if (Setting::getSettings()->load_remote=='1')
         <!-- open sans font -->
@@ -88,15 +77,9 @@
 		@endif
 
         </style>
-
-
     </head>
 
     <body>
-
-    <!-- navbar -->
-
-
     <!-- navbar -->
     <header class="navbar navbar-inverse" role="banner">
 	    <div class="navbar-header">
@@ -106,7 +89,6 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-
 
 	            @if (Setting::getSettings()->logo)
 	            	<a class="navbar-brand" href="{{ Config::get('app.url') }}" style="padding: 5px;">
@@ -118,7 +100,6 @@
 	            	</a>
 	            @endif
         </div>
-
 
         <ul class="nav navbar-nav navbar-right">
             @if (Sentry::check())
@@ -136,7 +117,7 @@
 							@lang('general.category')</a>
 						</li>
 						<li {{{ (Request::is('admin/assets/create') ? 'class="active"' : '') }}}>
-							<a href="{{ route('create/asset') }}">
+							<a href="{{ route('create/assets') }}">
 							<i class="fa fa-barcode"></i>
 							@lang('general.asset')</a>
 						</li>
@@ -258,9 +239,8 @@
             @else
                     <li {{{ (Request::is('auth/signin') ? 'class="active"' : '') }}}><a href="{{ route('signin') }}">@lang('general.sign_in')</a></li>
             @endif
-            </ul>
+		</ul>
     </header>
-
 
     <!-- end navbar -->
     @if (Sentry::check())
@@ -270,6 +250,12 @@
 			@if(Sentry::getUser()->hasAccess('admin'))
 			<li{{ (Request::is('*/') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{Config::get('app.url')}}"><i class="fa fa-dashboard"></i><span>Dashboard</span></a>
+            </li>
+			<li{{ (Request::is('*admin/settings/categories') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
+                <a href="{{ URL::to('admin/settings/categories') }}">
+                    <i class="fa fa-tags"></i>
+                    <span>@lang('general.categories')</span>
+                </a>
             </li>
             <li{{ (Request::is('*assets') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{ URL::to('admin/assets') }}" class="dropdown-toggle">
@@ -284,12 +270,6 @@
                     <li><a href="{{ URL::to('asset?status=Deleted') }}" {{{ (Request::query('Deleted') ? ' class="active"' : '') }}} >@lang('general.deleted')</a></li>
                     <li><a href="{{ URL::to('admin/asset_maintenances') }}"  >@lang('general.asset_maintenances') </a></li> 
                 </ul>
-            </li>
-            <li{{ (Request::is('*admin/settings/categories') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
-                <a href="{{ URL::to('admin/settings/categories') }}">
-                    <i class="fa fa-tags"></i>
-                    <span>@lang('general.categories')</span>
-                </a>
             </li>
             <li{{ (Request::is('admin/tools*') ? ' class="active"><div class="pointer"><div class="arrow"></div><div class="arrow_border"></div></div>' : '>') }}
                 <a href="{{ URL::to('admin/tools') }}">

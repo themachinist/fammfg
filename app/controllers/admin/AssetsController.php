@@ -43,7 +43,7 @@ class AssetsController extends AdminController
 
     public function getIndex()
     {
-        return View::make('backend/assets/index');
+        return View::make('backend/assetss/index');
     }
 
     /**
@@ -65,7 +65,7 @@ class AssetsController extends AdminController
         $assigned_to = usersList();
         $statuslabel_types = statusTypeList();
 
-        $view = View::make('backend/asset/edit');
+        $view = View::make('backend/assets/edit');
         $view->with('supplier_list',$supplier_list);
         $view->with('model_list',$model_list);
         $view->with('statuslabel_list',$statuslabel_list);
@@ -216,7 +216,7 @@ class AssetsController extends AdminController
         $assigned_to = usersList();
         $statuslabel_types = statusTypeList();
 
-        return View::make('backend/asset/edit', compact('asset'))
+        return View::make('backend/assets/edit', compact('asset'))
         ->with('model_list',$model_list)
         ->with('supplier_list',$supplier_list)
         ->with('location_list',$location_list)
@@ -374,7 +374,7 @@ class AssetsController extends AdminController
         // Get the dropdown of users and then pass it to the checkout view
         $users_list = usersList();
 
-        return View::make('backend/asset/checkout', compact('asset'))->with('users_list',$users_list);
+        return View::make('backend/assets/checkout', compact('asset'))->with('users_list',$users_list);
 
     }
 
@@ -451,7 +451,7 @@ class AssetsController extends AdminController
             return Redirect::to('asset')->with('error', Lang::get('admin/asset/message.not_found'));
         }
 
-        return View::make('backend/asset/checkin', compact('asset'))->with('backto', $backto);
+        return View::make('backend/assets/checkin', compact('asset'))->with('backto', $backto);
     }
 
 
@@ -584,7 +584,7 @@ class AssetsController extends AdminController
                 'url' => route('qr_code/asset', $asset->id)
             );
 
-            return View::make('backend/asset/view', compact('asset', 'qr_code'));
+            return View::make('backend/assets/view', compact('asset', 'qr_code'));
         } else {
             // Prepare the error message
             $error = Lang::get('admin/asset/message.does_not_exist', compact('id'));
@@ -664,7 +664,7 @@ class AssetsController extends AdminController
         $asset->serial = '';
         $asset->assigned_to = '';
         $asset->mac_address = '';
-        return View::make('backend/asset/edit')
+        return View::make('backend/assets/edit')
         ->with('supplier_list',$supplier_list)
         ->with('model_list',$model_list)
         ->with('statuslabel_list',$statuslabel_list)
@@ -864,7 +864,7 @@ class AssetsController extends AdminController
 			    $count = 0;
 
 			    $settings = Setting::getSettings();
-			    return View::make('backend/asset/labels')->with('assets',$assets)->with('settings',$settings)->with('count',$count);
+			    return View::make('backend/assets/labels')->with('assets',$assets)->with('settings',$settings)->with('count',$count);
 
 
 			 // Bulk edit
@@ -876,7 +876,7 @@ class AssetsController extends AdminController
                 $statuslabel_list = array('' => '') + Statuslabel::lists('name', 'id');
                 $location_list = array('' => '') + Location::lists('name', 'id');
 
-                return View::make('backend/asset/bulk')->with('assets',$assets)->with('supplier_list',$supplier_list)->with('statuslabel_list',$statuslabel_list)->with('location_list',$location_list);
+                return View::make('backend/assets/bulk')->with('assets',$assets)->with('supplier_list',$supplier_list)->with('statuslabel_list',$statuslabel_list)->with('location_list',$location_list);
 
 
 			}
