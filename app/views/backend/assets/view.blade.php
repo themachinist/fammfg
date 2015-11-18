@@ -159,13 +159,9 @@
 			</div>
 		@endif
 
-
-
-
-
 <div class="col-md-12">
 		<!-- Fixtures assets table -->
-		<h6>Software Assigned </h6>
+		<h6>@lang('admin/assets/general.fixtures_assigned')</h6>
 		<br>
 		<!-- checked out assets table -->
 		@if (count($asset->fixturecopies) > 0)
