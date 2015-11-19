@@ -266,8 +266,8 @@
                 <ul class="submenu{{ (Request::is('admin/assets*') ? ' active' : '') }}">
                     <li><a href="{{ URL::to('admin/assets') }}">@lang('general.list_all')</a></li>
                     <li class="divider">&nbsp;</li>
-                    <li><a href="{{ URL::to('asset/models') }}" {{{ (Request::is('asset/models*') ? ' class="active"' : '') }}} >@lang('general.asset_models')</a></li> 
-                    <li><a href="{{ URL::to('asset?status=Deleted') }}" {{{ (Request::query('Deleted') ? ' class="active"' : '') }}} >@lang('general.deleted')</a></li>
+                    <li><a href="{{ URL::to('admin/assets/models') }}" {{{ (Request::is('asset/models*') ? ' class="active"' : '') }}} >@lang('general.asset_models')</a></li> 
+                    <li><a href="{{ URL::to('admin/assets?status=Deleted') }}" {{{ (Request::query('Deleted') ? ' class="active"' : '') }}} >@lang('general.deleted')</a></li>
                     <li><a href="{{ URL::to('admin/asset_maintenances') }}"  >@lang('general.asset_maintenances') </a></li> 
                 </ul>
             </li>
